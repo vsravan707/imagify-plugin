@@ -558,7 +558,7 @@
 
 	var properties =
 		"startX startY pageX pageY distX distY deltaX deltaY velocityX velocityY".split(
-			" ",
+			" "
 		);
 
 	function enableMove1(e) {

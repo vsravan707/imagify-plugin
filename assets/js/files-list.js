@@ -10,7 +10,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				.closest(".imagify-chart")
 				.next(".imagify-chart-value")
 				.text(),
-			10,
+			10
 		);
 
 		new window.imagify.Chart(this, {
@@ -66,14 +66,14 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			$("#doaction, #doaction2").on(
 				"click.imagify",
-				this.processBulkAction,
+				this.processBulkAction
 			);
 
 			// Optimize, restore, etc.
 			$document.on(
 				"click.imagify",
 				".button-imagify-optimize, .button-imagify-manual-reoptimize, .button-imagify-generate-webp, .button-imagify-delete-webp, .button-imagify-restore, .button-imagify-refresh-status",
-				this.processOptimization,
+				this.processOptimization
 			);
 
 			$document.on("imagifybeat-send", this.addToImagifybeat);
@@ -81,7 +81,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			// Some items may be processed in background on page load.
 			$processing = $(
-				".wp-list-table.imagify-files .button-imagify-processing",
+				".wp-list-table.imagify-files .button-imagify-processing"
 			);
 
 			if ($processing.length) {
@@ -95,7 +95,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 						w.imagify.filesList.lockItem(
 							w.imagifyFiles.context,
-							id,
+							id
 						);
 					});
 
@@ -146,7 +146,7 @@ window.imagify.drawMeAChart = function (canvas) {
 			}
 
 			$(
-				'.bulkactions select[name="action"] option:first-child, .bulkactions select[name="action2"] option:first-child',
+				'.bulkactions select[name="action"] option:first-child, .bulkactions select[name="action2"] option:first-child'
 			).after(bulkActions);
 		},
 
@@ -208,14 +208,14 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			href = $button.attr("href");
 			processingTemplate = w.imagify.template(
-				"imagify-button-processing",
+				"imagify-button-processing"
 			);
 			$parent = $button.closest(".column-actions, .column-status");
 
 			$parent.html(
 				processingTemplate({
 					label: $button.data("processing-label"),
-				}),
+				})
 			);
 
 			$.get(href.replace("admin-post.php", "admin-ajax.php")).done(
@@ -227,7 +227,7 @@ window.imagify.drawMeAChart = function (canvas) {
 									$row.children().length +
 									'">' +
 									r.data.row +
-									"</td>",
+									"</td>"
 							);
 						} else {
 							$parent.html(r.data);
@@ -235,7 +235,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 						$row.find('.check-column [type="checkbox"]').prop(
 							"checked",
-							false,
+							false
 						);
 
 						imagify.filesList.unlockItem(context, id);
@@ -247,14 +247,14 @@ window.imagify.drawMeAChart = function (canvas) {
 						w.imagify.filesList.displayProcessResult(
 							context,
 							id,
-							r.data.columns,
+							r.data.columns
 						);
 					} else {
 						// Still processing in background: we're waiting for the result by poking Imagifybeat.
 						// Set the Imagifybeat interval to 15 seconds.
 						w.imagify.beat.interval(15);
 					}
-				},
+				}
 			);
 		},
 
@@ -268,7 +268,7 @@ window.imagify.drawMeAChart = function (canvas) {
 		 */
 		addToImagifybeat: function (e, data) {
 			var $boxes = $(
-				'.wp-list-table.imagify-files .check-column [name="bulk_select[]"]',
+				'.wp-list-table.imagify-files .check-column [name="bulk_select[]"]'
 			);
 
 			if (!$boxes.length) {
@@ -322,9 +322,9 @@ window.imagify.drawMeAChart = function (canvas) {
 					w.imagify.filesList.displayProcessResult(
 						context,
 						id,
-						columns,
+						columns
 					);
-				},
+				}
 			);
 		},
 
@@ -365,7 +365,7 @@ window.imagify.drawMeAChart = function (canvas) {
 			return $(
 				'.wp-list-table.imagify-files .check-column [name="bulk_select[]"][value="' +
 					id +
-					'"]',
+					'"]'
 			).closest("tr");
 		},
 

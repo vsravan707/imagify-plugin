@@ -188,7 +188,7 @@
 						_state,
 						child,
 						callback,
-						parent._result,
+						parent._result
 					);
 				});
 			})();
@@ -263,7 +263,7 @@
 
 	function cannotReturnOwn() {
 		return new TypeError(
-			"A promises callback cannot return that same promise.",
+			"A promises callback cannot return that same promise."
 		);
 	}
 
@@ -309,7 +309,7 @@
 
 					reject(promise, reason);
 				},
-				"Settle: " + (promise._label || " unknown promise"),
+				"Settle: " + (promise._label || " unknown promise")
 			);
 
 			if (!sealed && error) {
@@ -333,7 +333,7 @@
 				},
 				function (reason) {
 					return reject(promise, reason);
-				},
+				}
 			);
 		}
 	}
@@ -504,7 +504,7 @@
 				},
 				function rejectPromise(reason) {
 					reject(promise, reason);
-				},
+				}
 			);
 		} catch (e) {
 			reject(promise, e);
@@ -582,7 +582,7 @@
 					new c(function (resolve$$1) {
 						return resolve$$1(entry);
 					}),
-					i,
+					i
 				);
 			}
 		} else {
@@ -619,7 +619,7 @@
 			},
 			function (reason) {
 				return enumerator._settledAt(REJECTED, i, reason);
-			},
+			}
 		);
 	};
 
@@ -801,13 +801,13 @@
 
 	function needsResolver() {
 		throw new TypeError(
-			"You must pass a resolver function as the first argument to the promise constructor",
+			"You must pass a resolver function as the first argument to the promise constructor"
 		);
 	}
 
 	function needsNew() {
 		throw new TypeError(
-			"Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.",
+			"Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function."
 		);
 	}
 
@@ -1178,7 +1178,7 @@
 				local = Function("return this")();
 			} catch (e) {
 				throw new Error(
-					"polyfill failed because global object is unavailable in this environment",
+					"polyfill failed because global object is unavailable in this environment"
 				);
 			}
 		}

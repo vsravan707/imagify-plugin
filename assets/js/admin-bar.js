@@ -31,7 +31,7 @@
 		$.get(
 			url +
 				"action=imagify_get_admin_bar_profile&imagifygetadminbarprofilenonce=" +
-				$("#imagifygetadminbarprofilenonce").val(),
+				$("#imagifygetadminbarprofilenonce").val()
 		).done(function (response) {
 			var $templates = response.data;
 			$("#wp-admin-bar-imagify-profile-loading").remove();

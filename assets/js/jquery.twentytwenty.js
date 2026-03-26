@@ -9,7 +9,7 @@
 				labelBefore: "Before",
 				labelAfter: "After",
 			},
-			options,
+			options
 		);
 
 		return this.each(function () {
@@ -51,12 +51,12 @@
 					if ("vertical" === sliderOrientation) {
 						$beforeImage.css(
 							"clip",
-							"rect(0," + offset.w + "," + offset.ch + ",0)",
+							"rect(0," + offset.w + "," + offset.ch + ",0)"
 						);
 					} else {
 						$beforeImage.css(
 							"clip",
-							"rect(0," + offset.cw + "," + offset.h + ",0)",
+							"rect(0," + offset.cw + "," + offset.h + ",0)"
 						);
 					}
 
@@ -84,7 +84,7 @@
 			$container.wrap(
 				'<div class="twentytwenty-wrapper twentytwenty-' +
 					sliderOrientation +
-					'"></div>',
+					'"></div>'
 			);
 
 			$container
@@ -98,12 +98,12 @@
 			$slider.append(
 				'<span class="twentytwenty-' +
 					beforeDirection +
-					'-arrow"></span>',
+					'-arrow"></span>'
 			);
 			$slider.append(
 				'<span class="twentytwenty-' +
 					afterDirection +
-					'-arrow"></span>',
+					'-arrow"></span>'
 			);
 			$container.addClass("twentytwenty-container");
 			$beforeImg.addClass("twentytwenty-before");
@@ -114,12 +114,12 @@
 			$overlay.append(
 				'<div class="twentytwenty-labels twentytwenty-before-label"><span class="twentytwenty-label-content">' +
 					options.labelBefore +
-					"</span></div>",
+					"</span></div>"
 			);
 			$overlay.append(
 				'<div class="twentytwenty-labels twentytwenty-after-label"><span class="twentytwenty-label-content">' +
 					options.labelAfter +
-					"</span></div>",
+					"</span></div>"
 			);
 
 			$(w).on("resize.twentytwenty", function () {
@@ -197,7 +197,7 @@
 						.closest(".imagify-chart")
 						.next(".imagify-chart-value")
 						.text(),
-					10,
+					10
 				);
 
 				new w.imagify.Chart(this, {
@@ -365,7 +365,7 @@
 								? "&"
 								: "?") +
 							"v=" +
-							Date.now(),
+							Date.now()
 					);
 
 				$tt = $modal.find(".twentytwenty-container");
@@ -406,8 +406,8 @@
 									.addClass("loaded");
 								drawMeAChart(
 									$modal.find(
-										".imagify-level-optimized .imagify-chart canvas",
-									),
+										".imagify-level-optimized .imagify-chart canvas"
+									)
 								);
 							}
 
@@ -420,10 +420,10 @@
 
 								$handle = $modal.find(".twentytwenty-handle");
 								$labels = $modal.find(
-									".twentytwenty-label-content",
+									".twentytwenty-label-content"
 								);
 								$datas = $modal.find(
-									".imagify-comparison-levels",
+									".imagify-comparison-levels"
 								);
 								datasH = $datas.outerHeight();
 								handlePos =
@@ -456,7 +456,7 @@
 										});
 									});
 							}
-						},
+						}
 					);
 
 					clearInterval(checkLoad);
@@ -582,7 +582,7 @@
 		$tt.before(
 			'<img class="loader" src="' +
 				loader +
-				'" alt="Loading…" width="64" height="64">',
+				'" alt="Loading…" width="64" height="64">'
 		);
 
 		// Should be more locally integrated...
@@ -684,10 +684,10 @@
 							.removeClass("loading")
 							.addClass("loaded");
 						drawMeAChart(
-							$(".imagify-level-ultra .imagify-chart canvas"),
+							$(".imagify-level-ultra .imagify-chart canvas")
 						);
 					}
-				},
+				}
 			);
 
 			clearInterval(twentyMe);
@@ -750,7 +750,7 @@
 						.addClass("twentytwenty-before")
 						.css("clip", clipStyles);
 					$(
-						".twentytwenty-before-label .twentytwenty-label-content",
+						".twentytwenty-before-label .twentytwenty-label-content"
 					).text($container.data(image + "-label"));
 					$(".imagify-c-level.go-left")
 						.attr("aria-hidden", "true")
@@ -767,7 +767,7 @@
 						.find(".img-" + image)
 						.addClass("twentytwenty-after");
 					$(
-						".twentytwenty-after-label .twentytwenty-label-content",
+						".twentytwenty-after-label .twentytwenty-label-content"
 					).text($container.data(image + "-label"));
 					$(".imagify-c-level.go-right")
 						.attr("aria-hidden", "true")
@@ -778,9 +778,9 @@
 				}
 
 				drawMeAChart(
-					$(".imagify-level-" + image + " .imagify-chart canvas"),
+					$(".imagify-level-" + image + " .imagify-chart canvas")
 				);
-			},
+			}
 		);
 	});
 
@@ -797,7 +797,7 @@
 				size: $("#imagify-full-original-size").val(),
 			},
 			$optimizeBtn = $("#misc-publishing-actions").find(
-				".misc-pub-imagify .button-primary",
+				".misc-pub-imagify .button-primary"
 			),
 			filesize,
 			saving;
@@ -813,7 +813,7 @@
 			$('[id^="imgedit-open-btn-"]').before(
 				'<button type="button" class="imagify-button-primary button-primary imagify-modal-trigger" data-target="#imagify-visual-comparison" id="imagify-start-comparison">' +
 					imagifyTTT.labels.compare +
-					"</button>",
+					"</button>"
 			);
 
 			// Modal and trigger event creation.
@@ -849,7 +849,7 @@
 			// If is not in optimizing process, propose the Optimize button trigger.
 			if (
 				$("#misc-publishing-actions").find(
-					".misc-pub-imagify .button-primary",
+					".misc-pub-imagify .button-primary"
 				).length === 1
 			) {
 				$('[id^="imgedit-open-btn-"]').before(
@@ -857,7 +857,7 @@
 						$optimizeBtn.attr("href") +
 						'">' +
 						imagifyTTT.labels.optimize +
-						"</a>",
+						"</a>"
 				);
 
 				$("#imagify-optimize-trigger").on("click", function () {
@@ -908,7 +908,7 @@
 					/[?&]+([^=&]+)=?([^&]*)?/gi,
 					function (m, key, value) {
 						vars[key] = undefined !== value ? value : "";
-					},
+					}
 				);
 
 				if (param) {
@@ -929,7 +929,7 @@
 					if (originalSrc) {
 						// Trigger creation.
 						$actions = $(
-							".media-frame-content .attachment-actions",
+							".media-frame-content .attachment-actions"
 						);
 
 						$actions
@@ -938,12 +938,12 @@
 						$actions.prepend(
 							'<button type="button" class="imagify-button-primary button-primary imagify-modal-trigger" data-target="#imagify-comparison-modal" id="imagify-media-frame-comparison-btn">' +
 								imagifyTTT.labels.compare +
-								"</button>",
+								"</button>"
 						);
 
 						// Get datas.
 						$datas = $(
-							".media-frame-content .compat-field-imagify",
+							".media-frame-content .compat-field-imagify"
 						);
 
 						// Modal and trigger event creation.
@@ -951,7 +951,7 @@
 							width: parseInt($("#imagify-full-width").val(), 10),
 							height: parseInt(
 								$("#imagify-full-height").val(),
-								10,
+								10
 							),
 							originalUrl: originalSrc,
 							optimizedUrl: $("#imagify-full-src").val(),
@@ -961,7 +961,7 @@
 								.text(),
 							saving: $datas.find(".imagify-chart-value").text(),
 							modalAppendTo: $(
-								".media-frame-content .thumbnail-image",
+								".media-frame-content .thumbnail-image"
 							),
 							trigger: $("#imagify-media-frame-comparison-btn"),
 							modalId: "imagify-comparison-modal",
@@ -980,7 +980,7 @@
 			".media-frame.mode-grid .attachment, .edit-media-header .left, .edit-media-header .right",
 			function () {
 				imagifyContentInModal();
-			},
+			}
 		);
 
 		// If attachment is mentionned in URL, build the modal inside the modal.
@@ -1030,11 +1030,11 @@
 
 				if (id) {
 					$buttons = $("#imagify-files-list-form").find(
-						'.imagify-compare-images[data-id="' + id + '"]',
+						'.imagify-compare-images[data-id="' + id + '"]'
 					);
 				} else {
 					$buttons = $("#imagify-files-list-form").find(
-						".imagify-compare-images",
+						".imagify-compare-images"
 					);
 				}
 

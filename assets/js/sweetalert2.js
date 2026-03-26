@@ -124,7 +124,7 @@
 		for (var i = 0; i < 3; i++) {
 			var c = parseInt(hex.substr(i * 2, 2), 16);
 			c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(
-				16,
+				16
 			);
 			rgb += ("00" + c).substr(c.length);
 		}
@@ -167,7 +167,7 @@
 		var targetElement = document.querySelector(params.target);
 		if (!targetElement) {
 			console.warn(
-				"SweetAlert2: Can't find the target \"" + params.target + '"',
+				"SweetAlert2: Can't find the target \"" + params.target + '"'
 			);
 			targetElement = document.body;
 		}
@@ -178,11 +178,11 @@
 		var file = getChildByClass(modal, swalClasses.file);
 		var range = modal.querySelector("." + swalClasses.range + " input");
 		var rangeOutput = modal.querySelector(
-			"." + swalClasses.range + " output",
+			"." + swalClasses.range + " output"
 		);
 		var select = getChildByClass(modal, swalClasses.select);
 		var checkbox = modal.querySelector(
-			"." + swalClasses.checkbox + " input",
+			"." + swalClasses.checkbox + " input"
 		);
 		var textarea = getChildByClass(modal, swalClasses.textarea);
 
@@ -365,9 +365,9 @@
 		var focusableElements = buttons.concat(
 			Array.prototype.slice.call(
 				getModal().querySelectorAll(
-					'button, input:not([type=hidden]), textarea, select, a, *[tabindex]:not([tabindex="-1"])',
-				),
-			),
+					'button, input:not([type=hidden]), textarea, select, a, *[tabindex]:not([tabindex="-1"])'
+				)
+			)
 		);
 		return uniqueArray(focusableElements);
 	};
@@ -609,7 +609,7 @@
 		modal.style.padding = params.padding + "px";
 		modal.style.background = params.background;
 		var successIconParts = modal.querySelectorAll(
-			"[class^=swal2-success-circular-line], .swal2-success-fix",
+			"[class^=swal2-success-circular-line], .swal2-success-fix"
 		);
 		for (var i = 0; i < successIconParts.length; i++) {
 			successIconParts[i].style.background = params.background;
@@ -669,7 +669,7 @@
 			params.currentProgressStep === null
 				? sweetAlert.getQueueStep()
 				: params.currentProgressStep,
-			10,
+			10
 		);
 		if (params.progressSteps.length) {
 			show(progressStepsContainer);
@@ -677,7 +677,7 @@
 			if (currentProgressStep >= params.progressSteps.length) {
 				console.warn(
 					"SweetAlert2: Invalid currentProgressStep parameter, it should be less than progressSteps.length " +
-						"(currentProgressStep like JS arrays starts from 0)",
+						"(currentProgressStep like JS arrays starts from 0)"
 				);
 			}
 			params.progressSteps.forEach(function (step, index) {
@@ -714,12 +714,12 @@
 			}
 			if (!validType) {
 				console.error(
-					"SweetAlert2: Unknown alert type: " + params.type,
+					"SweetAlert2: Unknown alert type: " + params.type
 				);
 				return false;
 			}
 			var icon = modal.querySelector(
-				"." + swalClasses.icon + "." + iconTypes[params.type],
+				"." + swalClasses.icon + "." + iconTypes[params.type]
 			);
 			show(icon);
 
@@ -730,18 +730,18 @@
 						addClass(icon, "swal2-animate-success-icon");
 						addClass(
 							icon.querySelector(".swal2-success-line-tip"),
-							"swal2-animate-success-line-tip",
+							"swal2-animate-success-line-tip"
 						);
 						addClass(
 							icon.querySelector(".swal2-success-line-long"),
-							"swal2-animate-success-line-long",
+							"swal2-animate-success-line-long"
 						);
 						break;
 					case "error":
 						addClass(icon, "swal2-animate-error-icon");
 						addClass(
 							icon.querySelector(".swal2-x-mark"),
-							"swal2-animate-x-mark",
+							"swal2-animate-x-mark"
 						);
 						break;
 					default:
@@ -863,10 +863,10 @@
 				function swalCloseEventFinished() {
 					modal.removeEventListener(
 						animationEndEvent,
-						swalCloseEventFinished,
+						swalCloseEventFinished
 					);
 					container.style.overflowY = "auto";
-				},
+				}
 			);
 		} else {
 			container.style.overflowY = "auto";
@@ -990,7 +990,7 @@
 			default:
 				console.error(
 					'SweetAlert2: Unexpected type of argument! Expected "string" or "object", got ' +
-						_typeof(args[0]),
+						_typeof(args[0])
 				);
 				return false;
 		}
@@ -1026,20 +1026,20 @@
 						return getChildByClass(modal, swalClasses[inputType]);
 					case "checkbox":
 						return modal.querySelector(
-							"." + swalClasses.checkbox + " input",
+							"." + swalClasses.checkbox + " input"
 						);
 					case "radio":
 						return (
 							modal.querySelector(
-								"." + swalClasses.radio + " input:checked",
+								"." + swalClasses.radio + " input:checked"
 							) ||
 							modal.querySelector(
-								"." + swalClasses.radio + " input:first-child",
+								"." + swalClasses.radio + " input:first-child"
 							)
 						);
 					case "range":
 						return modal.querySelector(
-							"." + swalClasses.range + " input",
+							"." + swalClasses.range + " input"
 						);
 					default:
 						return getChildByClass(modal, swalClasses.input);
@@ -1092,7 +1092,7 @@
 							if (error) {
 								sweetAlert.showValidationError(error);
 							}
-						},
+						}
 					);
 				} else {
 					sweetAlert.closeModal(params.onClose);
@@ -1126,13 +1126,13 @@
 								confirmButton.style.backgroundColor =
 									colorLuminance(
 										params.confirmButtonColor,
-										-0.1,
+										-0.1
 									);
 							} else if (targetedCancel) {
 								cancelButton.style.backgroundColor =
 									colorLuminance(
 										params.cancelButtonColor,
-										-0.1,
+										-0.1
 									);
 							}
 						}
@@ -1154,13 +1154,13 @@
 								confirmButton.style.backgroundColor =
 									colorLuminance(
 										params.confirmButtonColor,
-										-0.2,
+										-0.2
 									);
 							} else if (targetedCancel) {
 								cancelButton.style.backgroundColor =
 									colorLuminance(
 										params.cancelButtonColor,
-										-0.2,
+										-0.2
 									);
 							}
 						}
@@ -1177,7 +1177,7 @@
 									params
 										.inputValidator(
 											inputValue,
-											params.extraParams,
+											params.extraParams
 										)
 										.then(
 											function () {
@@ -1190,10 +1190,10 @@
 												sweetAlert.enableInput();
 												if (error) {
 													sweetAlert.showValidationError(
-														error,
+														error
 													);
 												}
-											},
+											}
 										);
 								} else {
 									confirm(inputValue);
@@ -1258,19 +1258,19 @@
 			if (params.reverseButtons) {
 				confirmButton.parentNode.insertBefore(
 					cancelButton,
-					confirmButton,
+					confirmButton
 				);
 			} else {
 				confirmButton.parentNode.insertBefore(
 					confirmButton,
-					cancelButton,
+					cancelButton
 				);
 			}
 
 			// Focus handling
 			var setFocus = function setFocus(index, increment) {
 				var focusableElements = getFocusableElements(
-					params.focusCancel,
+					params.focusCancel
 				);
 				// search for visible elements and select the next possible match
 				for (var _i3 = 0; _i3 < focusableElements.length; _i3++) {
@@ -1305,7 +1305,7 @@
 				var targetElement = e.target || e.srcElement;
 
 				var focusableElements = getFocusableElements(
-					params.focusCancel,
+					params.focusCancel
 				);
 				var btnIndex = -1; // Find the button - note, this is a nodelist, not an array.
 				for (var _i4 = 0; _i4 < focusableElements.length; _i4++) {
@@ -1615,7 +1615,7 @@
 						select.appendChild(placeholder);
 					}
 					populateInputOptions = function populateInputOptions(
-						inputOptions,
+						inputOptions
 					) {
 						for (var optionValue in inputOptions) {
 							var option = document.createElement("option");
@@ -1634,7 +1634,7 @@
 					var radio = getChildByClass(modal, swalClasses.radio);
 					radio.innerHTML = "";
 					populateInputOptions = function populateInputOptions(
-						inputOptions,
+						inputOptions
 					) {
 						for (var radioValue in inputOptions) {
 							var radioInput = document.createElement("input");
@@ -1687,7 +1687,7 @@
 					console.error(
 						'SweetAlert2: Unexpected type of input! Expected "text", "email", "password", "number", "tel", "select", "radio", "checkbox", "textarea", "file" or "url", got "' +
 							params.input +
-							'"',
+							'"'
 					);
 					break;
 			}
@@ -1704,7 +1704,7 @@
 				} else {
 					console.error(
 						"SweetAlert2: Unexpected type of inputOptions! Expected object or Promise, got " +
-							_typeof(params.inputOptions),
+							_typeof(params.inputOptions)
 					);
 				}
 			}
@@ -1726,7 +1726,7 @@
 			// Observe changes inside the modal and adjust height
 			if (typeof MutationObserver !== "undefined" && !swal2Observer) {
 				swal2Observer = new MutationObserver(
-					sweetAlert.recalculateHeight,
+					sweetAlert.recalculateHeight
 				);
 				swal2Observer.observe(modal, {
 					childList: true,
@@ -1767,7 +1767,7 @@
 						function (dismiss) {
 							resetQueue();
 							reject(dismiss);
-						},
+						}
 					);
 				} else {
 					resetQueue();
@@ -1835,12 +1835,12 @@
 				function swalCloseEventFinished() {
 					modal.removeEventListener(
 						animationEndEvent,
-						swalCloseEventFinished,
+						swalCloseEventFinished
 					);
 					if (hasClass(modal, swalClasses.hide)) {
 						removeModalAndResetState();
 					}
-				},
+				}
 			);
 		} else {
 			// Otherwise, remove immediately
@@ -1899,7 +1899,7 @@
 				: _typeof(userParams)) !== "object"
 		) {
 			return console.error(
-				"SweetAlert2: the argument for setDefaults() is required and has to be a object",
+				"SweetAlert2: the argument for setDefaults() is required and has to be a object"
 			);
 		}
 

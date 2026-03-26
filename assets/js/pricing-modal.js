@@ -420,7 +420,7 @@
 							$offers_block.after(
 								'<div class="imagify-popin-message imagify-error"><p>' +
 									imagifyPricingModal.labels.errorPriceAPI +
-									"</p></div>",
+									"</p></div>"
 							);
 
 							// Show the modal content.
@@ -428,7 +428,7 @@
 								.find(".imagify-modal-loader")
 								.fadeOut(300);
 							imagifyModal.$modal.removeClass(
-								"imagify-modal-loading",
+								"imagify-modal-loading"
 							);
 							return;
 						}
@@ -448,7 +448,7 @@
 								) {
 									plan_list.push(
 										promo_datas.applies_to[plan_infos]
-											.plan_name,
+											.plan_name
 									);
 								}
 
@@ -494,7 +494,7 @@
 						 */
 						if (0 === offers.mo.length) {
 							$(
-								".imagify-pre-checkout-offers .imagify-offer-monthly",
+								".imagify-pre-checkout-offers .imagify-offer-monthly"
 							).remove();
 							$(".imagify-tabs").remove();
 							$(".imagify-pricing-tab-monthly").remove();
@@ -511,7 +511,7 @@
 									$tpl,
 									value,
 									"monthly",
-									classes,
+									classes
 								);
 
 								// Complete Monthlies HTML.
@@ -522,7 +522,7 @@
 							setTimeout(function () {
 								// Add best value ribbon to unlimited plan.
 								$(".imagify-best-value").prepend(
-									'<div class="imagify-ribbon"><span>Best Value!</span></div>',
+									'<div class="imagify-ribbon"><span>Best Value!</span></div>'
 								);
 							}, 100);
 						}
@@ -542,9 +542,9 @@
 							.find(".imagify-modal-loader")
 							.fadeOut(300);
 						imagifyModal.$modal.removeClass(
-							"imagify-modal-loading",
+							"imagify-modal-loading"
 						);
-					},
+					}
 				); // Third AJAX request to get discount information.
 			}); // End $.post.
 		},
@@ -557,7 +557,7 @@
 
 		getPeriod: function () {
 			return $("#imagify_all_plan_view").hasClass(
-				"imagify-month-selected",
+				"imagify-month-selected"
 			)
 				? "monthly"
 				: "yearly";
@@ -566,7 +566,7 @@
 		switchToView: function ($view, data) {
 			var viewId = $view.attr("id"),
 				$modalContent = imagifyModal.$modal.children(
-					".imagify-modal-content",
+					".imagify-modal-content"
 				);
 
 			$view
@@ -593,7 +593,7 @@
 				$modalContent.addClass("imagify-success-viewing");
 				imagifyModal.$modal.attr(
 					"aria-labelledby",
-					"imagify-success-view",
+					"imagify-success-view"
 				);
 			} else {
 				$modalContent.removeClass("imagify-success-viewing");
@@ -801,12 +801,12 @@
 			imagifyModal.switchToView(imagifyModal.$paymentView);
 
 			checkout_datas.plan_id = Object.values(
-				JSON.parse($(this).attr("data-offer")),
+				JSON.parse($(this).attr("data-offer"))
 			)[0].id;
 			checkout_datas.period = imagifyModal.getPeriod();
 
 			imagifyModal.iframeSetSrc(checkout_datas);
-		},
+		}
 	);
 
 	// Message/communication API.

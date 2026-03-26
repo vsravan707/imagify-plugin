@@ -156,7 +156,7 @@ window.imagify = window.imagify || {};
 			},
 			extension = data.filename.split(".").pop().toLowerCase(),
 			regexp = new RegExp(
-				"^" + this.imageExtensions.join("|").toLowerCase() + "$",
+				"^" + this.imageExtensions.join("|").toLowerCase() + "$"
 			),
 			image;
 
@@ -276,7 +276,7 @@ window.imagify = window.imagify || {};
 				if (200 === jqXHR.status) {
 					defaultResponse.error = jqXHR.responseText.replace(
 						/<h1>.*<\/h1>\n*/,
-						"",
+						""
 					);
 				} else {
 					defaultResponse.error = jqXHR.statusText;
@@ -377,7 +377,7 @@ window.imagify = window.imagify || {};
 
 		++this.processedMedia;
 		response.progress = Math.floor(
-			(this.processedMedia / this.totalMedia) * 100,
+			(this.processedMedia / this.totalMedia) * 100
 		);
 
 		this._each(response);

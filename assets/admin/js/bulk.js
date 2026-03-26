@@ -91,67 +91,67 @@
 										.length > 1),
 								i(".imagify-selector-button").on(
 									"click.imagify",
-									this.openSelectorFromButton,
+									this.openSelectorFromButton
 								),
 								i(".imagify-selector-list input")
 									.on(
 										"change.imagify init.imagify",
-										this.syncSelectorFromRadio,
+										this.syncSelectorFromRadio
 									)
 									.filter(":checked")
 									.trigger("init.imagify"),
 								t.on(
 									"keypress.imagify click.imagify",
-									this.closeSelectors,
+									this.closeSelectors
 								),
 								i('.imagify-bulk-table [name="group[]"]')
 									.on(
 										"change.imagify init.imagify",
-										this.toggleOptimizationButton,
+										this.toggleOptimizationButton
 									)
 									.trigger("init.imagify"),
 								i("#imagify-bulk-action").on(
 									"click.imagify",
-									this.maybeLaunchAllProcesses,
+									this.maybeLaunchAllProcesses
 								),
 								i(e)
 									.on(
 										"processQueue.imagify",
-										this.processQueue,
+										this.processQueue
 									)
 									.on("queueEmpty.imagify", this.queueEmpty),
 								imagifyBulk.ajaxActions.getStats &&
 									i(
-										'.imagify-bulk-table [data-group-id="library"][data-context="wp"]',
+										'.imagify-bulk-table [data-group-id="library"][data-context="wp"]'
 									).length &&
 									(imagifyBulk.imagifybeatIDs.stats = !1),
 								imagifyBulk.imagifybeatIDs.stats &&
 									t
 										.on(
 											"imagifybeat-send",
-											this.addStatsImagifybeat,
+											this.addStatsImagifybeat
 										)
 										.on(
 											"imagifybeat-tick",
-											this.processStatsImagifybeat,
+											this.processStatsImagifybeat
 										),
 								t
 									.on(
 										"imagifybeat-send",
-										this.addQueueImagifybeat,
+										this.addQueueImagifybeat
 									)
 									.on(
 										"imagifybeat-tick",
-										this.processQueueImagifybeat,
+										this.processQueueImagifybeat
 									),
 								t
 									.on(
 										"imagifybeat-send",
-										this.addRequirementsImagifybeat,
+										this.addRequirementsImagifybeat
 									)
 									.on(
 										"imagifybeat-tick",
-										this.processRequirementsImagifybeat,
+										this.processRequirementsImagifybeat
 									),
 								imagifyBulk.optimizing &&
 									(e.imagify.beat.interval(15),
@@ -177,7 +177,7 @@
 						},
 						getFolderTypes: function () {
 							return i.isEmptyObject(
-								e.imagify.bulk.folderTypesData,
+								e.imagify.bulk.folderTypesData
 							)
 								? (i(".imagify-row-folder-type").each(
 										function () {
@@ -189,16 +189,16 @@
 														.find(
 															'.imagify-cell-level [name="level[' +
 																a.data(
-																	"group-id",
+																	"group-id"
 																) +
-																']"]:checked',
+																']"]:checked'
 														)
 														.val(),
 												},
 												s = t.groupID + "|" + t.context;
 											e.imagify.bulk.folderTypesData[s] =
 												t;
-										},
+										}
 									),
 									e.imagify.bulk.folderTypesData)
 								: e.imagify.bulk.folderTypesData;
@@ -212,7 +212,7 @@
 								(t !== a && a > 0
 									? e.setTimeout(function () {
 											e.imagify.bulk.closeLevelSelector(
-												i,
+												i
 											);
 										}, a)
 									: i.attr("aria-hidden", "true"));
@@ -252,7 +252,7 @@
 															html: imagifyBulk
 																.labels
 																.extHttpBlocked,
-														},
+														}
 													),
 												(e.imagify.bulk.processIsStopped =
 													!0),
@@ -264,7 +264,7 @@
 																html: imagifyBulk
 																	.labels
 																	.apiDown,
-															},
+															}
 														),
 													(e.imagify.bulk.processIsStopped =
 														!0),
@@ -278,14 +278,14 @@
 																		.labels
 																		.overQuotaTitle,
 																	html: i(
-																		"#tmpl-imagify-overquota-alert",
+																		"#tmpl-imagify-overquota-alert"
 																	).html(),
 																	type: "info",
 																	customClass:
 																		"imagify-swal-has-subtitle imagify-swal-error-header",
 																	showConfirmButton:
 																		!1,
-																},
+																}
 															),
 														(e.imagify.bulk.processIsStopped =
 															!0),
@@ -297,7 +297,7 @@
 																		.labels
 																		.invalidAPIKeyTitle,
 																	type: "info",
-																},
+																}
 															),
 														(e.imagify.bulk.processIsStopped =
 															!0),
@@ -322,7 +322,7 @@
 										{},
 										s,
 										{ title: a || "", html: e || "" },
-										t,
+										t
 									))),
 								(t.title = t.title || imagifyBulk.labels.error),
 								(t.customClass += " imagify-sweet-alert"),
@@ -354,20 +354,20 @@
 									.html(
 										e.imagify.humanSize(
 											this.globalOriginalSize,
-											1,
-										),
+											1
+										)
 									),
 								a
 									.find(".imagify-ac-chart")
 									.attr(
 										"data-percent",
-										Math.round(this.globalGain),
+										Math.round(this.globalGain)
 									),
 								this.drawShareChart(),
 								a.addClass("done").imagifyShow(),
 								i("html, body").animate(
 									{ scrollTop: a.offset().top },
-									200,
+									200
 								),
 								(this.globalOptimizedCount = 0),
 								(this.globalGain = 0),
@@ -389,7 +389,7 @@
 										a.unconsumed_quota.toFixed(1)),
 									i(".imagify-meteo-icon").html(a.quota_icon),
 									i(".imagify-unconsumed-percent").html(
-										a.unconsumed_quota + "%",
+										a.unconsumed_quota + "%"
 									),
 									i(".imagify-unconsumed-bar")
 										.css("width", a.unconsumed_quota + "%")
@@ -397,10 +397,10 @@
 										.attr("class", a.quota_class),
 									i("#imagify-overview-chart-percent").html(
 										a.optimized_attachments_percent +
-											"<span>%</span>",
+											"<span>%</span>"
 									),
 									i(".imagify-total-percent").html(
-										a.optimized_attachments_percent + "%",
+										a.optimized_attachments_percent + "%"
 									),
 									e.imagify.bulk.drawOverviewChart([
 										a.unoptimized_attachments,
@@ -408,7 +408,7 @@
 										a.errors_attachments,
 									]),
 									i(
-										"#imagify-total-optimized-attachments",
+										"#imagify-total-optimized-attachments"
 									).html(a.already_optimized_attachments),
 									i("#imagify-original-bar")
 										.find(".imagify-barnb")
@@ -416,12 +416,12 @@
 									i("#imagify-optimized-bar")
 										.css(
 											"width",
-											100 - a.optimized_percent + "%",
+											100 - a.optimized_percent + "%"
 										)
 										.find(".imagify-barnb")
 										.html(a.optimized_human),
 									i(
-										"#imagify-total-optimized-attachments-pct",
+										"#imagify-total-optimized-attachments-pct"
 									).html(a.optimized_percent + "%")));
 						},
 						openSelectorFromButton: function (a) {
@@ -447,7 +447,7 @@
 									.closest(".imagify-selector-list")
 									.siblings(".imagify-selector-button")
 									.find(
-										".imagify-selector-current-value-info",
+										".imagify-selector-current-value-info"
 									)
 									.html(a.find("label").html()));
 						},
@@ -457,8 +457,8 @@
 								13 !== a.keyCode) ||
 								e.imagify.bulk.closeLevelSelector(
 									i(
-										'.imagify-selector-list[aria-hidden="false"]',
-									),
+										'.imagify-selector-list[aria-hidden="false"]'
+									)
 								);
 						},
 						toggleOptimizationButton: function () {
@@ -466,18 +466,18 @@
 								? imagifyBulk.optimizing
 									? i("#imagify-bulk-action").prop(
 											"disabled",
-											!0,
+											!0
 										)
 									: i(
-												'.imagify-bulk-table [name="group[]"]:checked',
+												'.imagify-bulk-table [name="group[]"]:checked'
 										  ).length
 										? i("#imagify-bulk-action").prop(
 												"disabled",
-												!1,
+												!1
 											)
 										: i("#imagify-bulk-action").prop(
 												"disabled",
-												!0,
+												!0
 											)
 								: i(this).prop("checked", !0);
 						},
@@ -485,7 +485,7 @@
 							var a;
 							i(this).prop("disabled") ||
 								(i(
-									'.imagify-bulk-table [name="group[]"]:checked',
+									'.imagify-bulk-table [name="group[]"]:checked'
 								).length &&
 									(e.imagify.bulk.hasBlockingError(!0) ||
 										((a = i("#tmpl-imagify-bulk-infos"))
@@ -510,11 +510,11 @@
 												})
 													.then(function () {
 														var t = i(
-															'.imagify-bulk-table [name="group[]"]:checked',
+															'.imagify-bulk-table [name="group[]"]:checked'
 														)
 															.first()
 															.closest(
-																".imagify-row-folder-type",
+																".imagify-row-folder-type"
 															);
 														(i.get(
 															e.imagify.bulk.getAjaxUrl(
@@ -522,10 +522,10 @@
 																{
 																	context:
 																		t.data(
-																			"context",
+																			"context"
 																		),
-																},
-															),
+																}
+															)
 														),
 															a.remove(),
 															e.imagify.bulk.launchAllProcesses());
@@ -543,7 +543,7 @@
 									200,
 									function () {
 										i(this).removeClass("done");
-									},
+									}
 								),
 								(this.folderTypesQueue = []),
 								(this.status = {}),
@@ -554,10 +554,10 @@
 								(this.globalOriginalSize = 0),
 								(this.globalOptimizedSize = 0),
 								i(
-									'.imagify-bulk-table [name="group[]"]:checked',
+									'.imagify-bulk-table [name="group[]"]:checked'
 								).each(function () {
 									var a = i(this).closest(
-											".imagify-row-folder-type",
+											".imagify-row-folder-type"
 										),
 										s = a.data("group-id"),
 										l = a.data("context"),
@@ -565,7 +565,7 @@
 											.find(
 												'.imagify-cell-level [name="level[' +
 													s +
-													']"]:checked',
+													']"]:checked'
 											)
 											.val();
 									(e.imagify.bulk.folderTypesQueue.push({
@@ -600,8 +600,8 @@
 										i.get(
 											e.imagify.bulk.getAjaxUrl(
 												"bulkProcess",
-												o,
-											),
+												o
+											)
 										)
 											.done(function (r) {
 												var n;
@@ -617,67 +617,67 @@
 														? r.success &&
 															((a = i(
 																"#cb-select-" +
-																	o.groupID,
+																	o.groupID
 															).closest(
-																".imagify-row-folder-type",
+																".imagify-row-folder-type"
 															)),
 															(t = a.closest(
-																".imagify-bulk-table",
+																".imagify-bulk-table"
 															)),
 															(s = t.find(
-																".imagify-row-progress",
+																".imagify-row-progress"
 															)),
 															(l =
 																s.find(".bar")),
 															a
 																.find(
-																	".imagify-cell-checkbox-loader",
+																	".imagify-cell-checkbox-loader"
 																)
 																.removeClass(
-																	"hidden",
+																	"hidden"
 																)
 																.attr(
 																	"aria-hidden",
-																	"false",
+																	"false"
 																),
 															a
 																.find(
-																	".imagify-cell-checkbox-box",
+																	".imagify-cell-checkbox-box"
 																)
 																.addClass(
-																	"hidden",
+																	"hidden"
 																)
 																.attr(
 																	"aria-hidden",
-																	"true",
+																	"true"
 																),
 															l
 																.css(
 																	"width",
-																	"0%",
+																	"0%"
 																)
 																.find(
-																	".percent",
+																	".percent"
 																)
 																.text("0%"),
 															s
 																.slideDown()
 																.attr(
 																	"aria-hidden",
-																	"false",
+																	"false"
 																))
 														: e.imagify.bulk.stopProcess(
 																n,
-																o,
+																o
 															));
 											})
 											.fail(function () {
 												e.imagify.bulk.stopProcess(
 													"get-unoptimized-images",
-													o,
+													o
 												);
 											});
-									},
+									}
 								));
 						},
 						queueEmpty: function () {
@@ -694,16 +694,16 @@
 									i
 										.get(
 											e.imagify.bulk.getAjaxUrl(
-												"getStats",
+												"getStats"
 											),
 											{
 												types: e.imagify.bulk.getFolderTypes(),
-											},
+											}
 										)
 										.done(function (i) {
 											i.success &&
 												e.imagify.bulk.updateStats(
-													i.data,
+													i.data
 												);
 										}),
 								i.isEmptyObject(e.imagify.bulk.status) ||
@@ -721,7 +721,7 @@
 														!1
 													);
 											} else l = !1;
-										},
+										}
 									),
 									s
 										? ("invalid-api-key" === s
@@ -737,7 +737,7 @@
 																.labels
 																.overQuotaTitle,
 															html: i(
-																"#tmpl-imagify-overquota-alert",
+																"#tmpl-imagify-overquota-alert"
 															).html(),
 															type: "info",
 															customClass:
@@ -764,8 +764,7 @@
 												Object.prototype.hasOwnProperty.call(
 													imagifyBulk.labels
 														.nothingToDoText,
-													e.imagify.bulk
-														.imagifyAction,
+													e.imagify.bulk.imagifyAction
 												)
 													? imagifyBulk.labels
 															.nothingToDoText[
@@ -805,7 +804,7 @@
 											.attr("aria-hidden", "false");
 									}),
 								i(
-									'.imagify-bulk-table [name="group[]"]:checked',
+									'.imagify-bulk-table [name="group[]"]:checked'
 								).length
 									? i("#imagify-bulk-action")
 											.prop("disabled", !1)
@@ -817,18 +816,18 @@
 						},
 						addStatsImagifybeat: function (i, a) {
 							a[imagifyBulk.imagifybeatIDs.stats] = Object.keys(
-								e.imagify.bulk.getFolderTypes(),
+								e.imagify.bulk.getFolderTypes()
 							);
 						},
 						processStatsImagifybeat: function (i, a) {
 							void 0 !== a[imagifyBulk.imagifybeatIDs.stats] &&
 								e.imagify.bulk.updateStats(
-									a[imagifyBulk.imagifybeatIDs.stats],
+									a[imagifyBulk.imagifybeatIDs.stats]
 								);
 						},
 						addQueueImagifybeat: function (i, a) {
 							a[imagifyBulk.imagifybeatIDs.queue] = Object.values(
-								e.imagify.bulk.getFolderTypes(),
+								e.imagify.bulk.getFolderTypes()
 							);
 						},
 						processQueueImagifybeat: function (a, t) {
@@ -856,63 +855,61 @@
 										e.imagify.bulk.hasBlockingError(!0))
 								)
 									return void i(e).trigger(
-										"queueEmpty.imagify",
+										"queueEmpty.imagify"
 									);
 								if (
 									(Object.prototype.hasOwnProperty.call(
 										s,
-										"groups_data",
+										"groups_data"
 									) &&
 										Object.entries(s.groups_data).forEach(
 											function (a) {
 												((l = i(
 													"[data-context=" +
 														a[0] +
-														"]",
+														"]"
 												))
 													.children(
-														".imagify-cell-count-optimized",
+														".imagify-cell-count-optimized"
 													)
 													.first()
 													.html(
-														a[1]["count-optimized"],
+														a[1]["count-optimized"]
 													),
 													l
 														.children(
-															".imagify-cell-count-errors",
+															".imagify-cell-count-errors"
 														)
 														.first()
 														.html(
-															a[1][
-																"count-errors"
-															],
+															a[1]["count-errors"]
 														),
 													l
 														.children(
-															".imagify-cell-optimized-size-size",
+															".imagify-cell-optimized-size-size"
 														)
 														.first()
 														.html(
 															a[1][
 																"optimized-size"
-															],
+															]
 														),
 													l
 														.children(
-															".imagify-cell-original-size-size",
+															".imagify-cell-original-size-size"
 														)
 														.first()
 														.html(
 															a[1][
 																"original-size"
-															],
+															]
 														));
-											},
+											}
 										),
 									0 === s.remaining)
 								)
 									return void i(e).trigger(
-										"queueEmpty.imagify",
+										"queueEmpty.imagify"
 									);
 								((o = i(".imagify-row-progress"))
 									.find(".bar")
@@ -958,32 +955,32 @@
 											[
 												parseInt(
 													this.charts.overview.canvas.getAttribute(
-														"data-unoptimized",
+														"data-unoptimized"
 													),
-													10,
+													10
 												),
 												parseInt(
 													this.charts.overview.canvas.getAttribute(
-														"data-optimized",
+														"data-optimized"
 													),
-													10,
+													10
 												),
 												parseInt(
 													this.charts.overview.canvas.getAttribute(
-														"data-errors",
+														"data-errors"
 													),
-													10,
+													10
 												),
 											]),
 										(s = i.extend(
 											{},
-											this.charts.overview.data,
+											this.charts.overview.data
 										)),
 										t.length && (s.datasets[0].data = t),
 										0 ===
 											s.datasets[0].data.reduce(function (
 												i,
-												a,
+												a
 											) {
 												return i + a;
 											}, 0) &&
@@ -1009,7 +1006,7 @@
 															callbacks: {
 																label: function (
 																	i,
-																	a,
+																	a
 																) {
 																	return a
 																		.datasets[
@@ -1024,7 +1021,7 @@
 														responsive: !1,
 														cutout: 75,
 													},
-												},
+												}
 											)),
 										(l =
 											'<ul class="imagify-doughnut-legend">'),
@@ -1040,7 +1037,7 @@
 										}),
 										(l += "</ul>"),
 										(a.getElementById(
-											"imagify-overview-chart-legend",
+											"imagify-overview-chart-legend"
 										).innerHTML = l)));
 						},
 						drawShareChart: function () {
@@ -1056,7 +1053,7 @@
 										i(this.charts.share.canvas)
 											.closest(".imagify-ac-chart")
 											.attr("data-percent"),
-										10,
+										10
 									)),
 									this.charts.share.donut)
 								)
@@ -1095,7 +1092,7 @@
 											responsive: !1,
 											cutoutPercentage: 70,
 										},
-									},
+									}
 								);
 							}
 						},

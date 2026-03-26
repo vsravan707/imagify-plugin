@@ -10,7 +10,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				.closest(".imagify-chart")
 				.next(".imagify-chart-value")
 				.text(),
-			10,
+			10
 		);
 
 		new window.imagify.Chart(this, {
@@ -67,14 +67,14 @@ window.imagify.drawMeAChart = function (canvas) {
 			$document.on(
 				"click",
 				".imagify-datas-more-action a",
-				this.toggleSlide,
+				this.toggleSlide
 			);
 
 			// Optimize, restore, etc.
 			$document.on(
 				"click",
 				".button-imagify-restore, .button-imagify-optimize, .button-imagify-manual-reoptimize, .button-imagify-optimize-missing-sizes, .button-imagify-generate-webp, .button-imagify-delete-webp",
-				this.processOptimization,
+				this.processOptimization
 			);
 
 			$document.on("imagifybeat-send", this.addToImagifybeat);
@@ -82,7 +82,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			// Some items may be processed in background on page load.
 			$processing = $(
-				".imagify-data-actions-container .button-imagify-processing",
+				".imagify-data-actions-container .button-imagify-processing"
 			);
 
 			if ($processing.length) {
@@ -94,7 +94,7 @@ window.imagify.drawMeAChart = function (canvas) {
 						var $this = $(this),
 							id = w.imagify.modal.sanitizeId($this.data("id")),
 							context = w.imagify.modal.sanitizeContext(
-								$this.data("context"),
+								$this.data("context")
 							);
 
 						w.imagify.modal.lockItem(context, id);
@@ -139,7 +139,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				$container = $obj.parents(".imagify-data-actions-container"),
 				id = w.imagify.modal.sanitizeId($container.data("id")),
 				context = w.imagify.modal.sanitizeContext(
-					$container.data("context"),
+					$container.data("context")
 				),
 				href,
 				processingTemplate;
@@ -154,13 +154,13 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			href = $obj.attr("href");
 			processingTemplate = w.imagify.template(
-				"imagify-button-processing",
+				"imagify-button-processing"
 			);
 
 			$container.html(
 				processingTemplate({
 					label: $obj.data("processing-label"),
-				}),
+				})
 			);
 
 			$.get(href.replace("admin-post.php", "admin-ajax.php")).done(
@@ -170,14 +170,14 @@ window.imagify.drawMeAChart = function (canvas) {
 						w.imagify.modal.displayProcessResult(
 							context,
 							id,
-							response.data.html,
+							response.data.html
 						);
 					} else {
 						// Still processing in background: we're waiting for the result by poking Imagifybeat.
 						// Set the Imagifybeat interval to 15 seconds.
 						w.imagify.beat.interval(15);
 					}
-				},
+				}
 			);
 		},
 
@@ -202,7 +202,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				var $this = $(this),
 					id = w.imagify.modal.sanitizeId($this.data("id")),
 					context = w.imagify.modal.sanitizeContext(
-						$this.data("context"),
+						$this.data("context")
 					),
 					locked = w.imagify.modal.isItemLocked(context, id) ? 1 : 0;
 
@@ -240,9 +240,9 @@ window.imagify.drawMeAChart = function (canvas) {
 					w.imagify.modal.displayProcessResult(
 						context,
 						id,
-						htmlContent,
+						htmlContent
 					);
-				},
+				}
 			);
 		},
 
@@ -332,7 +332,7 @@ window.imagify.drawMeAChart = function (canvas) {
 					id +
 					'"][data-context="' +
 					context +
-					'"]',
+					'"]'
 			);
 		},
 

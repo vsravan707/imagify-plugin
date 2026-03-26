@@ -8,7 +8,7 @@
 	$(document).on("click", ".imagify-notice-dismiss", function (e) {
 		var $this = $(this),
 			$parent = $this.parents(
-				".imagify-welcome, .imagify-notice, .imagify-rkt-notice, .imagify-upsell, .imagify-upsell-admin-bar",
+				".imagify-welcome, .imagify-notice, .imagify-rkt-notice, .imagify-upsell, .imagify-upsell-admin-bar"
 			),
 			href = $this.attr("href");
 
@@ -63,7 +63,7 @@
 								"action=imagify_signup&email=" +
 								inputValue +
 								"&imagifysignupnonce=" +
-								$("#imagifysignupnonce").val(),
+								$("#imagifysignupnonce").val()
 						).done(function (response) {
 							if (!response.success) {
 								reject(response.data);
@@ -118,7 +118,7 @@
 							"action=imagify_check_api_key_validity&api_key=" +
 							inputValue +
 							"&imagifycheckapikeynonce=" +
-							$("#imagifycheckapikeynonce").val(),
+							$("#imagifycheckapikeynonce").val()
 					).done(function (response) {
 						if (!response.success) {
 							reject(response.data);

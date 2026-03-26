@@ -49,7 +49,7 @@
 
 			action = value[1];
 			ids = $(
-				'input[name^="media"]:checked, input[name^="doaction"]:checked',
+				'input[name^="media"]:checked, input[name^="doaction"]:checked'
 			)
 				.map(function () {
 					return this.value;
@@ -62,7 +62,7 @@
 						'table .imagify-data-actions-container[data-id="' +
 							id +
 							'"] .button-imagify-' +
-							action,
+							action
 					)
 						.first()
 						.trigger("click");

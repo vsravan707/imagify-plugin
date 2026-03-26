@@ -19,7 +19,7 @@ window.imagify = window.imagify || {};
 		if ($("#check_api_key").val() === value) {
 			$("#imagify-check-api-container").html(
 				'<span class="dashicons dashicons-yes"></span> ' +
-					imagifyOptions.labels.ValidApiKeyText,
+					imagifyOptions.labels.ValidApiKeyText
 			);
 			return false;
 		}
@@ -31,7 +31,7 @@ window.imagify = window.imagify || {};
 			obj.after(
 				'<span id="imagify-check-api-container"><span class="imagify-spinner"></span>' +
 					imagifyOptions.labels.waitApiKeyCheckText +
-					"</span>",
+					"</span>"
 			);
 		}
 
@@ -43,12 +43,12 @@ window.imagify = window.imagify || {};
 				"action=imagify_check_api_key_validity&api_key=" +
 				obj.val() +
 				"&imagifycheckapikeynonce=" +
-				$("#imagifycheckapikeynonce").val(),
+				$("#imagifycheckapikeynonce").val()
 		).done(function (response) {
 			if (!response.success) {
 				$("#imagify-check-api-container").html(
 					'<span class="dashicons dashicons-no"></span> ' +
-						response.data,
+						response.data
 				);
 			} else {
 				// Success, the API key is valid.
@@ -78,7 +78,7 @@ window.imagify = window.imagify || {};
 				return;
 			}
 			$('input[aria-describedby="' + $(this).attr("id") + '"]').trigger(
-				"click.imagify",
+				"click.imagify"
 			);
 		});
 
@@ -156,7 +156,7 @@ window.imagify = window.imagify || {};
 			function () {
 				// Re-check.
 				$_this.prop("checked", true);
-			},
+			}
 		);
 	});
 
@@ -268,7 +268,7 @@ window.imagify = window.imagify || {};
 					template({
 						value: value[0],
 						label: value[1],
-					}),
+					})
 				);
 				$rows = $wrap.find(".imagify-custom-folder-line");
 				added = true;
@@ -281,7 +281,7 @@ window.imagify = window.imagify || {};
 				template({
 					value: value[0],
 					label: value[1],
-				}),
+				})
 			);
 			$rows = $wrap.find(".imagify-custom-folder-line");
 		}
@@ -331,7 +331,7 @@ window.imagify = window.imagify || {};
 				selected: selected,
 			},
 			null,
-			"json",
+			"json"
 		)
 			.done(function (response) {
 				if (!response.success) {
@@ -367,7 +367,7 @@ window.imagify = window.imagify || {};
 				})
 					.then(function () {
 						var values = $(
-							"#imagify-folders-tree input",
+							"#imagify-folders-tree input"
 						).serializeArray(); // Don't do `$( '#imagify-folders-tree' ).find( 'input' )`, it won't work.
 
 						if (!values.length) {
@@ -439,7 +439,7 @@ window.imagify = window.imagify || {};
 					selected: selected,
 				},
 				null,
-				"json",
+				"json"
 			)
 				.done(function (response) {
 					if (!response.success) {
@@ -459,7 +459,7 @@ window.imagify = window.imagify || {};
 						.append(
 							'<ul class="imagify-folders-sub-tree">' +
 								response.data +
-								"</ul>",
+								"</ul>"
 						);
 				})
 				.fail(function () {
@@ -475,7 +475,7 @@ window.imagify = window.imagify || {};
 						.prop("disabled", false)
 						.removeClass("imagify-loading");
 				});
-		},
+		}
 	);
 
 	// Clicking a Remove folder button make it disappear.
@@ -494,7 +494,7 @@ window.imagify = window.imagify || {};
 					.siblings(".imagify-success.hidden")
 					.removeClass("hidden");
 			}, 750);
-		},
+		}
 	);
 
 	// Clicking the "add themes to folders" button.
@@ -583,7 +583,7 @@ window.imagify = window.imagify || {};
 				.on(
 					"change.imagify init.imagify",
 					{ imagifyOptionsBulk: this },
-					this.toggleButton,
+					this.toggleButton
 				)
 				.trigger("init.imagify");
 
@@ -591,7 +591,7 @@ window.imagify = window.imagify || {};
 			this.$button.on(
 				"click.imagify",
 				{ imagifyOptionsBulk: this },
-				this.maybeLaunchMissingWebpProcess,
+				this.maybeLaunchMissingWebpProcess
 			);
 
 			// Imagifybeat for optimization queue.
@@ -599,19 +599,19 @@ window.imagify = window.imagify || {};
 				.on(
 					"imagifybeat-send",
 					{ imagifyOptionsBulk: this },
-					this.addQueueImagifybeat,
+					this.addQueueImagifybeat
 				)
 				.on(
 					"imagifybeat-tick",
 					{ imagifyOptionsBulk: this },
-					this.processQueueImagifybeat,
+					this.processQueueImagifybeat
 				)
 				// Imagifybeat for requirements.
 				.on("imagifybeat-send", this.addRequirementsImagifybeat)
 				.on(
 					"imagifybeat-tick",
 					{ imagifyOptionsBulk: this },
-					this.processRequirementsImagifybeat,
+					this.processRequirementsImagifybeat
 				);
 
 			if (
@@ -640,13 +640,13 @@ window.imagify = window.imagify || {};
 					imagifyOptions.bulk.progress_next_gen.remaining;
 				progress = Math.floor(
 					(processed / imagifyOptions.bulk.progress_next_gen.total) *
-						100,
+						100
 				);
 				this.$progressBar.css("width", progress + "%");
 				this.$progressText.text(
 					processed +
 						"/" +
-						imagifyOptions.bulk.progress_next_gen.total,
+						imagifyOptions.bulk.progress_next_gen.total
 				);
 
 				this.$progressWrap
@@ -754,7 +754,7 @@ window.imagify = window.imagify || {};
 			progress = Math.floor((processed / images_status.total) * 100);
 			e.data.imagifyOptionsBulk.$progressBar.css("width", progress + "%");
 			e.data.imagifyOptionsBulk.$progressText.text(
-				processed + "/" + images_status.total,
+				processed + "/" + images_status.total
 			);
 		},
 
@@ -809,7 +809,7 @@ window.imagify = window.imagify || {};
 			_this = this;
 
 			$.get(
-				this.getAjaxUrl("MissingNextGen", imagifyOptions.bulk.contexts),
+				this.getAjaxUrl("MissingNextGen", imagifyOptions.bulk.contexts)
 			)
 				.done(function (response) {
 					var errorMessage;
@@ -848,7 +848,7 @@ window.imagify = window.imagify || {};
 						"0" +
 							(response.data.total
 								? "/" + response.data.total
-								: ""),
+								: "")
 					);
 					_this.$progressWrap
 						.slideDown()
@@ -1043,7 +1043,7 @@ window.imagify = window.imagify || {};
 						title: title || "",
 						html: text || "",
 					},
-					args,
+					args
 				);
 			}
 
@@ -1178,6 +1178,6 @@ window.imagify = window.imagify || {};
 					.removeClass(inactive)
 					.attr("aria-disabled", "false");
 			}
-		},
+		}
 	);
 })(window, document, jQuery);

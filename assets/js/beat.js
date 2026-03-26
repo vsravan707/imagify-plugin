@@ -150,7 +150,7 @@ window.imagify = window.imagify || {};
 				if (options.minimalInterval) {
 					options.minimalInterval = parseInt(
 						options.minimalInterval,
-						10,
+						10
 					);
 					settings.minimalInterval =
 						options.minimalInterval > 0 &&
@@ -217,7 +217,7 @@ window.imagify = window.imagify || {};
 						if (document.hasFocus) {
 							settings.checkFocusTimer = w.setInterval(
 								checkFocus,
-								10000,
+								10000
 							);
 						}
 					}
@@ -362,7 +362,7 @@ window.imagify = window.imagify || {};
 						w.wp.hooks.doAction(
 							"imagifybeat.connection-lost",
 							error,
-							httpStatus,
+							httpStatus
 						);
 					}
 				}
@@ -496,7 +496,7 @@ window.imagify = window.imagify || {};
 							"imagifybeat.tick",
 							response,
 							textStatus,
-							jqXHR,
+							jqXHR
 						);
 					}
 
@@ -518,7 +518,7 @@ window.imagify = window.imagify || {};
 							"imagifybeat.error",
 							jqXHR,
 							textStatus,
-							error,
+							error
 						);
 					}
 				});
@@ -654,7 +654,7 @@ window.imagify = window.imagify || {};
 					"mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active",
 					function () {
 						userIsActive();
-					},
+					}
 				);
 
 				$("iframe").each(function (i, frame) {
@@ -663,7 +663,7 @@ window.imagify = window.imagify || {};
 							"mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active",
 							function () {
 								userIsActive();
-							},
+							}
 						);
 					}
 				});
@@ -880,7 +880,7 @@ window.imagify = window.imagify || {};
 			if (handle) {
 				return Object.prototype.hasOwnProperty.call(
 					settings.queue,
-					handle,
+					handle
 				);
 			}
 		}
