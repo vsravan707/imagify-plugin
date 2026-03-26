@@ -3,7 +3,8 @@
 /**
  * Provides information about active and registered instances of Action Scheduler.
  */
-class ActionScheduler_SystemInformation {
+class ActionScheduler_SystemInformation
+{
 	/**
 	 * Returns information about the plugin or theme which contains the current active version
 	 * of Action Scheduler.
@@ -19,21 +20,22 @@ class ActionScheduler_SystemInformation {
 	 *
 	 * @return array
 	 */
-	public static function active_source(): array {
+	public static function active_source(): array
+	{
 		$plugins      = get_plugins();
-		$plugin_files = array_keys( $plugins );
+		$plugin_files = array_keys($plugins);
 
-		foreach ( $plugin_files as $plugin_file ) {
-			$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . dirname( $plugin_file );
-			$plugin_file = trailingslashit( WP_PLUGIN_DIR ) . $plugin_file;
+		foreach ($plugin_files as $plugin_file) {
+			$plugin_path = trailingslashit(WP_PLUGIN_DIR) . dirname($plugin_file);
+			$plugin_file = trailingslashit(WP_PLUGIN_DIR) . $plugin_file;
 
-			if ( 0 !== strpos( dirname( __DIR__ ), $plugin_path ) ) {
+			if (0 !== strpos(dirname(__DIR__), $plugin_path)) {
 				continue;
 			}
 
-			$plugin_data = get_plugin_data( $plugin_file );
+			$plugin_data = get_plugin_data($plugin_file);
 
-			if ( ! is_array( $plugin_data ) || empty( $plugin_data['Name'] ) ) {
+			if (! is_array($plugin_data) || empty($plugin_data['Name'])) {
 				continue;
 			}
 
@@ -45,16 +47,16 @@ class ActionScheduler_SystemInformation {
 
 		$themes = (array) search_theme_directories();
 
-		foreach ( $themes as $slug => $data ) {
-			$needle = trailingslashit( $data['theme_root'] ) . $slug . '/';
+		foreach ($themes as $slug => $data) {
+			$needle = trailingslashit($data['theme_root']) . $slug . '/';
 
-			if ( 0 !== strpos( __FILE__, $needle ) ) {
+			if (0 !== strpos(__FILE__, $needle)) {
 				continue;
 			}
 
-			$theme = wp_get_theme( $slug );
+			$theme = wp_get_theme($slug);
 
-			if ( ! is_object( $theme ) || ! is_a( $theme, \WP_Theme::class ) ) {
+			if (! is_object($theme) || ! is_a($theme, \WP_Theme::class)) {
 				continue;
 			}
 
@@ -73,8 +75,9 @@ class ActionScheduler_SystemInformation {
 	 *
 	 * @return string
 	 */
-	public static function active_source_path(): string {
-		return trailingslashit( dirname( __DIR__ ) );
+	public static function active_source_path(): string
+	{
+		return trailingslashit(dirname(__DIR__));
 	}
 
 	/**
@@ -86,8 +89,9 @@ class ActionScheduler_SystemInformation {
 	 *
 	 * @return array<string, string>
 	 */
-	public static function get_sources() {
+	public static function get_sources()
+	{
 		$versions = ActionScheduler_Versions::instance();
-		return method_exists( $versions, 'get_sources' ) ? $versions->get_sources() : array();
+		return method_exists($versions, 'get_sources') ? $versions->get_sources() : array();
 	}
 }

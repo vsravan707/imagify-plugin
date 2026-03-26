@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Class that handles background processing of thumbnails dynamically generated.
@@ -9,7 +9,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @author Grégory Viguier
  * @deprecated
  */
-class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract_Background_Process {
+class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract_Background_Process
+{
 
 	/**
 	 * Class version.
@@ -50,8 +51,9 @@ class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract
 	 *
 	 * @return object Main instance.
 	 */
-	public static function get_instance() {
-		if ( ! isset( self::$_instance ) ) {
+	public static function get_instance()
+	{
+		if (! isset(self::$_instance)) {
 			self::$_instance = new self();
 		}
 
@@ -65,8 +67,9 @@ class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function __construct() {
-		imagify_deprecated_class( get_class( $this ), '1.9', '\\Imagify\\ThirdParty\\NGG\\DynamicThumbnails()' );
+	public function __construct()
+	{
+		imagify_deprecated_class(get_class($this), '1.9', '\\Imagify\\ThirdParty\\NGG\\DynamicThumbnails()');
 
 		parent::__construct();
 	}
@@ -91,10 +94,11 @@ class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract
 	 * }
 	 * @return object Class instance.
 	 */
-	public function push_to_queue( $data ) {
+	public function push_to_queue($data)
+	{
 		$key = $data['id'] . '|' . $data['size'];
 
-		$this->data[ $key ] = $data;
+		$this->data[$key] = $data;
 
 		return $this;
 	}
@@ -108,8 +112,9 @@ class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract
 	 *
 	 * @return array|WP_Error
 	 */
-	public function dispatch() {
-		if ( ! empty( $this->data ) ) {
+	public function dispatch()
+	{
+		if (! empty($this->data)) {
 			return parent::dispatch();
 		}
 	}
@@ -129,10 +134,11 @@ class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract
 	 * }
 	 * @return bool
 	 */
-	public function is_in_queue( $data ) {
+	public function is_in_queue($data)
+	{
 		$key = $data['id'] . '|' . $data['size'];
 
-		return isset( $this->data[ $key ] );
+		return isset($this->data[$key]);
 	}
 
 	/**
@@ -150,17 +156,18 @@ class Imagify_NGG_Dynamic_Thumbnails_Background_Process extends Imagify_Abstract
 	 * }
 	 * @return bool False to remove the item from the queue.
 	 */
-	protected function task( $item ) {
-		$attachment_id = absint( $item['id'] );
-		$size          = sanitize_text_field( $item['size'] );
+	protected function task($item)
+	{
+		$attachment_id = absint($item['id']);
+		$size          = sanitize_text_field($item['size']);
 
-		if ( ! $attachment_id || ! $size ) {
+		if (! $attachment_id || ! $size) {
 			return false;
 		}
 
-		$attachment = get_imagify_attachment( 'NGG', $attachment_id, 'ngg_optimize_dynamic_thumbnail' );
+		$attachment = get_imagify_attachment('NGG', $attachment_id, 'ngg_optimize_dynamic_thumbnail');
 
-		$attachment->optimize_new_thumbnail( $size );
+		$attachment->optimize_new_thumbnail($size);
 
 		return false;
 	}

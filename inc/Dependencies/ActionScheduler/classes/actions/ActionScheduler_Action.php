@@ -3,7 +3,8 @@
 /**
  * Class ActionScheduler_Action
  */
-class ActionScheduler_Action {
+class ActionScheduler_Action
+{
 	/**
 	 * Action's hook.
 	 *
@@ -53,12 +54,13 @@ class ActionScheduler_Action {
 	 * @param null|ActionScheduler_Schedule $schedule Action's schedule.
 	 * @param string                        $group Action's group.
 	 */
-	public function __construct( $hook, array $args = array(), ?ActionScheduler_Schedule $schedule = null, $group = '' ) {
-		$schedule = empty( $schedule ) ? new ActionScheduler_NullSchedule() : $schedule;
-		$this->set_hook( $hook );
-		$this->set_schedule( $schedule );
-		$this->set_args( $args );
-		$this->set_group( $group );
+	public function __construct($hook, array $args = array(), ?ActionScheduler_Schedule $schedule = null, $group = '')
+	{
+		$schedule = empty($schedule) ? new ActionScheduler_NullSchedule() : $schedule;
+		$this->set_hook($hook);
+		$this->set_schedule($schedule);
+		$this->set_args($args);
+		$this->set_group($group);
 	}
 
 	/**
@@ -70,20 +72,21 @@ class ActionScheduler_Action {
 	 *
 	 * @throws Exception If no callbacks are registered for this action.
 	 */
-	public function execute() {
+	public function execute()
+	{
 		$hook = $this->get_hook();
 
-		if ( ! has_action( $hook ) ) {
+		if (! has_action($hook)) {
 			throw new Exception(
 				sprintf(
 					/* translators: 1: action hook. */
-					__( 'Scheduled action for %1$s will not be executed as no callbacks are registered.', 'action-scheduler' ),
+					__('Scheduled action for %1$s will not be executed as no callbacks are registered.', 'action-scheduler'),
 					$hook
 				)
 			);
 		}
 
-		do_action_ref_array( $hook, array_values( $this->get_args() ) );
+		do_action_ref_array($hook, array_values($this->get_args()));
 	}
 
 	/**
@@ -91,14 +94,16 @@ class ActionScheduler_Action {
 	 *
 	 * @param string $hook Action's hook.
 	 */
-	protected function set_hook( $hook ) {
+	protected function set_hook($hook)
+	{
 		$this->hook = $hook;
 	}
 
 	/**
 	 * Get action's hook.
 	 */
-	public function get_hook() {
+	public function get_hook()
+	{
 		return $this->hook;
 	}
 
@@ -107,7 +112,8 @@ class ActionScheduler_Action {
 	 *
 	 * @param ActionScheduler_Schedule $schedule Action's schedule.
 	 */
-	protected function set_schedule( ActionScheduler_Schedule $schedule ) {
+	protected function set_schedule(ActionScheduler_Schedule $schedule)
+	{
 		$this->schedule = $schedule;
 	}
 
@@ -116,7 +122,8 @@ class ActionScheduler_Action {
 	 *
 	 * @return ActionScheduler_Schedule
 	 */
-	public function get_schedule() {
+	public function get_schedule()
+	{
 		return $this->schedule;
 	}
 
@@ -125,14 +132,16 @@ class ActionScheduler_Action {
 	 *
 	 * @param mixed[] $args Action's arguments.
 	 */
-	protected function set_args( array $args ) {
+	protected function set_args(array $args)
+	{
 		$this->args = $args;
 	}
 
 	/**
 	 * Get action's args.
 	 */
-	public function get_args() {
+	public function get_args()
+	{
 		return $this->args;
 	}
 
@@ -141,7 +150,8 @@ class ActionScheduler_Action {
 	 *
 	 * @param string $group Action's group.
 	 */
-	protected function set_group( $group ) {
+	protected function set_group($group)
+	{
 		$this->group = $group;
 	}
 
@@ -150,7 +160,8 @@ class ActionScheduler_Action {
 	 *
 	 * @return string
 	 */
-	public function get_group() {
+	public function get_group()
+	{
 		return $this->group;
 	}
 
@@ -159,7 +170,8 @@ class ActionScheduler_Action {
 	 *
 	 * @return bool
 	 */
-	public function is_finished() {
+	public function is_finished()
+	{
 		return false;
 	}
 
@@ -170,10 +182,11 @@ class ActionScheduler_Action {
 	 *
 	 * @return void
 	 */
-	public function set_priority( $priority ) {
-		if ( $priority < 0 ) {
+	public function set_priority($priority)
+	{
+		if ($priority < 0) {
 			$priority = 0;
-		} elseif ( $priority > 255 ) {
+		} elseif ($priority > 255) {
 			$priority = 255;
 		}
 
@@ -185,7 +198,8 @@ class ActionScheduler_Action {
 	 *
 	 * @return int
 	 */
-	public function get_priority() {
+	public function get_priority()
+	{
 		return $this->priority;
 	}
 }

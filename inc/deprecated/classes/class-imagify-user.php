@@ -6,7 +6,8 @@
  * @since 1.0
  * @deprecated
  */
-class Imagify_User {
+class Imagify_User
+{
 	/**
 	 * The Imagify user ID.
 	 *
@@ -113,10 +114,11 @@ class Imagify_User {
 	 *
 	 * @return void
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$user = get_imagify_user();
 
-		if ( is_wp_error( $user ) ) {
+		if (is_wp_error($user)) {
 			$this->error = $user;
 			return;
 		}
@@ -124,7 +126,7 @@ class Imagify_User {
 		$this->id                           = $user->id;
 		$this->email                        = $user->email;
 		$this->plan_id                      = (int) $user->plan_id;
-		$this->plan_label                   = ucfirst( $user->plan_label );
+		$this->plan_label                   = ucfirst($user->plan_label);
 		$this->quota                        = $user->quota;
 		$this->extra_quota                  = $user->extra_quota;
 		$this->extra_quota_consumed         = $user->extra_quota_consumed;
@@ -141,7 +143,8 @@ class Imagify_User {
 	 *
 	 * @return bool|\WP_Error A \WP_Error object if the request to fetch the user data failed. False overwise.
 	 */
-	public function get_error() {
+	public function get_error()
+	{
 		return $this->error;
 	}
 
@@ -152,41 +155,42 @@ class Imagify_User {
 	 *
 	 * @return float|int
 	 */
-	public function get_percent_consumed_quota() {
+	public function get_percent_consumed_quota()
+	{
 		static $done = false;
-		if ( $this->get_error() ) {
+		if ($this->get_error()) {
 			return 0;
 		}
 
 		$quota          = $this->quota;
 		$consumed_quota = $this->consumed_current_month_quota;
 
-		if ( imagify_round_half_five( $this->extra_quota_consumed ) < $this->extra_quota ) {
+		if (imagify_round_half_five($this->extra_quota_consumed) < $this->extra_quota) {
 			$quota          += $this->extra_quota;
 			$consumed_quota += $this->extra_quota_consumed;
 		}
 
-		if ( ! $quota || ! $consumed_quota ) {
+		if (! $quota || ! $consumed_quota) {
 			$percent = 0;
 		} else {
 			$percent = 100 * $consumed_quota / $quota;
-			$percent = round( $percent, 1 );
-			$percent = min( max( 0, $percent ), 100 );
+			$percent = round($percent, 1);
+			$percent = min(max(0, $percent), 100);
 		}
 
 		$percent = (float) $percent;
 
-        $percent = 100;
+		$percent = 100;
 
-		if ( $done ) {
+		if ($done) {
 			return $percent;
 		}
 
-		$previous_percent = Imagify_Data::get_instance()->get( 'previous_quota_percent' );
+		$previous_percent = Imagify_Data::get_instance()->get('previous_quota_percent');
 
 
 		// Percent is not 100% anymore.
-		if ( 100.0 === (float) $previous_percent && $percent < 100 ) {
+		if (100.0 === (float) $previous_percent && $percent < 100) {
 			/**
 			 * Triggered when the consumed quota percent decreases below 100%.
 			 *
@@ -195,11 +199,11 @@ class Imagify_User {
 			 *
 			 * @param float|int $percent The current percentage of consumed quota.
 			 */
-			do_action( 'imagify_not_over_quota_anymore', $percent );
+			do_action('imagify_not_over_quota_anymore', $percent);
 		}
 
 		// Percent is not >= 80% anymore.
-		if ( (float) $previous_percent >= 80.0 && $percent < 80 ) {
+		if ((float) $previous_percent >= 80.0 && $percent < 80) {
 			/**
 			 * Triggered when the consumed quota percent decreases below 80%.
 			 *
@@ -209,11 +213,11 @@ class Imagify_User {
 			 * @param float|int $percent          The current percentage of consumed quota.
 			 * @param float|int $previous_percent The previous percentage of consumed quota.
 			 */
-			do_action( 'imagify_not_almost_over_quota_anymore', $percent, $previous_percent );
+			do_action('imagify_not_almost_over_quota_anymore', $percent, $previous_percent);
 		}
 
-		if ( (float) $previous_percent !== (float) $percent ) {
-			Imagify_Data::get_instance()->set( 'previous_quota_percent', $percent );
+		if ((float) $previous_percent !== (float) $percent) {
+			Imagify_Data::get_instance()->set('previous_quota_percent', $percent);
 		}
 
 		$done = true;
@@ -228,7 +232,8 @@ class Imagify_User {
 	 *
 	 * @return float|int
 	 */
-	public function get_percent_unconsumed_quota() {
+	public function get_percent_unconsumed_quota()
+	{
 		return 100 - $this->get_percent_consumed_quota();
 	}
 
@@ -239,7 +244,8 @@ class Imagify_User {
 	 *
 	 * @return bool
 	 */
-	public function is_free() {
+	public function is_free()
+	{
 		return 1 === $this->plan_id;
 	}
 
@@ -251,15 +257,16 @@ class Imagify_User {
 	 *
 	 * @return bool
 	 */
-	public function is_over_quota() {
-		if ( $this->get_error() ) {
+	public function is_over_quota()
+	{
+		if ($this->get_error()) {
 			return false;
 		}
 
 		return (
 			$this->is_free()
 			&&
-			floatval( 100 ) === round( $this->get_percent_consumed_quota() )
+			floatval(100) === round($this->get_percent_consumed_quota())
 		);
 	}
 }

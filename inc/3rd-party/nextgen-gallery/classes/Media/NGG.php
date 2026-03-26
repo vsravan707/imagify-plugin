@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG\Media;
 
 use Imagify\Deprecated\Traits\Media\NGGDeprecatedTrait;
@@ -9,7 +10,8 @@ use Imagify\Deprecated\Traits\Media\NGGDeprecatedTrait;
  * @since  1.9
  * @author Grégory Viguier
  */
-class NGG extends \Imagify\Media\AbstractMedia {
+class NGG extends \Imagify\Media\AbstractMedia
+{
 	use NGGDeprecatedTrait;
 
 	/**
@@ -50,36 +52,37 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @param int|\nggImage|\nggdb|\StdClass $id The NGG image ID, \nggImage object, \nggdb object, or an anonym object containing a pid property.
 	 */
-	public function __construct( $id ) {
-		if ( ! static::constructor_accepts( $id ) ) {
-			parent::__construct( 0 );
+	public function __construct($id)
+	{
+		if (! static::constructor_accepts($id)) {
+			parent::__construct(0);
 			return;
 		}
 
-		if ( is_numeric( $id ) ) {
-			$this->image = \nggdb::find_image( (int) $id );
-			$id          = ! empty( $this->image->pid ) ? (int) $this->image->pid : 0;
-		} elseif ( $id instanceof \nggImage ) {
+		if (is_numeric($id)) {
+			$this->image = \nggdb::find_image((int) $id);
+			$id          = ! empty($this->image->pid) ? (int) $this->image->pid : 0;
+		} elseif ($id instanceof \nggImage) {
 			$this->image = $id;
 			$id          = (int) $id->pid;
-		} elseif ( is_object( $id ) ) {
-			$this->image = \nggdb::find_image( (int) $id->pid );
-			$id          = ! empty( $this->image->pid ) ? (int) $this->image->pid : 0;
+		} elseif (is_object($id)) {
+			$this->image = \nggdb::find_image((int) $id->pid);
+			$id          = ! empty($this->image->pid) ? (int) $this->image->pid : 0;
 		} else {
 			$id = 0;
 		}
 
-		if ( ! $id ) {
+		if (! $id) {
 			$this->image = null;
 
-			parent::__construct( 0 );
+			parent::__construct(0);
 			return;
 		}
 
-		parent::__construct( $id );
+		parent::__construct($id);
 
 		// NGG storage.
-		if ( ! empty( $this->image->_ngiw ) ) {
+		if (! empty($this->image->_ngiw)) {
 			$this->storage = $this->image->_ngiw->get_storage()->object;
 		} else {
 			$this->storage = \C_Gallery_Storage::get_instance()->object;
@@ -88,7 +91,7 @@ class NGG extends \Imagify\Media\AbstractMedia {
 		// Load nggAdmin class.
 		$ngg_admin_functions_path = WP_PLUGIN_DIR . '/' . NGGFOLDER . '/products/photocrati_nextgen/modules/ngglegacy/admin/functions.php';
 
-		if ( ! class_exists( 'nggAdmin' ) && $this->filesystem->exists( $ngg_admin_functions_path ) ) {
+		if (! class_exists('nggAdmin') && $this->filesystem->exists($ngg_admin_functions_path)) {
 			require_once $ngg_admin_functions_path;
 		}
 	}
@@ -103,16 +106,17 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
-		if ( ! $id ) {
+	public static function constructor_accepts($id)
+	{
+		if (! $id) {
 			return false;
 		}
 
-		if ( is_numeric( $id ) || $id instanceof \nggImage ) {
+		if (is_numeric($id) || $id instanceof \nggImage) {
 			return true;
 		}
 
-		return is_object( $id ) && ! empty( $id->pid ) && is_numeric( $id->pid );
+		return is_object($id) && ! empty($id->pid) && is_numeric($id->pid);
 	}
 
 
@@ -129,7 +133,8 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return \nggImage
 	 */
-	public function get_ngg_image() {
+	public function get_ngg_image()
+	{
 		return $this->image;
 	}
 
@@ -142,7 +147,8 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return \C_Gallery_Storage
 	 */
-	public function get_ngg_storage() {
+	public function get_ngg_storage()
+	{
 		return $this->storage;
 	}
 
@@ -160,16 +166,17 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_original_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_original_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
-			return $this->get_cdn()->get_file_path( 'original' );
+		if ($this->get_cdn()) {
+			return $this->get_cdn()->get_file_path('original');
 		}
 
-		return ! empty( $this->image->imagePath ) ? $this->image->imagePath : false;
+		return ! empty($this->image->imagePath) ? $this->image->imagePath : false;
 	}
 
 
@@ -186,16 +193,17 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_fullsize_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_fullsize_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_url();
 		}
 
-		return ! empty( $this->image->imageURL ) ? $this->image->imageURL : false;
+		return ! empty($this->image->imageURL) ? $this->image->imageURL : false;
 	}
 
 	/**
@@ -207,16 +215,17 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_fullsize_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_fullsize_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_path();
 		}
 
-		return ! empty( $this->image->imagePath ) ? $this->image->imagePath : false;
+		return ! empty($this->image->imagePath) ? $this->image->imagePath : false;
 	}
 
 
@@ -233,12 +242,13 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_backup_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_backup_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return site_url( '/' . $this->filesystem->make_path_relative( $this->get_raw_backup_path() ) );
+		return site_url('/' . $this->filesystem->make_path_relative($this->get_raw_backup_path()));
 	}
 
 	/**
@@ -250,12 +260,13 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_backup_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_backup_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return get_imagify_ngg_attachment_backup_path( $this->get_raw_original_path() );
+		return get_imagify_ngg_attachment_backup_path($this->get_raw_original_path());
 	}
 
 
@@ -272,86 +283,87 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return bool|WP_Error True on success. A \WP_Error instance on failure.
 	 */
-	public function generate_thumbnails() {
-		if ( ! $this->is_valid() ) {
-			return new \WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function generate_thumbnails()
+	{
+		if (! $this->is_valid()) {
+			return new \WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
-		$image_data = $this->storage->_image_mapper->find( $this->get_id() );
+		$image_data = $this->storage->_image_mapper->find($this->get_id());
 
-		if ( ! $image_data ) {
-			return new \WP_Error( 'no_ngg_image', __( 'Image not found in NextGen Gallery data.', 'imagify' ) );
+		if (! $image_data) {
+			return new \WP_Error('no_ngg_image', __('Image not found in NextGen Gallery data.', 'imagify'));
 		}
 
-		if ( empty( $image_data->meta_data['backup'] ) || ! is_array( $image_data->meta_data['backup'] ) ) {
-			$full_path = $this->storage->get_image_abspath( $image_data );
+		if (empty($image_data->meta_data['backup']) || ! is_array($image_data->meta_data['backup'])) {
+			$full_path = $this->storage->get_image_abspath($image_data);
 
 			$image_data->meta_data['backup'] = [
-				'filename'  => $this->filesystem->file_name( $full_path ), // Yes, $full_path.
+				'filename'  => $this->filesystem->file_name($full_path), // Yes, $full_path.
 				'width'     => $image_data->meta_data['width'],            // Original image width.
 				'height'    => $image_data->meta_data['height'],           // Original image height.
 				'generated' => microtime(),
 			];
 		}
 
-		$backup_path = $this->storage->get_image_abspath( $image_data, 'backup' );
+		$backup_path = $this->storage->get_image_abspath($image_data, 'backup');
 		$failed      = [];
 
-		foreach ( $this->get_media_files() as $size_name => $size_data ) {
-			if ( 'full' === $size_name ) {
+		foreach ($this->get_media_files() as $size_name => $size_data) {
+			if ('full' === $size_name) {
 				continue;
 			}
 
-			$params    = $this->storage->get_image_size_params( $image_data, $size_name );
+			$params    = $this->storage->get_image_size_params($image_data, $size_name);
 			$thumbnail = @$this->storage->generate_image_clone( // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 				$backup_path,
-				$this->storage->get_image_abspath( $image_data, $size_name ),
+				$this->storage->get_image_abspath($image_data, $size_name),
 				$params
 			);
 
-			if ( ! $thumbnail ) {
+			if (! $thumbnail) {
 				// Failed.
 				$failed[] = $size_name;
-				unset( $image_data->meta_data[ $size_name ] );
+				unset($image_data->meta_data[$size_name]);
 				continue;
 			}
 
 			$size_meta = [
 				'width'     => 0,
 				'height'    => 0,
-				'filename'  => \M_I18n::mb_basename( $thumbnail->fileName ),
+				'filename'  => \M_I18n::mb_basename($thumbnail->fileName),
 				'generated' => microtime(),
 			];
 
-			$dimensions = $this->filesystem->get_image_size( $thumbnail->fileName );
+			$dimensions = $this->filesystem->get_image_size($thumbnail->fileName);
 
-			if ( $dimensions ) {
+			if ($dimensions) {
 				$size_meta['width']  = $dimensions['width'];
 				$size_meta['height'] = $dimensions['height'];
 			}
 
-			if ( isset( $params['crop_frame'] ) ) {
+			if (isset($params['crop_frame'])) {
 				$size_meta['crop_frame'] = $params['crop_frame'];
 			}
 
-			$image_data->meta_data[ $size_name ] = $size_meta;
+			$image_data->meta_data[$size_name] = $size_meta;
 		}
 
 		// Keep our property up to date.
 		$this->image->_ngiw->_cache['meta_data'] = $image_data->meta_data;
 		$this->image->_ngiw->_orig_image         = $image_data;
 
-		$post_id = $this->storage->_image_mapper->save( $image_data );
+		$post_id = $this->storage->_image_mapper->save($image_data);
 
-		if ( ! $post_id ) {
-			return new \WP_Error( 'meta_data_not_saved', __( 'Related NextGen Gallery data could not be saved.', 'imagify' ) );
+		if (! $post_id) {
+			return new \WP_Error('meta_data_not_saved', __('Related NextGen Gallery data could not be saved.', 'imagify'));
 		}
 
-		if ( $failed ) {
+		if ($failed) {
 			return new \WP_Error(
 				'thumbnail_restore_failed',
-				sprintf( _n( '%n thumbnail could not be restored.', '%n thumbnails could not be restored.', count( $failed ), 'imagify' ), count( $failed ) ),
-				[ 'failed_thumbnails' => $failed ]
+				sprintf(_n('%n thumbnail could not be restored.', '%n thumbnails could not be restored.', count($failed), 'imagify'), count($failed)),
+				['failed_thumbnails' => $failed]
 			);
 		}
 
@@ -372,18 +384,19 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return bool
 	 */
-	public function has_required_media_data() {
+	public function has_required_media_data()
+	{
 		static $sizes;
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( ! isset( $sizes ) ) {
+		if (! isset($sizes)) {
 			$sizes = $this->get_media_files();
 		}
 
-		return $sizes && ! empty( $this->image->imagePath );
+		return $sizes && ! empty($this->image->imagePath);
 	}
 
 	/**
@@ -404,14 +417,15 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *     @type bool   $disabled  True if the size is disabled in the plugin’s settings.
 	 * }
 	 */
-	public function get_media_files() {
-		if ( ! $this->is_valid() ) {
+	public function get_media_files()
+	{
+		if (! $this->is_valid()) {
 			return [];
 		}
 
 		$fullsize_path = $this->get_raw_fullsize_path();
 
-		if ( ! $fullsize_path ) {
+		if (! $fullsize_path) {
 			return [];
 		}
 
@@ -427,8 +441,8 @@ class NGG extends \Imagify\Media\AbstractMedia {
 			],
 		];
 
-		if ( ! $this->is_image() ) {
-			return $this->filter_media_files( $all_sizes );
+		if (! $this->is_image()) {
+			return $this->filter_media_files($all_sizes);
 		}
 
 		// Remove common values (that have no value for us here, lol). Also remove 'full' and 'backup'.
@@ -456,26 +470,26 @@ class NGG extends \Imagify\Media\AbstractMedia {
 			]
 		);
 
-		if ( ! $image_data ) {
-			return $this->filter_media_files( $all_sizes );
+		if (! $image_data) {
+			return $this->filter_media_files($all_sizes);
 		}
 
-		$ngg_data = $this->storage->_image_mapper->find( $this->get_id() );
+		$ngg_data = $this->storage->_image_mapper->find($this->get_id());
 
-		foreach ( $image_data as $size => $size_data ) {
-			if ( ! isset( $size_data['width'], $size_data['height'], $size_data['filename'], $size_data['generated'] ) ) {
+		foreach ($image_data as $size => $size_data) {
+			if (! isset($size_data['width'], $size_data['height'], $size_data['filename'], $size_data['generated'])) {
 				continue;
 			}
 
-			$file_type = (object) wp_check_filetype( $size_data['filename'], $this->get_allowed_mime_types() );
+			$file_type = (object) wp_check_filetype($size_data['filename'], $this->get_allowed_mime_types());
 
-			if ( ! $file_type->type ) {
+			if (! $file_type->type) {
 				continue;
 			}
 
-			$all_sizes[ $size ] = [
+			$all_sizes[$size] = [
 				'size'      => $size,
-				'path'      => $this->storage->get_image_abspath( $ngg_data, $size ),
+				'path'      => $this->storage->get_image_abspath($ngg_data, $size),
 				'width'     => (int) $size_data['width'],
 				'height'    => (int) $size_data['height'],
 				'mime-type' => $file_type->type,
@@ -483,7 +497,7 @@ class NGG extends \Imagify\Media\AbstractMedia {
 			];
 		}
 
-		return $this->filter_media_files( $all_sizes );
+		return $this->filter_media_files($all_sizes);
 	}
 
 	/**
@@ -495,8 +509,9 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *
 	 * @return array
 	 */
-	public function get_dimensions() {
-		if ( ! $this->is_image() ) {
+	public function get_dimensions()
+	{
+		if (! $this->is_image()) {
 			return [
 				'width'  => 0,
 				'height' => 0,
@@ -504,8 +519,8 @@ class NGG extends \Imagify\Media\AbstractMedia {
 		}
 
 		return [
-			'width'  => ! empty( $this->image->meta_data['width'] ) ? (int) $this->image->meta_data['width'] : 0,
-			'height' => ! empty( $this->image->meta_data['height'] ) ? (int) $this->image->meta_data['height'] : 0,
+			'width'  => ! empty($this->image->meta_data['width']) ? (int) $this->image->meta_data['width'] : 0,
+			'height' => ! empty($this->image->meta_data['height']) ? (int) $this->image->meta_data['height'] : 0,
 		];
 	}
 
@@ -523,24 +538,25 @@ class NGG extends \Imagify\Media\AbstractMedia {
 	 *     @type int $height The image height.
 	 * }
 	 */
-	protected function update_media_data_dimensions( $dimensions ) {
+	protected function update_media_data_dimensions($dimensions)
+	{
 		$changed = false;
 		$data    = [
 			'width'  => $dimensions['width'],
 			'height' => $dimensions['height'],
-			'md5'    => md5_file( $this->get_raw_fullsize_path() ),
+			'md5'    => md5_file($this->get_raw_fullsize_path()),
 		];
 
-		foreach ( $data as $k => $v ) {
-			if ( ! isset( $this->image->meta_data[ $k ] ) || $this->image->meta_data[ $k ] !== $v ) {
-				$this->image->meta_data[ $k ] = $v;
+		foreach ($data as $k => $v) {
+			if (! isset($this->image->meta_data[$k]) || $this->image->meta_data[$k] !== $v) {
+				$this->image->meta_data[$k] = $v;
 
 				$changed = true;
 			}
 		}
 
-		if ( $changed ) {
-			\nggdb::update_image_meta( $this->id, $this->image->meta_data );
+		if ($changed) {
+			\nggdb::update_image_meta($this->id, $this->image->meta_data);
 		}
 	}
 }

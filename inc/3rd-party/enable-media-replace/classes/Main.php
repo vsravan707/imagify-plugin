@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\EnableMediaReplace;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -10,7 +11,8 @@ use Imagify_Filesystem;
  *
  * @since 1.6.9
  */
-class Main extends Imagify_Enable_Media_Replace_Deprecated {
+class Main extends Imagify_Enable_Media_Replace_Deprecated
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -53,15 +55,16 @@ class Main extends Imagify_Enable_Media_Replace_Deprecated {
 	 *
 	 * @param array $args An array containing the post ID.
 	 */
-	public function init( $args = [] ) {
-		if ( is_array( $args ) && ! empty( $args['post_id'] ) ) {
+	public function init($args = [])
+	{
+		if (is_array($args) && ! empty($args['post_id'])) {
 			$this->media_id = $args['post_id'];
 		} else {
 			// Backward compatibility.
-			$this->media_id = (int) filter_input( INPUT_POST, 'ID' );
-			$this->media_id = max( 0, $this->media_id );
+			$this->media_id = (int) filter_input(INPUT_POST, 'ID');
+			$this->media_id = max(0, $this->media_id);
 
-			if ( ! $this->media_id ) {
+			if (! $this->media_id) {
 				return;
 			}
 		}
@@ -69,14 +72,14 @@ class Main extends Imagify_Enable_Media_Replace_Deprecated {
 		// Store the old backup file path.
 		$this->get_process();
 
-		if ( ! $this->process ) {
+		if (! $this->process) {
 			$this->media_id = 0;
 			return;
 		}
 
 		$this->old_backup_path = $this->process->get_media()->get_backup_path();
 
-		if ( ! $this->old_backup_path ) {
+		if (! $this->old_backup_path) {
 			$this->media_id = 0;
 			return;
 		}
@@ -89,15 +92,15 @@ class Main extends Imagify_Enable_Media_Replace_Deprecated {
 		 * - Do not rename the files: the thumbnails may still get new names because of the suffix containing the image dimensions, which may differ (for example when thumbnails are scaled, not cropped).
 		 * In this last case, the thumbnails with the old dimensions are removed from the drive and from the WP’s post meta, so there is no need of keeping orphan next-gen files that would stay on the drive for ever, even after the attachment is deleted from WP.
 		 */
-		foreach ( $this->process->get_media()->get_media_files() as $media_file ) {
-			foreach ( [ 'avif', 'webp' ] as $format ) {
-				$this->old_nextgen_paths[] = imagify_path_to_nextgen( $media_file['path'], $format );
+		foreach ($this->process->get_media()->get_media_files() as $media_file) {
+			foreach (['avif', 'webp'] as $format) {
+				$this->old_nextgen_paths[] = imagify_path_to_nextgen($media_file['path'], $format);
 			}
 		}
 
 		// Delete the old backup file and old next-gen files.
-		add_action( 'imagify_before_auto_optimization', [ $this, 'delete_backup' ] );
-		add_action( 'imagify_not_optimized_attachment_updated', [ $this, 'delete_backup' ] );
+		add_action('imagify_before_auto_optimization', [$this, 'delete_backup']);
+		add_action('imagify_not_optimized_attachment_updated', [$this, 'delete_backup']);
 	}
 
 	/**
@@ -108,23 +111,24 @@ class Main extends Imagify_Enable_Media_Replace_Deprecated {
 	 *
 	 * @param int $media_id The attachment ID.
 	 */
-	public function delete_backup( $media_id ) {
-		if ( ! $this->old_backup_path || ! $this->media_id || $media_id !== $this->media_id ) {
+	public function delete_backup($media_id)
+	{
+		if (! $this->old_backup_path || ! $this->media_id || $media_id !== $this->media_id) {
 			return;
 		}
 
 		$filesystem = Imagify_Filesystem::get_instance();
 
-		if ( $filesystem->exists( $this->old_backup_path ) ) {
+		if ($filesystem->exists($this->old_backup_path)) {
 			// Delete old backup file.
-			$filesystem->delete( $this->old_backup_path );
+			$filesystem->delete($this->old_backup_path);
 			$this->old_backup_path = false;
 		}
 
-		if ( ! empty( $this->old_nextgen_paths ) ) {
+		if (! empty($this->old_nextgen_paths)) {
 			// Delete old next-gen files.
-			$this->old_nextgen_paths = array_filter( $this->old_nextgen_paths, [ $filesystem, 'exists' ] );
-			array_map( [ $filesystem, 'delete' ], $this->old_nextgen_paths );
+			$this->old_nextgen_paths = array_filter($this->old_nextgen_paths, [$filesystem, 'exists']);
+			array_map([$filesystem, 'delete'], $this->old_nextgen_paths);
 			$this->old_nextgen_paths = [];
 		}
 	}
@@ -136,14 +140,15 @@ class Main extends Imagify_Enable_Media_Replace_Deprecated {
 	 *
 	 * @return ProcessInterface|bool False if invalid.
 	 */
-	protected function get_process() {
-		if ( isset( $this->process ) ) {
+	protected function get_process()
+	{
+		if (isset($this->process)) {
 			return $this->process;
 		}
 
-		$this->process = imagify_get_optimization_process( $this->media_id, 'wp' );
+		$this->process = imagify_get_optimization_process($this->media_id, 'wp');
 
-		if ( ! $this->process->is_valid() ) {
+		if (! $this->process->is_valid()) {
 			$this->process = false;
 		}
 

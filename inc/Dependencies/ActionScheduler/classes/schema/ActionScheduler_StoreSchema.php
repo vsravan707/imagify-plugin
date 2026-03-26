@@ -7,7 +7,8 @@
  *
  * Creates custom tables for storing scheduled actions
  */
-class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
+class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema
+{
 	const ACTIONS_TABLE = 'actionscheduler_actions';
 	const CLAIMS_TABLE  = 'actionscheduler_claims';
 	const GROUPS_TABLE  = 'actionscheduler_groups';
@@ -25,7 +26,8 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 	/**
 	 * Construct.
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->tables = array(
 			self::ACTIONS_TABLE,
 			self::CLAIMS_TABLE,
@@ -36,8 +38,9 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 	/**
 	 * Performs additional setup work required to support this schema.
 	 */
-	public function init() {
-		add_action( 'action_scheduler_before_schema_update', array( $this, 'update_schema_5_0' ), 10, 2 );
+	public function init()
+	{
+		add_action('action_scheduler_before_schema_update', array($this, 'update_schema_5_0'), 10, 2);
 	}
 
 	/**
@@ -45,7 +48,8 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 	 *
 	 * @param string $table Table name.
 	 */
-	protected function get_table_definition( $table ) {
+	protected function get_table_definition($table)
+	{
 		global $wpdb;
 		$table_name      = $wpdb->$table;
 		$charset_collate = $wpdb->get_charset_collate();
@@ -55,7 +59,7 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 
 		$hook_status_scheduled_date_gmt_max_index_length = $max_index_length - 20 - 8; // - status, - scheduled_date_gmt
 
-		switch ( $table ) {
+		switch ($table) {
 
 			case self::ACTIONS_TABLE:
 				return "CREATE TABLE {$table_name} (
@@ -118,19 +122,20 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 	 * @param string $table Name of table being updated.
 	 * @param string $db_version The existing schema version of the table.
 	 */
-	public function update_schema_5_0( $table, $db_version ) {
+	public function update_schema_5_0($table, $db_version)
+	{
 		global $wpdb;
 
-		if ( 'actionscheduler_actions' !== $table || version_compare( $db_version, '5', '>=' ) ) {
+		if ('actionscheduler_actions' !== $table || version_compare($db_version, '5', '>=')) {
 			return;
 		}
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$table_name   = $wpdb->prefix . 'actionscheduler_actions';
-		$table_list   = $wpdb->get_col( "SHOW TABLES LIKE '{$table_name}'" );
+		$table_list   = $wpdb->get_col("SHOW TABLES LIKE '{$table_name}'");
 		$default_date = self::DEFAULT_DATE;
 
-		if ( ! empty( $table_list ) ) {
+		if (! empty($table_list)) {
 			$query = "
 				ALTER TABLE {$table_name}
 				MODIFY COLUMN scheduled_date_gmt datetime NULL default '{$default_date}',
@@ -138,7 +143,7 @@ class ActionScheduler_StoreSchema extends ActionScheduler_Abstract_Schema {
 				MODIFY COLUMN last_attempt_gmt datetime NULL default '{$default_date}',
 				MODIFY COLUMN last_attempt_local datetime NULL default '{$default_date}'
 		";
-			$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$wpdb->query($query); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}

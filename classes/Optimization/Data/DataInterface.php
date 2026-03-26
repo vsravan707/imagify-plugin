@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Optimization\Data;
 
 use Imagify\Media\MediaInterface;
@@ -9,7 +10,8 @@ use Imagify\Media\MediaInterface;
  * @since  1.9
  * @author Grégory Viguier
  */
-interface DataInterface {
+interface DataInterface
+{
 
 	/**
 	 * Tell if the given entry can be accepted in the constructor.
@@ -22,7 +24,7 @@ interface DataInterface {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id );
+	public static function constructor_accepts($id);
 
 	/**
 	 * Get the media instance.
@@ -136,7 +138,7 @@ interface DataInterface {
 	 *     @type int    $optimized_size The weight of the file, after optimization.
 	 * }
 	 */
-	public function update_size_optimization_data( $size, array $data );
+	public function update_size_optimization_data($size, array $data);
 
 	/**
 	 * Delete the media optimization data, level, and status.
@@ -158,7 +160,7 @@ interface DataInterface {
 	 *
 	 * @param array $sizes A list of sizes to remove.
 	 */
-	public function delete_sizes_optimization_data( array $sizes );
+	public function delete_sizes_optimization_data(array $sizes);
 
 	/**
 	 * Get the media's optimization level.
@@ -204,7 +206,7 @@ interface DataInterface {
 	 * @param  int  $decimals     Precision of number of decimal places.
 	 * @return string|int
 	 */
-	public function get_original_size( $human_format = true, $decimals = 2 );
+	public function get_original_size($human_format = true, $decimals = 2);
 
 	/**
 	 * Get the file size of the full size file.
@@ -219,7 +221,7 @@ interface DataInterface {
 	 * @param  bool $use_nextgen     Use the Nextgen size if available.
 	 * @return string|int
 	 */
-	public function get_optimized_size( $human_format = true, $decimals = 2, $use_nextgen = true );
+	public function get_optimized_size($human_format = true, $decimals = 2, $use_nextgen = true);
 
 
 	/** ----------------------------------------------------------------------------------------- */
@@ -237,7 +239,7 @@ interface DataInterface {
 	 * @param  string $key  The specific data slug.
 	 * @return array|string
 	 */
-	public function get_size_data( $size = 'full', $key = '' );
+	public function get_size_data($size = 'full', $key = '');
 
 	/**
 	 * Get the overall statistics data or a specific one.
@@ -249,7 +251,7 @@ interface DataInterface {
 	 * @param  string $key The specific data slug.
 	 * @return array|string
 	 */
-	public function get_stats_data( $key = '' );
+	public function get_stats_data($key = '');
 
 	/**
 	 * Get the optimized/original saving of the original image in percent.

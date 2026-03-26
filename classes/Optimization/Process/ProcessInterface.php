@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Optimization\Process;
@@ -13,7 +14,8 @@ use WP_Error;
  *
  * @since 1.9
  */
-interface ProcessInterface {
+interface ProcessInterface
+{
 	/**
 	 * The suffix used in the thumbnail size name.
 	 *
@@ -40,7 +42,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id );
+	public static function constructor_accepts($id);
 
 	/**
 	 * Get the data instance.
@@ -96,7 +98,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function current_user_can( $describer );
+	public function current_user_can($describer);
 
 	/**
 	 * Optimize a media files by pushing tasks into the queue.
@@ -107,7 +109,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A \WP_Error instance on failure.
 	 */
-	public function optimize( $optimization_level = null );
+	public function optimize($optimization_level = null);
 
 	/**
 	 * Re-optimize a media files with a different level.
@@ -118,7 +120,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A \WP_Error instance on failure.
 	 */
-	public function reoptimize( $optimization_level = null );
+	public function reoptimize($optimization_level = null);
 
 	/**
 	 * Optimize several file sizes by pushing tasks into the queue.
@@ -130,7 +132,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A \WP_Error instance on failure.
 	 */
-	public function optimize_sizes( $sizes, $optimization_level = null );
+	public function optimize_sizes($sizes, $optimization_level = null);
 
 	/**
 	 * Optimize one file with Imagify directly.
@@ -142,7 +144,7 @@ interface ProcessInterface {
 	 *
 	 * @return array|WP_Error The optimization data. A \WP_Error instance on failure.
 	 */
-	public function optimize_size( $size, $optimization_level = null );
+	public function optimize_size($size, $optimization_level = null);
 
 	/**
 	 * Restore the media files from the backup file.
@@ -204,7 +206,7 @@ interface ProcessInterface {
 	 *     @type int  $file_size The file size in bytes.
 	 * }
 	 */
-	public function maybe_resize( $size, $file );
+	public function maybe_resize($size, $file);
 
 	/**
 	 * Generate next-gen images if they are missing.
@@ -225,7 +227,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool|WP_Error  True on success. A \WP_Error object on failure.
 	 */
-	public function delete_nextgen_files( $keep_full = false );
+	public function delete_nextgen_files($keep_full = false);
 
 	/**
 	 * Tell if a thumbnail size is an "Imagify Next-Gen" size.
@@ -236,7 +238,7 @@ interface ProcessInterface {
 	 *
 	 * @return string|bool The unsuffixed name of the size if next-gen. False if not next-gen.
 	 */
-	public function is_size_next_gen( $size_name );
+	public function is_size_next_gen($size_name);
 
 	/**
 	 * Tell if the media has all next-gen versions.
@@ -286,7 +288,7 @@ interface ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function size_has_optimization_data( $size );
+	public function size_has_optimization_data($size);
 
 	/**
 	 * Update the optimization data for a size.
@@ -309,5 +311,5 @@ interface ProcessInterface {
 	 *     @type int    $optimized_size The weight of the file, once optimized.
 	 * }
 	 */
-	public function update_size_optimization_data( $response, $size, $level );
+	public function update_size_optimization_data($response, $size, $level);
 }

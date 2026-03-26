@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Media;
 
 use Imagify\CDN\PushCDNInterface;
@@ -11,7 +12,8 @@ use WP_Error;
  * @since  1.9
  * @author Grégory Viguier
  */
-interface MediaInterface {
+interface MediaInterface
+{
 
 	/**
 	 * Tell if the given entry can be accepted in the constructor.
@@ -24,7 +26,7 @@ interface MediaInterface {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id );
+	public static function constructor_accepts($id);
 
 	/**
 	 * Get the media ID.

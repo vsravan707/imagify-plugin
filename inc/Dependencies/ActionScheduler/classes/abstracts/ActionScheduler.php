@@ -8,7 +8,8 @@ use Action_Scheduler\Migration\Controller;
  *
  * @codeCoverageIgnore
  */
-abstract class ActionScheduler {
+abstract class ActionScheduler
+{
 
 	/**
 	 * Plugin file path.
@@ -34,8 +35,9 @@ abstract class ActionScheduler {
 	/**
 	 * Factory.
 	 */
-	public static function factory() {
-		if ( ! isset( self::$factory ) ) {
+	public static function factory()
+	{
+		if (! isset(self::$factory)) {
 			self::$factory = new ActionScheduler_ActionFactory();
 		}
 		return self::$factory;
@@ -44,35 +46,40 @@ abstract class ActionScheduler {
 	/**
 	 * Get Store instance.
 	 */
-	public static function store() {
+	public static function store()
+	{
 		return ActionScheduler_Store::instance();
 	}
 
 	/**
 	 * Get Lock instance.
 	 */
-	public static function lock() {
+	public static function lock()
+	{
 		return ActionScheduler_Lock::instance();
 	}
 
 	/**
 	 * Get Logger instance.
 	 */
-	public static function logger() {
+	public static function logger()
+	{
 		return ActionScheduler_Logger::instance();
 	}
 
 	/**
 	 * Get QueueRunner instance.
 	 */
-	public static function runner() {
+	public static function runner()
+	{
 		return ActionScheduler_QueueRunner::instance();
 	}
 
 	/**
 	 * Get AdminView instance.
 	 */
-	public static function admin_view() {
+	public static function admin_view()
+	{
 		return ActionScheduler_AdminView::instance();
 	}
 
@@ -83,12 +90,13 @@ abstract class ActionScheduler {
 	 * @param string $path Path relative to plugin directory.
 	 * @return string
 	 */
-	public static function plugin_path( $path ) {
-		$base = dirname( self::$plugin_file );
-		if ( $path ) {
-			return trailingslashit( $base ) . $path;
+	public static function plugin_path($path)
+	{
+		$base = dirname(self::$plugin_file);
+		if ($path) {
+			return trailingslashit($base) . $path;
 		} else {
-			return untrailingslashit( $base );
+			return untrailingslashit($base);
 		}
 	}
 
@@ -99,8 +107,9 @@ abstract class ActionScheduler {
 	 * @param string $path Path relative to plugin directory.
 	 * @return string
 	 */
-	public static function plugin_url( $path ) {
-		return plugins_url( $path, self::$plugin_file );
+	public static function plugin_url($path)
+	{
+		return plugins_url($path, self::$plugin_file);
 	}
 
 	/**
@@ -108,34 +117,35 @@ abstract class ActionScheduler {
 	 *
 	 * @param string $class Class name.
 	 */
-	public static function autoload( $class ) {
+	public static function autoload($class)
+	{
 		$d           = DIRECTORY_SEPARATOR;
-		$classes_dir = self::plugin_path( 'classes' . $d );
-		$separator   = strrpos( $class, '\\' );
-		if ( false !== $separator ) {
-			if ( 0 !== strpos( $class, 'Action_Scheduler' ) ) {
+		$classes_dir = self::plugin_path('classes' . $d);
+		$separator   = strrpos($class, '\\');
+		if (false !== $separator) {
+			if (0 !== strpos($class, 'Action_Scheduler')) {
 				return;
 			}
-			$class = substr( $class, $separator + 1 );
+			$class = substr($class, $separator + 1);
 		}
 
-		if ( 'Deprecated' === substr( $class, -10 ) ) {
-			$dir = self::plugin_path( 'deprecated' . $d );
-		} elseif ( self::is_class_abstract( $class ) ) {
+		if ('Deprecated' === substr($class, -10)) {
+			$dir = self::plugin_path('deprecated' . $d);
+		} elseif (self::is_class_abstract($class)) {
 			$dir = $classes_dir . 'abstracts' . $d;
-		} elseif ( self::is_class_migration( $class ) ) {
+		} elseif (self::is_class_migration($class)) {
 			$dir = $classes_dir . 'migration' . $d;
-		} elseif ( 'Schedule' === substr( $class, -8 ) ) {
+		} elseif ('Schedule' === substr($class, -8)) {
 			$dir = $classes_dir . 'schedules' . $d;
-		} elseif ( 'Action' === substr( $class, -6 ) ) {
+		} elseif ('Action' === substr($class, -6)) {
 			$dir = $classes_dir . 'actions' . $d;
-		} elseif ( 'Schema' === substr( $class, -6 ) ) {
+		} elseif ('Schema' === substr($class, -6)) {
 			$dir = $classes_dir . 'schema' . $d;
-		} elseif ( strpos( $class, 'ActionScheduler' ) === 0 ) {
-			$segments = explode( '_', $class );
-			$type     = isset( $segments[1] ) ? $segments[1] : '';
+		} elseif (strpos($class, 'ActionScheduler') === 0) {
+			$segments = explode('_', $class);
+			$type     = isset($segments[1]) ? $segments[1] : '';
 
-			switch ( $type ) {
+			switch ($type) {
 				case 'WPCLI':
 					$dir = $classes_dir . 'WP_CLI' . $d;
 					break;
@@ -150,17 +160,17 @@ abstract class ActionScheduler {
 					$dir = $classes_dir;
 					break;
 			}
-		} elseif ( self::is_class_cli( $class ) ) {
+		} elseif (self::is_class_cli($class)) {
 			$dir = $classes_dir . 'WP_CLI' . $d;
-		} elseif ( strpos( $class, 'CronExpression' ) === 0 ) {
-			$dir = self::plugin_path( 'lib' . $d . 'cron-expression' . $d );
-		} elseif ( strpos( $class, 'WP_Async_Request' ) === 0 ) {
-			$dir = self::plugin_path( 'lib' . $d );
+		} elseif (strpos($class, 'CronExpression') === 0) {
+			$dir = self::plugin_path('lib' . $d . 'cron-expression' . $d);
+		} elseif (strpos($class, 'WP_Async_Request') === 0) {
+			$dir = self::plugin_path('lib' . $d);
 		} else {
 			return;
 		}
 
-		if ( file_exists( $dir . "{$class}.php" ) ) {
+		if (file_exists($dir . "{$class}.php")) {
 			include $dir . "{$class}.php";
 			return;
 		}
@@ -172,16 +182,17 @@ abstract class ActionScheduler {
 	 * @static
 	 * @param string $plugin_file Plugin file path.
 	 */
-	public static function init( $plugin_file ) {
+	public static function init($plugin_file)
+	{
 		self::$plugin_file = $plugin_file;
-		spl_autoload_register( array( __CLASS__, 'autoload' ) );
+		spl_autoload_register(array(__CLASS__, 'autoload'));
 
 		/**
 		 * Fires in the early stages of Action Scheduler init hook.
 		 */
-		do_action( 'action_scheduler_pre_init' );
+		do_action('action_scheduler_pre_init');
 
-		require_once self::plugin_path( 'functions.php' );
+		require_once self::plugin_path('functions.php');
 		ActionScheduler_DataController::init();
 
 		$store                      = self::store();
@@ -191,13 +202,13 @@ abstract class ActionScheduler {
 		$recurring_action_scheduler = new ActionScheduler_RecurringActionScheduler();
 
 		// Ensure initialization on plugin activation.
-		if ( ! did_action( 'init' ) ) {
+		if (! did_action('init')) {
 			// phpcs:ignore Squiz.PHP.CommentedOutCode
-			add_action( 'init', array( $admin_view, 'init' ), 0, 0 ); // run before $store::init().
-			add_action( 'init', array( $store, 'init' ), 1, 0 );
-			add_action( 'init', array( $logger, 'init' ), 1, 0 );
-			add_action( 'init', array( $runner, 'init' ), 1, 0 );
-			add_action( 'init', array( $recurring_action_scheduler, 'init' ), 1, 0 );
+			add_action('init', array($admin_view, 'init'), 0, 0); // run before $store::init().
+			add_action('init', array($store, 'init'), 1, 0);
+			add_action('init', array($logger, 'init'), 1, 0);
+			add_action('init', array($runner, 'init'), 1, 0);
+			add_action('init', array($recurring_action_scheduler, 'init'), 1, 0);
 
 			add_action(
 				'init',
@@ -216,7 +227,7 @@ abstract class ActionScheduler {
 					 *
 					 * @since 3.5.5
 					 */
-					do_action( 'action_scheduler_init' );
+					do_action('action_scheduler_init');
 				},
 				1
 			);
@@ -233,19 +244,19 @@ abstract class ActionScheduler {
 			 *
 			 * @since 3.5.5
 			 */
-			do_action( 'action_scheduler_init' );
+			do_action('action_scheduler_init');
 		}
 
-		if ( apply_filters( 'action_scheduler_load_deprecated_functions', true ) ) {
-			require_once self::plugin_path( 'deprecated/functions.php' );
+		if (apply_filters('action_scheduler_load_deprecated_functions', true)) {
+			require_once self::plugin_path('deprecated/functions.php');
 		}
 
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			WP_CLI::add_command( 'action-scheduler', 'ActionScheduler_WPCLI_Scheduler_command' );
-			WP_CLI::add_command( 'action-scheduler', 'ActionScheduler_WPCLI_Clean_Command' );
-			WP_CLI::add_command( 'action-scheduler action', '\Action_Scheduler\WP_CLI\Action_Command' );
-			WP_CLI::add_command( 'action-scheduler', '\Action_Scheduler\WP_CLI\System_Command' );
-			if ( ! ActionScheduler_DataController::is_migration_complete() && Controller::instance()->allow_migration() ) {
+		if (defined('WP_CLI') && WP_CLI) {
+			WP_CLI::add_command('action-scheduler', 'ActionScheduler_WPCLI_Scheduler_command');
+			WP_CLI::add_command('action-scheduler', 'ActionScheduler_WPCLI_Clean_Command');
+			WP_CLI::add_command('action-scheduler action', '\Action_Scheduler\WP_CLI\Action_Command');
+			WP_CLI::add_command('action-scheduler', '\Action_Scheduler\WP_CLI\System_Command');
+			if (! ActionScheduler_DataController::is_migration_complete() && Controller::instance()->allow_migration()) {
 				$command = new Migration_Command();
 				$command->register();
 			}
@@ -254,11 +265,11 @@ abstract class ActionScheduler {
 		/**
 		 * Handle WP comment cleanup after migration.
 		 */
-		if ( is_a( $logger, 'ActionScheduler_DBLogger' ) && ActionScheduler_DataController::is_migration_complete() && ActionScheduler_WPCommentCleaner::has_logs() ) {
+		if (is_a($logger, 'ActionScheduler_DBLogger') && ActionScheduler_DataController::is_migration_complete() && ActionScheduler_WPCommentCleaner::has_logs()) {
 			ActionScheduler_WPCommentCleaner::init();
 		}
 
-		add_action( 'action_scheduler/migration_complete', 'ActionScheduler_WPCommentCleaner::maybe_schedule_cleanup' );
+		add_action('action_scheduler/migration_complete', 'ActionScheduler_WPCommentCleaner::maybe_schedule_cleanup');
 	}
 
 	/**
@@ -267,14 +278,15 @@ abstract class ActionScheduler {
 	 * @param string $function_name The name of the function being called. Optional. Default `null`.
 	 * @return bool
 	 */
-	public static function is_initialized( $function_name = null ) {
-		if ( ! self::$data_store_initialized && ! empty( $function_name ) ) {
+	public static function is_initialized($function_name = null)
+	{
+		if (! self::$data_store_initialized && ! empty($function_name)) {
 			$message = sprintf(
 				/* translators: %s function name. */
-				__( '%s() was called before the Action Scheduler data store was initialized', 'action-scheduler' ),
-				esc_attr( $function_name )
+				__('%s() was called before the Action Scheduler data store was initialized', 'action-scheduler'),
+				esc_attr($function_name)
 			);
-			_doing_it_wrong( esc_html( $function_name ), esc_html( $message ), '3.1.6' );
+			_doing_it_wrong(esc_html($function_name), esc_html($message), '3.1.6');
 		}
 
 		return self::$data_store_initialized;
@@ -289,7 +301,8 @@ abstract class ActionScheduler {
 	 *
 	 * @return bool
 	 */
-	protected static function is_class_abstract( $class ) {
+	protected static function is_class_abstract($class)
+	{
 		static $abstracts = array(
 			'ActionScheduler'                            => true,
 			'ActionScheduler_Abstract_ListTable'         => true,
@@ -304,7 +317,7 @@ abstract class ActionScheduler {
 			'ActionScheduler_WPCLI_Command'              => true,
 		);
 
-		return isset( $abstracts[ $class ] ) && $abstracts[ $class ];
+		return isset($abstracts[$class]) && $abstracts[$class];
 	}
 
 	/**
@@ -316,7 +329,8 @@ abstract class ActionScheduler {
 	 *
 	 * @return bool
 	 */
-	protected static function is_class_migration( $class ) {
+	protected static function is_class_migration($class)
+	{
 		static $migration_segments = array(
 			'ActionMigrator'  => true,
 			'BatchFetcher'    => true,
@@ -329,10 +343,10 @@ abstract class ActionScheduler {
 			'Scheduler'       => true,
 		);
 
-		$segments = explode( '_', $class );
-		$segment  = isset( $segments[1] ) ? $segments[1] : $class;
+		$segments = explode('_', $class);
+		$segment  = isset($segments[1]) ? $segments[1] : $class;
 
-		return isset( $migration_segments[ $segment ] ) && $migration_segments[ $segment ];
+		return isset($migration_segments[$segment]) && $migration_segments[$segment];
 	}
 
 	/**
@@ -344,7 +358,8 @@ abstract class ActionScheduler {
 	 *
 	 * @return bool
 	 */
-	protected static function is_class_cli( $class ) {
+	protected static function is_class_cli($class)
+	{
 		static $cli_segments = array(
 			'QueueRunner'                             => true,
 			'Command'                                 => true,
@@ -353,24 +368,26 @@ abstract class ActionScheduler {
 			'\Action_Scheduler\WP_CLI\System_Command' => true,
 		);
 
-		$segments = explode( '_', $class );
-		$segment  = isset( $segments[1] ) ? $segments[1] : $class;
+		$segments = explode('_', $class);
+		$segment  = isset($segments[1]) ? $segments[1] : $class;
 
-		return isset( $cli_segments[ $segment ] ) && $cli_segments[ $segment ];
+		return isset($cli_segments[$segment]) && $cli_segments[$segment];
 	}
 
 	/**
 	 * Clone.
 	 */
-	final public function __clone() {
-		trigger_error( 'Singleton. No cloning allowed!', E_USER_ERROR ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+	final public function __clone()
+	{
+		trigger_error('Singleton. No cloning allowed!', E_USER_ERROR); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 	}
 
 	/**
 	 * Wakeup.
 	 */
-	final public function __wakeup() {
-		trigger_error( 'Singleton. No serialization allowed!', E_USER_ERROR ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+	final public function __wakeup()
+	{
+		trigger_error('Singleton. No serialization allowed!', E_USER_ERROR); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 	}
 
 	/**
@@ -386,9 +403,10 @@ abstract class ActionScheduler {
 	 * @param null|string $when     Date/time string.
 	 * @param string      $timezone Timezone string.
 	 */
-	public static function get_datetime_object( $when = null, $timezone = 'UTC' ) {
-		_deprecated_function( __METHOD__, '2.0', 'wcs_add_months()' );
-		return as_get_datetime_object( $when, $timezone );
+	public static function get_datetime_object($when = null, $timezone = 'UTC')
+	{
+		_deprecated_function(__METHOD__, '2.0', 'wcs_add_months()');
+		return as_get_datetime_object($when, $timezone);
 	}
 
 	/**
@@ -397,7 +415,8 @@ abstract class ActionScheduler {
 	 * @param string $function_name The name of the function being called.
 	 * @deprecated 3.1.6.
 	 */
-	public static function check_shutdown_hook( $function_name ) {
-		_deprecated_function( __FUNCTION__, '3.1.6' );
+	public static function check_shutdown_hook($function_name)
+	{
+		_deprecated_function(__FUNCTION__, '3.1.6');
 	}
 }

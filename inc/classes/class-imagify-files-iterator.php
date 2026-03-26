@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Class allowing to filter DirectoryIterator, to return only files that Imagify can optimize and folders.
@@ -8,7 +8,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.7
  * @author Grégory Viguier
  */
-class Imagify_Files_Iterator extends FilterIterator {
+class Imagify_Files_Iterator extends FilterIterator
+{
 
 	/**
 	 * Class version.
@@ -47,8 +48,9 @@ class Imagify_Files_Iterator extends FilterIterator {
 	 * @param object $iterator        The iterator that is being filtered.
 	 * @param bool   $include_folders True to return both folders and images. False to return only images.
 	 */
-	public function __construct( $iterator, $include_folders = true ) {
-		parent::__construct( $iterator );
+	public function __construct($iterator, $include_folders = true)
+	{
+		parent::__construct($iterator);
 		$this->include_folders = (bool) $include_folders;
 		$this->filesystem      = Imagify_Filesystem::get_instance();
 	}
@@ -62,56 +64,57 @@ class Imagify_Files_Iterator extends FilterIterator {
 	 *
 	 * @return bool Returns whether the current element of the iterator is acceptable through this filter.
 	 */
-	public function accept(): bool {
+	public function accept(): bool
+	{
 		static $extensions, $has_extension_method;
 
 		$file_path = $this->current()->getPathname();
 
 		// Prevent triggering an open_basedir restriction error.
-		$file_name = $this->filesystem->file_name( $file_path );
+		$file_name = $this->filesystem->file_name($file_path);
 
-		if ( '.' === $file_name || '..' === $file_name ) {
+		if ('.' === $file_name || '..' === $file_name) {
 			return false;
 		}
 
 		// Forbidden file/folder paths and names.
 		$is_dir = $this->isDir();
 
-		if ( $is_dir ) {
-			$file_path = trailingslashit( $file_path );
+		if ($is_dir) {
+			$file_path = trailingslashit($file_path);
 		}
 
-		if ( Imagify_Files_Scan::is_path_forbidden( $file_path ) ) {
+		if (Imagify_Files_Scan::is_path_forbidden($file_path)) {
 			return false;
 		}
 
 		// OK for folders.
-		if ( $this->include_folders && $is_dir ) {
+		if ($this->include_folders && $is_dir) {
 			return true;
 		}
 
 		// Only files.
-		if ( ! $this->current()->isFile() ) {
+		if (! $this->current()->isFile()) {
 			return false;
 		}
 
 		// Only files with the required extension.
-		if ( ! isset( $extensions ) ) {
-			$extensions = array_keys( imagify_get_mime_types() );
-			$extensions = implode( '|', $extensions );
+		if (! isset($extensions)) {
+			$extensions = array_keys(imagify_get_mime_types());
+			$extensions = implode('|', $extensions);
 		}
 
-		if ( ! isset( $has_extension_method ) ) {
+		if (! isset($has_extension_method)) {
 			// This method was introduced in php 5.3.6.
-			$has_extension_method = method_exists( $this->current(), 'getExtension' );
+			$has_extension_method = method_exists($this->current(), 'getExtension');
 		}
 
-		if ( $has_extension_method ) {
-			$file_extension = strtolower( $this->current()->getExtension() );
+		if ($has_extension_method) {
+			$file_extension = strtolower($this->current()->getExtension());
 		} else {
-			$file_extension = strtolower( $this->filesystem->path_info( $file_path, 'extension' ) );
+			$file_extension = strtolower($this->filesystem->path_info($file_path, 'extension'));
 		}
 
-		return preg_match( '@^' . $extensions . '$@', $file_extension );
+		return preg_match('@^' . $extensions . '$@', $file_extension);
 	}
 }

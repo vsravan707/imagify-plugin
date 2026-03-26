@@ -29,7 +29,7 @@ parameters:
 		- vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
 		- vendor/php-stubs/wordpress-tests-stubs/wordpress-tests-stubs.php
 	excludePaths:
-		 # These needs to be updated to abstract filesystem instantiation outside of Imagify_Filesystem class
+		# These needs to be updated to abstract filesystem instantiation outside of Imagify_Filesystem class
 		 - classes/Avif/Display.php
 		 - classes/Avif/RewriteRules/Display.php
 		 - classes/Bulk/AbstractBulk.php
@@ -48,7 +48,7 @@ parameters:
 		 - classes/WriteFile/AbstractApacheDirConfFile.php
 		 - classes/WriteFile/AbstractWriteDirConfFile.php
 		 - classes/WriteFile/AbstractNginxDirConfFile.php
-		 # WP_CLI is not part of the testable paths
+		# WP_CLI is not part of the testable paths
 		 - classes/CLI/
 rules:
 	- Imagify\Tests\phpstan\Rules\DiscourageApplyFilters

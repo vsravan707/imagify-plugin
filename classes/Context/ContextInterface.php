@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Context;
 
 /**
@@ -7,7 +8,8 @@ namespace Imagify\Context;
  * @since  1.9
  * @author Grégory Viguier
  */
-interface ContextInterface {
+interface ContextInterface
+{
 
 	/**
 	 * Get the main Instance.
@@ -112,7 +114,7 @@ interface ContextInterface {
 	 * @param  int    $media_id  A media ID.
 	 * @return bool
 	 */
-	public function current_user_can( $describer, $media_id = null );
+	public function current_user_can($describer, $media_id = null);
 
 	/**
 	 * Tell if a user is allowed to operate Imagify in this context.
@@ -125,7 +127,7 @@ interface ContextInterface {
 	 * @param  int    $media_id  A media ID.
 	 * @return bool
 	 */
-	public function user_can( $user_id, $describer, $media_id = null );
+	public function user_can($user_id, $describer, $media_id = null);
 
 	/**
 	 * Get user capacity to operate Imagify in this context.
@@ -137,5 +139,5 @@ interface ContextInterface {
 	 * @param  string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 	 * @return string
 	 */
-	public function get_capacity( $describer );
+	public function get_capacity($describer);
 }

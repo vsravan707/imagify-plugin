@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG\Optimization\Data;
 
 use Imagify\Traits\MediaRowTrait;
@@ -16,7 +17,8 @@ use Imagify\Traits\MediaRowTrait;
  * @see    Imagify\ThirdParty\NGG\Media\NGG
  * @author Grégory Viguier
  */
-class NGG extends \Imagify\Optimization\Data\AbstractData {
+class NGG extends \Imagify\Optimization\Data\AbstractData
+{
 	use MediaRowTrait;
 
 	/**
@@ -38,10 +40,11 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 *
 	 * @param mixed $id An ID, or whatever type the "Media" class constructor accepts.
 	 */
-	public function __construct( $id ) {
-		parent::__construct( $id );
+	public function __construct($id)
+	{
+		parent::__construct($id);
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			return;
 		}
 
@@ -58,37 +61,38 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 *
 	 * @return array The data. See parent method for details.
 	 */
-	public function get_optimization_data() {
-		if ( ! $this->is_valid() ) {
+	public function get_optimization_data()
+	{
+		if (! $this->is_valid()) {
 			return $this->default_optimization_data;
 		}
 
-		$row  = array_merge( $this->get_row_db_instance()->get_column_defaults(), $this->get_row() );
+		$row  = array_merge($this->get_row_db_instance()->get_column_defaults(), $this->get_row());
 		$data = $this->default_optimization_data;
 
 		$data['status'] = $row['status'];
 		$data['level']  = $row['optimization_level'];
-		$data['level']  = is_numeric( $data['level'] ) ? (int) $data['level'] : false;
+		$data['level']  = is_numeric($data['level']) ? (int) $data['level'] : false;
 		$data['stats']  = [
 			'original_size'  => 0,
 			'optimized_size' => 0,
 			'percent'        => 0,
 		];
 
-		if ( ! empty( $row['data']['sizes'] ) && is_array( $row['data']['sizes'] ) ) {
+		if (! empty($row['data']['sizes']) && is_array($row['data']['sizes'])) {
 			$data['sizes'] = $row['data']['sizes'];
-			$data['sizes'] = array_filter( $data['sizes'], 'is_array' );
+			$data['sizes'] = array_filter($data['sizes'], 'is_array');
 		}
 
-		if ( empty( $data['sizes']['full'] ) ) {
-			if ( 'success' === $row['status'] ) {
+		if (empty($data['sizes']['full'])) {
+			if ('success' === $row['status']) {
 				$data['sizes']['full'] = [
 					'success'        => true,
 					'original_size'  => 0,
 					'optimized_size' => 0,
 					'percent'        => 0,
 				];
-			} elseif ( ! empty( $row['status'] ) ) {
+			} elseif (! empty($row['status'])) {
 				$data['sizes']['full'] = [
 					'success' => false,
 					'error'   => '',
@@ -96,31 +100,31 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 			}
 		}
 
-		if ( empty( $data['sizes'] ) ) {
+		if (empty($data['sizes'])) {
 			return $data;
 		}
 
-		foreach ( $data['sizes'] as $size_data ) {
+		foreach ($data['sizes'] as $size_data) {
 			// Cast.
-			if ( isset( $size_data['original_size'] ) ) {
+			if (isset($size_data['original_size'])) {
 				$size_data['original_size'] = (int) $size_data['original_size'];
 			}
-			if ( isset( $size_data['optimized_size'] ) ) {
+			if (isset($size_data['optimized_size'])) {
 				$size_data['optimized_size'] = (int) $size_data['optimized_size'];
 			}
-			if ( isset( $size_data['percent'] ) ) {
-				$size_data['percent'] = round( $size_data['percent'], 2 );
+			if (isset($size_data['percent'])) {
+				$size_data['percent'] = round($size_data['percent'], 2);
 			}
 			// Stats.
-			if ( ! empty( $size_data['original_size'] ) && ! empty( $size_data['optimized_size'] ) ) {
+			if (! empty($size_data['original_size']) && ! empty($size_data['optimized_size'])) {
 				$data['stats']['original_size']  += $size_data['original_size'];
 				$data['stats']['optimized_size'] += $size_data['optimized_size'];
 			}
 		}
 
-		if ( $data['stats']['original_size'] && $data['stats']['optimized_size'] ) {
+		if ($data['stats']['original_size'] && $data['stats']['optimized_size']) {
 			$data['stats']['percent'] = $data['stats']['original_size'] - $data['stats']['optimized_size'];
-			$data['stats']['percent'] = round( $data['stats']['percent'] / $data['stats']['original_size'] * 100, 2 );
+			$data['stats']['percent'] = round($data['stats']['percent'] / $data['stats']['original_size'] * 100, 2);
 		}
 
 		return $data;
@@ -136,16 +140,17 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 * @param string $size The size name.
 	 * @param array  $data The optimization data. See parent method for details.
 	 */
-	public function update_size_optimization_data( $size, array $data ) {
-		if ( ! $this->is_valid() ) {
+	public function update_size_optimization_data($size, array $data)
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
-		$old_data = array_merge( $this->get_reset_data(), $this->get_row() );
+		$old_data = array_merge($this->get_reset_data(), $this->get_row());
 
-		$old_data['data']['sizes'] = ! empty( $old_data['data']['sizes'] ) && is_array( $old_data['data']['sizes'] ) ? $old_data['data']['sizes'] : [];
+		$old_data['data']['sizes'] = ! empty($old_data['data']['sizes']) && is_array($old_data['data']['sizes']) ? $old_data['data']['sizes'] : [];
 
-		if ( 'full' === $size ) {
+		if ('full' === $size) {
 			/**
 			 * Original file.
 			 */
@@ -153,11 +158,11 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 			$old_data['status']             = $data['status'];
 		}
 
-		if ( ! $data['success'] ) {
+		if (! $data['success']) {
 			/**
 			 * Error.
 			 */
-			$old_data['data']['sizes'][ $size ] = [
+			$old_data['data']['sizes'][$size] = [
 				'success' => false,
 				'error'   => $data['error'],
 			];
@@ -165,15 +170,15 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 			/**
 			 * Success.
 			 */
-			$old_data['data']['sizes'][ $size ] = [
+			$old_data['data']['sizes'][$size] = [
 				'success'        => true,
 				'original_size'  => $data['original_size'],
 				'optimized_size' => $data['optimized_size'],
-				'percent'        => round( ( $data['original_size'] - $data['optimized_size'] ) / $data['original_size'] * 100, 2 ),
+				'percent'        => round(($data['original_size'] - $data['optimized_size']) / $data['original_size'] * 100, 2),
 			];
 		}
 
-		$this->update_row( $old_data );
+		$this->update_row($old_data);
 	}
 
 	/**
@@ -183,8 +188,9 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function delete_optimization_data() {
-		if ( ! $this->is_valid() ) {
+	public function delete_optimization_data()
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
@@ -202,35 +208,36 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 *
 	 * @param array $sizes A list of sizes to remove.
 	 */
-	public function delete_sizes_optimization_data( array $sizes ) {
-		if ( ! $sizes || ! $this->is_valid() ) {
+	public function delete_sizes_optimization_data(array $sizes)
+	{
+		if (! $sizes || ! $this->is_valid()) {
 			return;
 		}
 
-		$data = array_merge( $this->get_reset_data(), $this->get_row() );
+		$data = array_merge($this->get_reset_data(), $this->get_row());
 
-		$data['data']['sizes'] = ! empty( $data['data']['sizes'] ) && is_array( $data['data']['sizes'] ) ? $data['data']['sizes'] : [];
+		$data['data']['sizes'] = ! empty($data['data']['sizes']) && is_array($data['data']['sizes']) ? $data['data']['sizes'] : [];
 
-		if ( ! $data['data']['sizes'] ) {
+		if (! $data['data']['sizes']) {
 			return;
 		}
 
-		$remaining_sizes_data = array_diff_key( $data['data']['sizes'], array_flip( $sizes ) );
+		$remaining_sizes_data = array_diff_key($data['data']['sizes'], array_flip($sizes));
 
-		if ( ! $remaining_sizes_data ) {
+		if (! $remaining_sizes_data) {
 			// All sizes have been removed: delete everything.
 			$this->delete_optimization_data();
 			return;
 		}
 
-		if ( count( $remaining_sizes_data ) === count( $data['data']['sizes'] ) ) {
+		if (count($remaining_sizes_data) === count($data['data']['sizes'])) {
 			// Nothing has been removed.
 			return;
 		}
 
 		$data['data']['sizes'] = $remaining_sizes_data;
 
-		$this->update_row( $data );
+		$this->update_row($data);
 	}
 
 	/**
@@ -248,7 +255,8 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 *     @type array  $data               Data related to the thumbnails.
 	 * }
 	 */
-	protected function get_reset_data() {
+	protected function get_reset_data()
+	{
 		$db_instance     = $this->get_row_db_instance();
 		$primary_key     = $db_instance->get_primary_key();
 		$column_defaults = $db_instance->get_column_defaults();
@@ -271,16 +279,17 @@ class NGG extends \Imagify\Optimization\Data\AbstractData {
 	 *
 	 * @param array $data The data to update.
 	 */
-	public function update_row( $data ) {
-		if ( ! $this->db_class_name || $this->id <= 0 ) {
+	public function update_row($data)
+	{
+		if (! $this->db_class_name || $this->id <= 0) {
 			return;
 		}
 
 		$primary_key = $this->get_row_db_instance()->get_primary_key();
 		// This is needed in case the row doesn't exist yet.
-		$data[ $primary_key ] = $this->id;
+		$data[$primary_key] = $this->id;
 
-		$this->get_row_db_instance()->update( $this->id, $data );
+		$this->get_row_db_instance()->update($this->id, $data);
 
 		$this->reset_row_cache();
 	}

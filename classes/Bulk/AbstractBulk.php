@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Bulk;
 
 use Imagify_Filesystem;
@@ -8,7 +9,8 @@ use Imagify_Filesystem;
  *
  * @since 1.9
  */
-abstract class AbstractBulk implements BulkInterface {
+abstract class AbstractBulk implements BulkInterface
+{
 	/**
 	 * Filesystem object.
 	 *
@@ -22,7 +24,8 @@ abstract class AbstractBulk implements BulkInterface {
 	 *
 	 * @since 1.9
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->filesystem = Imagify_Filesystem::get_instance();
 	}
 
@@ -49,7 +52,8 @@ abstract class AbstractBulk implements BulkInterface {
 	 *     @type string $original-size   Original filesize.
 	 * }
 	 */
-	protected function format_context_data( $data ) {
+	protected function format_context_data($data)
+	{
 		$defaults = [
 			'count-optimized' => '',
 			'count-errors'    => '',
@@ -57,36 +61,35 @@ abstract class AbstractBulk implements BulkInterface {
 			'original-size'   => '',
 		];
 
-		$data = wp_parse_args( $data, $defaults );
+		$data = wp_parse_args($data, $defaults);
 
 		$data = array_map(
-			function ( $item ) {
-				return empty( $item ) ? '' : $item;
+			function ($item) {
+				return empty($item) ? '' : $item;
 			},
 			$data
 		);
 
-		if ( ! empty( $data['count-optimized'] ) ) {
+		if (! empty($data['count-optimized'])) {
 			// translators: %s is a formatted number, dont use %d.
-			$data['count-optimized'] = sprintf( _n( '%s Media File Optimized', '%s Media Files Optimized', $data['count-optimized'], 'imagify' ), '<span>' . number_format_i18n( $data['count-optimized'] ) . '</span>' );
-
+			$data['count-optimized'] = sprintf(_n('%s Media File Optimized', '%s Media Files Optimized', $data['count-optimized'], 'imagify'), '<span>' . number_format_i18n($data['count-optimized']) . '</span>');
 		}
 
-		if ( ! empty( $data['count-errors'] ) ) {
+		if (! empty($data['count-errors'])) {
 			/* translators: %s is a formatted number, dont use %d. */
-			$data['count-errors']  = sprintf( _n( '%s Error', '%s Errors', $data['count-errors'], 'imagify' ), '<span>' . number_format_i18n( $data['count-errors'] ) . '</span>' );
-			$data['count-errors'] .= ' <a href="' . esc_url( $data['errors_url'] ) . '">' . __( 'View Errors', 'imagify' ) . '</a>';
+			$data['count-errors']  = sprintf(_n('%s Error', '%s Errors', $data['count-errors'], 'imagify'), '<span>' . number_format_i18n($data['count-errors']) . '</span>');
+			$data['count-errors'] .= ' <a href="' . esc_url($data['errors_url']) . '">' . __('View Errors', 'imagify') . '</a>';
 		}
 
-		if ( ! empty( $data['optimized-size'] ) ) {
-			$data['optimized-size'] = '<span class="imagify-cell-label">' . __( 'Optimized Filesize', 'imagify' ) . '</span> ' . imagify_size_format( $data['optimized-size'], 2 );
+		if (! empty($data['optimized-size'])) {
+			$data['optimized-size'] = '<span class="imagify-cell-label">' . __('Optimized Filesize', 'imagify') . '</span> ' . imagify_size_format($data['optimized-size'], 2);
 		}
 
-		if ( ! empty( $data['original-size'] ) ) {
-			$data['original-size'] = '<span class="imagify-cell-label">' . __( 'Original Filesize', 'imagify' ) . '</span> ' . imagify_size_format( $data['original-size'], 2 );
+		if (! empty($data['original-size'])) {
+			$data['original-size'] = '<span class="imagify-cell-label">' . __('Original Filesize', 'imagify') . '</span> ' . imagify_size_format($data['original-size'], 2);
 		}
 
-		unset( $data['errors_url'] );
+		unset($data['errors_url']);
 
 		return $data;
 	}
@@ -96,14 +99,15 @@ abstract class AbstractBulk implements BulkInterface {
 	 *
 	 * @return void
 	 */
-	protected function set_no_time_limit() {
+	protected function set_no_time_limit()
+	{
 		if (
-			function_exists( 'set_time_limit' )
+			function_exists('set_time_limit')
 			&&
-			false === strpos( ini_get( 'disable_functions' ), 'set_time_limit' )
-			&& ! ini_get( 'safe_mode' ) // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
+			false === strpos(ini_get('disable_functions'), 'set_time_limit')
+			&& ! ini_get('safe_mode') // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
 		) {
-			@set_time_limit( 0 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			@set_time_limit(0); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		}
 	}
 
@@ -114,13 +118,14 @@ abstract class AbstractBulk implements BulkInterface {
 	 *
 	 * @return int The number of media.
 	 */
-	public function has_optimized_media_without_nextgen() {
-		$format = get_imagify_option( 'optimization_format' );
+	public function has_optimized_media_without_nextgen()
+	{
+		$format = get_imagify_option('optimization_format');
 
-		if ( 'off' === $format ) {
+		if ('off' === $format) {
 			return 0;
 		}
 
-		return count( $this->get_optimized_media_ids_without_format( $format )['ids'] );
+		return count($this->get_optimized_media_ids_without_format($format)['ids']);
 	}
 }

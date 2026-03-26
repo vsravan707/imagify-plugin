@@ -9,7 +9,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since 1.8.4
  */
-class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
+class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -67,32 +68,33 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @since 1.8.4
 	 */
-	public function init() {
+	public function init()
+	{
 		global $wp_version;
 
 		$priority       = IMAGIFY_INT_MAX - 30;
-		$this->is_wp_53 = version_compare( $wp_version, '5.3-alpha1' ) >= 0;
+		$this->is_wp_53 = version_compare($wp_version, '5.3-alpha1') >= 0;
 
 		// Automatic optimization tunel.
-		add_action( 'add_attachment', [ $this, 'store_upload_ids' ], $priority );
-		add_filter( 'wp_generate_attachment_metadata', [ $this, 'maybe_store_generate_step' ], $priority, 2 );
-		add_filter( 'wp_update_attachment_metadata', [ $this, 'store_ids_to_optimize' ], $priority, 2 );
+		add_action('add_attachment', [$this, 'store_upload_ids'], $priority);
+		add_filter('wp_generate_attachment_metadata', [$this, 'maybe_store_generate_step'], $priority, 2);
+		add_filter('wp_update_attachment_metadata', [$this, 'store_ids_to_optimize'], $priority, 2);
 
-		if ( $this->is_wp_53 ) {
+		if ($this->is_wp_53) {
 			// WP 5.3+.
-			add_action( 'imagify_after_auto_optimization_init', [ $this, 'do_auto_optimization' ], $priority, 2 );
+			add_action('imagify_after_auto_optimization_init', [$this, 'do_auto_optimization'], $priority, 2);
 			// Upload failure recovering.
-			add_action( 'wp_ajax_media-create-image-subsizes', [ $this, 'prevent_auto_optimization_when_recovering_from_upload_failure' ], -5 ); // Before WP’s hook (priority 1).
+			add_action('wp_ajax_media-create-image-subsizes', [$this, 'prevent_auto_optimization_when_recovering_from_upload_failure'], -5); // Before WP’s hook (priority 1).
 		} else {
-			add_action( 'updated_post_meta', [ $this, 'do_auto_optimization_after_meta_update' ], $priority, 4 );
-			add_action( 'added_post_meta', [ $this, 'do_auto_optimization_after_meta_update' ], $priority, 4 );
+			add_action('updated_post_meta', [$this, 'do_auto_optimization_after_meta_update'], $priority, 4);
+			add_action('added_post_meta', [$this, 'do_auto_optimization_after_meta_update'], $priority, 4);
 		}
 
-		add_action( 'deleted_post_meta', [ $this, 'unset_optimization' ], $priority, 3 );
+		add_action('deleted_post_meta', [$this, 'unset_optimization'], $priority, 3);
 
 		// Prevent to re-optimize when updating the image width and height (when resizing the full image).
-		add_action( 'imagify_before_update_wp_media_data_dimensions', [ __CLASS__, 'prevent_optimization' ], 5 );
-		add_action( 'imagify_after_update_wp_media_data_dimensions', [ __CLASS__, 'allow_optimization' ], 5 );
+		add_action('imagify_before_update_wp_media_data_dimensions', [__CLASS__, 'prevent_optimization'], 5);
+		add_action('imagify_after_update_wp_media_data_dimensions', [__CLASS__, 'allow_optimization'], 5);
 	}
 
 	/**
@@ -100,29 +102,30 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @since 1.8.4
 	 */
-	public function remove_hooks() {
+	public function remove_hooks()
+	{
 		$priority = IMAGIFY_INT_MAX - 30;
 
 		// Automatic optimization tunel.
-		remove_action( 'add_attachment', [ $this, 'store_upload_ids' ], $priority );
-		remove_filter( 'wp_generate_attachment_metadata', [ $this, 'maybe_store_generate_step' ], $priority );
-		remove_filter( 'wp_update_attachment_metadata', [ $this, 'store_ids_to_optimize' ], $priority );
+		remove_action('add_attachment', [$this, 'store_upload_ids'], $priority);
+		remove_filter('wp_generate_attachment_metadata', [$this, 'maybe_store_generate_step'], $priority);
+		remove_filter('wp_update_attachment_metadata', [$this, 'store_ids_to_optimize'], $priority);
 
-		if ( $this->is_wp_53 ) {
+		if ($this->is_wp_53) {
 			// WP 5.3+.
-			remove_action( 'imagify_after_auto_optimization_init', [ $this, 'do_auto_optimization' ], $priority );
+			remove_action('imagify_after_auto_optimization_init', [$this, 'do_auto_optimization'], $priority);
 			// Upload failure recovering.
-			remove_action( 'wp_ajax_media-create-image-subsizes', [ $this, 'prevent_auto_optimization_when_recovering_from_upload_failure' ], -5 );
+			remove_action('wp_ajax_media-create-image-subsizes', [$this, 'prevent_auto_optimization_when_recovering_from_upload_failure'], -5);
 		} else {
-			remove_action( 'updated_post_meta', [ $this, 'do_auto_optimization_after_meta_update' ], $priority );
-			remove_action( 'added_post_meta', [ $this, 'do_auto_optimization_after_meta_update' ], $priority );
+			remove_action('updated_post_meta', [$this, 'do_auto_optimization_after_meta_update'], $priority);
+			remove_action('added_post_meta', [$this, 'do_auto_optimization_after_meta_update'], $priority);
 		}
 
-		remove_action( 'deleted_post_meta', [ $this, 'unset_optimization' ], $priority );
+		remove_action('deleted_post_meta', [$this, 'unset_optimization'], $priority);
 
 		// Prevent to re-optimize when updating the image width and height (when resizing the full image).
-		remove_action( 'imagify_before_update_wp_media_data_dimensions', [ __CLASS__, 'prevent_optimization' ], 5 );
-		remove_action( 'imagify_after_update_wp_media_data_dimensions', [ __CLASS__, 'allow_optimization' ], 5 );
+		remove_action('imagify_before_update_wp_media_data_dimensions', [__CLASS__, 'prevent_optimization'], 5);
+		remove_action('imagify_after_update_wp_media_data_dimensions', [__CLASS__, 'allow_optimization'], 5);
 	}
 
 
@@ -138,9 +141,10 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @param int $attachment_id Current attachment ID.
 	 */
-	public function store_upload_ids( $attachment_id ) {
-		if ( ! self::is_optimization_prevented( $attachment_id ) && imagify_is_attachment_mime_type_supported( $attachment_id ) ) {
-			$this->set_step( $attachment_id, 'upload' );
+	public function store_upload_ids($attachment_id)
+	{
+		if (! self::is_optimization_prevented($attachment_id) && imagify_is_attachment_mime_type_supported($attachment_id)) {
+			$this->set_step($attachment_id, 'upload');
 		}
 	}
 
@@ -153,17 +157,18 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param  int   $attachment_id Current attachment ID.
 	 * @return array
 	 */
-	public function maybe_store_generate_step( $metadata, $attachment_id ) {
-		if ( self::is_optimization_prevented( $attachment_id ) ) {
+	public function maybe_store_generate_step($metadata, $attachment_id)
+	{
+		if (self::is_optimization_prevented($attachment_id)) {
 			return $metadata;
 		}
 
-		if ( empty( $metadata ) || ! imagify_is_attachment_mime_type_supported( $attachment_id ) ) {
-			$this->unset_steps( $attachment_id );
+		if (empty($metadata) || ! imagify_is_attachment_mime_type_supported($attachment_id)) {
+			$this->unset_steps($attachment_id);
 			return $metadata;
 		}
 
-		$this->set_step( $attachment_id, 'generate' );
+		$this->set_step($attachment_id, 'generate');
 
 		return $metadata;
 	}
@@ -180,31 +185,32 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param  int   $attachment_id Current attachment ID.
 	 * @return array
 	 */
-	public function store_ids_to_optimize( $metadata, $attachment_id ) {
+	public function store_ids_to_optimize($metadata, $attachment_id)
+	{
 		static $auto_optimize;
 
-		if ( self::is_optimization_prevented( $attachment_id ) ) {
+		if (self::is_optimization_prevented($attachment_id)) {
 			return $metadata;
 		}
 
-		if ( empty( $metadata ) || ! imagify_is_attachment_mime_type_supported( $attachment_id ) ) {
-			$this->unset_steps( $attachment_id );
+		if (empty($metadata) || ! imagify_is_attachment_mime_type_supported($attachment_id)) {
+			$this->unset_steps($attachment_id);
 			return $metadata;
 		}
 
-		if ( ! $this->has_step( $attachment_id, 'generate' ) ) {
+		if (! $this->has_step($attachment_id, 'generate')) {
 			return $metadata;
 		}
 
-		$is_new_upload = $this->has_step( $attachment_id, 'upload' );
+		$is_new_upload = $this->has_step($attachment_id, 'upload');
 
-		if ( $is_new_upload ) {
+		if ($is_new_upload) {
 			// It's a new upload.
-			if ( ! isset( $auto_optimize ) ) {
-				$auto_optimize = get_imagify_option( 'auto_optimize' );
+			if (! isset($auto_optimize)) {
+				$auto_optimize = get_imagify_option('auto_optimize');
 			}
 
-			if ( ! $auto_optimize ) {
+			if (! $auto_optimize) {
 				/**
 				 * Fires when a new attachment is uploaded but auto-optimization is disabled.
 				 *
@@ -213,7 +219,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 				 * @param int   $attachment_id Attachment ID.
 				 * @param array $metadata      An array of attachment meta data.
 				 */
-				do_action( 'imagify_new_attachment_auto_optimization_disabled', $attachment_id, $metadata );
+				do_action('imagify_new_attachment_auto_optimization_disabled', $attachment_id, $metadata);
 
 				return $metadata;
 			}
@@ -227,9 +233,9 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 			 * @param int   $attachment_id Attachment ID.
 			 * @param array $metadata      An array of attachment meta data.
 			 */
-			$optimize = apply_filters( 'imagify_auto_optimize_attachment', true, $attachment_id, $metadata );
+			$optimize = apply_filters('imagify_auto_optimize_attachment', true, $attachment_id, $metadata);
 
-			if ( ! $optimize ) {
+			if (! $optimize) {
 				return $metadata;
 			}
 
@@ -238,16 +244,16 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 			 */
 		}
 
-		if ( ! $is_new_upload ) {
+		if (! $is_new_upload) {
 			// An existing attachment being regenerated (or something).
-			$process = imagify_get_optimization_process( $attachment_id, 'wp' );
+			$process = imagify_get_optimization_process($attachment_id, 'wp');
 
-			if ( ! $process->is_valid() ) {
+			if (! $process->is_valid()) {
 				// Uh?
 				return $metadata;
 			}
 
-			if ( ! $process->get_data()->get_optimization_status() ) {
+			if (! $process->get_data()->get_optimization_status()) {
 				/**
 				 * Fires when an attachment is updated but not optimized yet.
 				 *
@@ -256,7 +262,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 				 * @param int   $attachment_id Attachment ID.
 				 * @param array $metadata      An array of attachment meta data.
 				 */
-				do_action( 'imagify_not_optimized_attachment_updated', $attachment_id, $metadata );
+				do_action('imagify_not_optimized_attachment_updated', $attachment_id, $metadata);
 
 				return $metadata;
 			}
@@ -270,9 +276,9 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 			 * @param int   $attachment_id Attachment ID.
 			 * @param array $metadata      An array of attachment meta data.
 			 */
-			$optimize = apply_filters( 'imagify_auto_optimize_optimized_attachment', true, $attachment_id, $metadata );
+			$optimize = apply_filters('imagify_auto_optimize_optimized_attachment', true, $attachment_id, $metadata);
 
-			if ( ! $optimize ) {
+			if (! $optimize) {
 				return $metadata;
 			}
 
@@ -282,7 +288,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 		}
 
 		// Ready for the next step.
-		$this->set_step( $attachment_id, 'update' );
+		$this->set_step($attachment_id, 'update');
 
 		/**
 		 * Triggered after a media auto-optimization init.
@@ -292,7 +298,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 		 * @param int  $attachment_id The media ID.
 		 * @param bool $is_new_upload True if it's a new upload. False otherwize.
 		 */
-		do_action( 'imagify_after_auto_optimization_init', $attachment_id, $is_new_upload );
+		do_action('imagify_after_auto_optimization_init', $attachment_id, $is_new_upload);
 
 		return $metadata;
 	}
@@ -308,20 +314,21 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param string $meta_key      Meta key.
 	 * @param mixed  $metadata      Meta value.
 	 */
-	public function do_auto_optimization_after_meta_update( $meta_id, $attachment_id, $meta_key, $metadata ) {
-		if ( '_wp_attachment_metadata' !== $meta_key ) {
+	public function do_auto_optimization_after_meta_update($meta_id, $attachment_id, $meta_key, $metadata)
+	{
+		if ('_wp_attachment_metadata' !== $meta_key) {
 			return;
 		}
 
-		if ( self::is_optimization_prevented( $attachment_id ) ) {
+		if (self::is_optimization_prevented($attachment_id)) {
 			return;
 		}
 
-		if ( ! $this->has_step( $attachment_id, 'update' ) ) {
+		if (! $this->has_step($attachment_id, 'update')) {
 			return;
 		}
 
-		$this->do_auto_optimization( $attachment_id, $this->has_step( $attachment_id, 'upload' ) );
+		$this->do_auto_optimization($attachment_id, $this->has_step($attachment_id, 'upload'));
 	}
 
 	/**
@@ -333,10 +340,11 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param int  $attachment_id The media ID.
 	 * @param bool $is_new_upload True if it's a new upload. False otherwize.
 	 */
-	public function do_auto_optimization( $attachment_id, $is_new_upload ) {
-		$this->unset_steps( $attachment_id );
+	public function do_auto_optimization($attachment_id, $is_new_upload)
+	{
+		$this->unset_steps($attachment_id);
 
-		$process = imagify_get_optimization_process( $attachment_id, 'wp' );
+		$process = imagify_get_optimization_process($attachment_id, 'wp');
 
 		/**
 		 * Fires before an attachment auto-optimization is triggered.
@@ -346,7 +354,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 		 * @param int  $attachment_id The attachment ID.
 		 * @param bool $is_new_upload True if it's a new upload. False otherwize.
 		 */
-		do_action_deprecated( 'imagify_before_auto_optimization_launch', [ $attachment_id, $is_new_upload ], '1.9', 'imagify_before_auto_optimization' );
+		do_action_deprecated('imagify_before_auto_optimization_launch', [$attachment_id, $is_new_upload], '1.9', 'imagify_before_auto_optimization');
 
 		/**
 		 * Triggered before a media is auto-optimized.
@@ -356,14 +364,14 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 		 * @param int  $attachment_id The media ID.
 		 * @param bool $is_new_upload True if it's a new upload. False otherwize.
 		 */
-		do_action( 'imagify_before_auto_optimization', $attachment_id, $is_new_upload );
+		do_action('imagify_before_auto_optimization', $attachment_id, $is_new_upload);
 
-		if ( $is_new_upload ) {
+		if ($is_new_upload) {
 			/**
 			 * It's a new upload.
 			 */
 			// Optimize.
-			$process->optimize( null, [ 'is_new_upload' => 1 ] );
+			$process->optimize(null, ['is_new_upload' => 1]);
 		} else {
 			/**
 			 * The media has already been optimized (or at least it has been tried).
@@ -374,17 +382,17 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 			$optimization_level = $process_data->get_optimization_level();
 
 			// Some specifics for the image editor.
-			if ( isset( $_POST['action'], $_POST['do'], $_POST['postid'] ) && 'image-editor' === $_POST['action'] && (int) $_POST['postid'] === $attachment_id ) { // WPCS: CSRF ok.
-				check_ajax_referer( 'image_editor-' . $attachment_id );
+			if (isset($_POST['action'], $_POST['do'], $_POST['postid']) && 'image-editor' === $_POST['action'] && (int) $_POST['postid'] === $attachment_id) { // WPCS: CSRF ok.
+				check_ajax_referer('image_editor-' . $attachment_id);
 
-				if ( ! current_user_can( 'edit_post', $attachment_id ) ) {
+				if (! current_user_can('edit_post', $attachment_id)) {
 					imagify_die();
 				}
 
 				// Restore the backup file.
 				$result = $process->restore();
 
-				if ( is_wp_error( $result ) ) {
+				if (is_wp_error($result)) {
 					// Restoration failed, there is no good way to handle this case.
 					$process_data->delete_optimization_data();
 				}
@@ -394,7 +402,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 			}
 
 			// Optimize.
-			$process->optimize( $optimization_level );
+			$process->optimize($optimization_level);
 		}
 
 		/**
@@ -405,7 +413,7 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 		 * @param int  $attachment_id The media ID.
 		 * @param bool $is_new_upload True if it's a new upload. False otherwize.
 		 */
-		do_action( 'imagify_after_auto_optimization', $attachment_id, $is_new_upload );
+		do_action('imagify_after_auto_optimization', $attachment_id, $is_new_upload);
 	}
 
 	/**
@@ -417,12 +425,13 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param int    $attachment_id Current attachment ID.
 	 * @param string $meta_key      Meta key.
 	 */
-	public function unset_optimization( $meta_ids, $attachment_id, $meta_key ) {
-		if ( '_wp_attachment_metadata' !== $meta_key ) {
+	public function unset_optimization($meta_ids, $attachment_id, $meta_key)
+	{
+		if ('_wp_attachment_metadata' !== $meta_key) {
 			return;
 		}
 
-		$this->unset_steps( $attachment_id );
+		$this->unset_steps($attachment_id);
 	}
 
 
@@ -437,33 +446,34 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @see   wp_ajax_media_create_image_subsizes()
 	 * @see   wp_update_image_subsizes()
 	 */
-	public function prevent_auto_optimization_when_recovering_from_upload_failure() {
-		if ( ! check_ajax_referer( 'media-form', false, false ) ) {
+	public function prevent_auto_optimization_when_recovering_from_upload_failure()
+	{
+		if (! check_ajax_referer('media-form', false, false)) {
 			return;
 		}
 
-		if ( ! current_user_can( 'upload_files' ) ) {
+		if (! current_user_can('upload_files')) {
 			return;
 		}
 
-		if ( ! imagify_get_context( 'wp' )->current_user_can( 'auto-optimize' ) ) {
+		if (! imagify_get_context('wp')->current_user_can('auto-optimize')) {
 			return;
 		}
 
-		$attachment_id = ! empty( $_POST['attachment_id'] ) ? (int) $_POST['attachment_id'] : 0;
+		$attachment_id = ! empty($_POST['attachment_id']) ? (int) $_POST['attachment_id'] : 0;
 
-		if ( empty( $attachment_id ) ) {
+		if (empty($attachment_id)) {
 			return;
 		}
 
-		if ( ! imagify_is_attachment_mime_type_supported( $attachment_id ) ) {
+		if (! imagify_is_attachment_mime_type_supported($attachment_id)) {
 			return;
 		}
 
 		$this->upload_failure_id = $attachment_id;
 
 		// Auto-optimization will be done on shutdown.
-		ob_start( [ $this, 'maybe_do_auto_optimization_after_recovering_from_upload_failure' ] );
+		ob_start([$this, 'maybe_do_auto_optimization_after_recovering_from_upload_failure']);
 	}
 
 	/**
@@ -475,33 +485,34 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param  string $content Buffer’s content.
 	 * @return string          Buffer’s content.
 	 */
-	public function maybe_do_auto_optimization_after_recovering_from_upload_failure( $content ) {
-		if ( empty( $content ) ) {
+	public function maybe_do_auto_optimization_after_recovering_from_upload_failure($content)
+	{
+		if (empty($content)) {
 			return $content;
 		}
 
-		if ( empty( $this->upload_failure_id ) ) {
+		if (empty($this->upload_failure_id)) {
 			// Uh?
 			return $content;
 		}
 
-		if ( ! get_post( $this->upload_failure_id ) ) {
+		if (! get_post($this->upload_failure_id)) {
 			return $content;
 		}
 
-		$json = json_decode( $content );
+		$json = json_decode($content);
 
-		if ( empty( $json->success ) ) {
+		if (empty($json->success)) {
 			return $content;
 		}
 
 		$attachment_id = $this->upload_failure_id;
-		$metadata      = wp_get_attachment_metadata( $attachment_id );
+		$metadata      = wp_get_attachment_metadata($attachment_id);
 
 		// Launch the process.
 		$this->upload_failure_id = 0;
-		$this->set_step( $attachment_id, 'generate' );
-		$this->store_ids_to_optimize( $metadata, $attachment_id );
+		$this->set_step($attachment_id, 'generate');
+		$this->store_ids_to_optimize($metadata, $attachment_id);
 
 		return $content;
 	}
@@ -520,12 +531,13 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param int    $attachment_id Current attachment ID.
 	 * @param string $step          The step to add.
 	 */
-	public function set_step( $attachment_id, $step ) {
-		if ( empty( $this->attachments[ $attachment_id ] ) ) {
-			$this->attachments[ $attachment_id ] = [];
+	public function set_step($attachment_id, $step)
+	{
+		if (empty($this->attachments[$attachment_id])) {
+			$this->attachments[$attachment_id] = [];
 		}
 
-		$this->attachments[ $attachment_id ][ $step ] = 1;
+		$this->attachments[$attachment_id][$step] = 1;
 	}
 
 	/**
@@ -537,11 +549,12 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param int    $attachment_id Current attachment ID.
 	 * @param string $step          The step to add.
 	 */
-	public function unset_step( $attachment_id, $step ) {
-		unset( $this->attachments[ $attachment_id ][ $step ] );
+	public function unset_step($attachment_id, $step)
+	{
+		unset($this->attachments[$attachment_id][$step]);
 
-		if ( empty( $this->attachments[ $attachment_id ] ) ) {
-			$this->unset_steps( $attachment_id );
+		if (empty($this->attachments[$attachment_id])) {
+			$this->unset_steps($attachment_id);
 		}
 	}
 
@@ -553,8 +566,9 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @param int $attachment_id Current attachment ID.
 	 */
-	public function unset_steps( $attachment_id ) {
-		unset( $this->attachments[ $attachment_id ] );
+	public function unset_steps($attachment_id)
+	{
+		unset($this->attachments[$attachment_id]);
 	}
 
 	/**
@@ -567,8 +581,9 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param  string $step          The step to add.
 	 * @return bool
 	 */
-	public function has_step( $attachment_id, $step ) {
-		return ! empty( $this->attachments[ $attachment_id ][ $step ] );
+	public function has_step($attachment_id, $step)
+	{
+		return ! empty($this->attachments[$attachment_id][$step]);
 	}
 
 	/**
@@ -583,11 +598,12 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @param int $attachment_id Current attachment ID.
 	 */
-	public static function prevent_optimization( $attachment_id ) {
-		if ( ! isset( self::$prevented[ $attachment_id ] ) ) {
-			self::$prevented[ $attachment_id ] = 1;
+	public static function prevent_optimization($attachment_id)
+	{
+		if (! isset(self::$prevented[$attachment_id])) {
+			self::$prevented[$attachment_id] = 1;
 		} else {
-			++self::$prevented[ $attachment_id ];
+			++self::$prevented[$attachment_id];
 		}
 	}
 
@@ -603,14 +619,15 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @param int $attachment_id Current attachment ID.
 	 */
-	public static function allow_optimization( $attachment_id ) {
-		if ( ! isset( self::$prevented[ $attachment_id ] ) ) {
+	public static function allow_optimization($attachment_id)
+	{
+		if (! isset(self::$prevented[$attachment_id])) {
 			return;
 		}
-		--self::$prevented[ $attachment_id ];
+		--self::$prevented[$attachment_id];
 
-		if ( self::$prevented[ $attachment_id ] <= 0 ) {
-			unset( self::$prevented[ $attachment_id ] );
+		if (self::$prevented[$attachment_id] <= 0) {
+			unset(self::$prevented[$attachment_id]);
 		}
 	}
 
@@ -622,8 +639,9 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 * @param  int $attachment_id Current attachment ID.
 	 * @return bool
 	 */
-	public static function is_optimization_prevented( $attachment_id ) {
-		return ! empty( self::$prevented[ $attachment_id ] ) || ! empty( self::$prevented_internally[ $attachment_id ] );
+	public static function is_optimization_prevented($attachment_id)
+	{
+		return ! empty(self::$prevented[$attachment_id]) || ! empty(self::$prevented_internally[$attachment_id]);
 	}
 
 	/**
@@ -633,8 +651,9 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @param int $attachment_id Current attachment ID.
 	 */
-	protected static function prevent_optimization_internally( $attachment_id ) {
-		self::$prevented_internally[ $attachment_id ] = 1;
+	protected static function prevent_optimization_internally($attachment_id)
+	{
+		self::$prevented_internally[$attachment_id] = 1;
 	}
 
 	/**
@@ -644,7 +663,8 @@ class Imagify_Auto_Optimization extends Imagify_Auto_Optimization_Deprecated {
 	 *
 	 * @param int $attachment_id Current attachment ID.
 	 */
-	protected static function allow_optimization_internally( $attachment_id ) {
-		unset( self::$prevented_internally[ $attachment_id ] );
+	protected static function allow_optimization_internally($attachment_id)
+	{
+		unset(self::$prevented_internally[$attachment_id]);
 	}
 }

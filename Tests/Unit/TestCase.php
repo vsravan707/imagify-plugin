@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Test Case for all of the unit tests.
  *
@@ -11,32 +12,36 @@ use ReflectionException;
 use ReflectionObject;
 use WPMedia\PHPUnit\Unit\TestCase as PHPUnitTestCase;
 
-abstract class TestCase extends PHPUnitTestCase {
+abstract class TestCase extends PHPUnitTestCase
+{
 	protected $config;
 
-	protected function setUp() : void {
-		if ( empty( $this->config ) ) {
+	protected function setUp(): void
+	{
+		if (empty($this->config)) {
 			$this->loadTestDataConfig();
 		}
 
 		parent::setUp();
 	}
 
-	public function configTestData() {
-		if ( empty( $this->config ) ) {
+	public function configTestData()
+	{
+		if (empty($this->config)) {
 			$this->loadTestDataConfig();
 		}
 
-		return isset( $this->config['test_data'] )
+		return isset($this->config['test_data'])
 			? $this->config['test_data']
 			: $this->config;
 	}
 
-	protected function loadTestDataConfig() {
-		$obj      = new ReflectionObject( $this );
+	protected function loadTestDataConfig()
+	{
+		$obj      = new ReflectionObject($this);
 		$filename = $obj->getFileName();
 
-		$this->config = $this->getTestData( dirname( $filename ), basename( $filename, '.php' ) );
+		$this->config = $this->getTestData(dirname($filename), basename($filename, '.php'));
 	}
 
 	/**
@@ -49,8 +54,9 @@ abstract class TestCase extends PHPUnitTestCase {
 	 * @throws ReflectionException Throws an exception if property does not exist.
 	 *
 	 */
-	protected function resetPropertyValue( $property, $class ) {
-		return $this->setPropertyValue( $property, $class, null );
+	protected function resetPropertyValue($property, $class)
+	{
+		return $this->setPropertyValue($property, $class, null);
 	}
 
 	/**
@@ -64,17 +70,18 @@ abstract class TestCase extends PHPUnitTestCase {
 	 * @throws ReflectionException Throws an exception if property does not exist.
 	 *
 	 */
-	protected function setPropertyValue( $property, $class, $value ) {
-		$ref = $this->get_reflective_property( $property, $class );
+	protected function setPropertyValue($property, $class, $value)
+	{
+		$ref = $this->get_reflective_property($property, $class);
 
-		if ( is_object( $class ) ) {
-			$previous = $ref->getValue( $class );
+		if (is_object($class)) {
+			$previous = $ref->getValue($class);
 			// Instance property.
-			$ref->setValue( $class, $value );
+			$ref->setValue($class, $value);
 		} else {
 			$previous = $ref->getValue();
 			// Static property.
-			$ref->setValue( $value );
+			$ref->setValue($value);
 		}
 
 		return $previous;

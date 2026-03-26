@@ -7,7 +7,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since  1.7
  */
-class Imagify_Cron_Sync_Files extends Imagify_Abstract_Cron {
+class Imagify_Cron_Sync_Files extends Imagify_Abstract_Cron
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -52,21 +53,16 @@ class Imagify_Cron_Sync_Files extends Imagify_Abstract_Cron {
 	 *
 	 * @since 1.7
 	 */
-	public function do_event() {
+	public function do_event()
+	{
 		$folders_db = Imagify_Folders_DB::get_instance();
 		$files_db   = Imagify_Files_DB::get_instance();
 
-		if ( ! $folders_db->can_operate() || ! $files_db->can_operate() ) {
+		if (! $folders_db->can_operate() || ! $files_db->can_operate()) {
 			return;
 		}
 
-		if ( ! Imagify_Requirements::is_api_key_valid() ) {
-			return;
-		}
-
-		if ( Imagify_Requirements::is_over_quota() ) {
-			return;
-		}
+		// API key and quota restrictions removed — standalone fork.
 
 		$this->set_no_time_limit();
 
@@ -75,11 +71,11 @@ class Imagify_Cron_Sync_Files extends Imagify_Abstract_Cron {
 		 */
 		$folders = Imagify_Custom_Folders::get_folders();
 
-		if ( ! $folders ) {
+		if (! $folders) {
 			return;
 		}
 
-		Imagify_Custom_Folders::synchronize_files_from_folders( $folders );
+		Imagify_Custom_Folders::synchronize_files_from_folders($folders);
 	}
 
 	/**
@@ -87,14 +83,15 @@ class Imagify_Cron_Sync_Files extends Imagify_Abstract_Cron {
 	 *
 	 * @return void
 	 */
-	protected function set_no_time_limit() {
+	protected function set_no_time_limit()
+	{
 		if (
-			function_exists( 'set_time_limit' )
+			function_exists('set_time_limit')
 			&&
-			false === strpos( ini_get( 'disable_functions' ), 'set_time_limit' )
-			&& ! ini_get( 'safe_mode' ) // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
+			false === strpos(ini_get('disable_functions'), 'set_time_limit')
+			&& ! ini_get('safe_mode') // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
 		) {
-			@set_time_limit( 0 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			@set_time_limit(0); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		}
 	}
 }

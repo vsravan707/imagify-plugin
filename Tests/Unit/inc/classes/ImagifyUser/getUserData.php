@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Tests\Unit\inc\classes\ImagifyUser;
 
 use Imagify\Tests\Unit\TestCase;
@@ -12,10 +13,12 @@ use Mockery;
  * @covers \Imagify\User\User::init_user
  * @group  ImagifyAPI
  */
-class Test_GetUserData extends TestCase {
+class Test_GetUserData extends TestCase
+{
 	private $user;
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		parent::setUp();
 
 		$this->user = Mockery::mock(User::class)->makePartial();
@@ -24,7 +27,8 @@ class Test_GetUserData extends TestCase {
 	/**
 	 * Test \Imagify\User\User->init_user().
 	 */
-	public function testEnsureInitUserIsCalled() {
+	public function testEnsureInitUserIsCalled()
+	{
 		$userData = (object) [
 			'id'                           => 14,
 			'email'                        => 'imagify@example.com',
@@ -39,9 +43,9 @@ class Test_GetUserData extends TestCase {
 			'is_monthly'                   => true,
 		];
 
-		Functions\when( 'get_imagify_user' )->justReturn( $userData );
+		Functions\when('get_imagify_user')->justReturn($userData);
 
-		Functions\when( 'is_wp_error' )->justReturn( false );
+		Functions\when('is_wp_error')->justReturn(false);
 
 		$this->assertEquals(14, $this->user->get_id());
 		$this->assertEquals('imagify@example.com', $this->user->get_email(), 'Email should be initialized and returned correctly.');

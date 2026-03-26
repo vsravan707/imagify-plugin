@@ -1,10 +1,11 @@
 <?php
+
 use Imagify\Dependencies\League\Container\Container;
 use Imagify\Plugin;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-if ( file_exists( IMAGIFY_PATH . 'vendor/autoload.php' ) ) {
+if (file_exists(IMAGIFY_PATH . 'vendor/autoload.php')) {
 	require_once IMAGIFY_PATH . 'vendor/autoload.php';
 }
 
@@ -15,9 +16,10 @@ require_once IMAGIFY_PATH . 'inc/Dependencies/ActionScheduler/action-scheduler.p
  *
  * @since 1.0
  */
-function imagify_init() {
+function imagify_init()
+{
 	// Nothing to do during autosave.
-	if ( defined( 'DOING_AUTOSAVE' ) ) {
+	if (defined('DOING_AUTOSAVE')) {
 		return;
 	}
 
@@ -30,6 +32,6 @@ function imagify_init() {
 		]
 	);
 
-	$plugin->init( $providers );
+	$plugin->init($providers);
 }
-add_action( 'plugins_loaded', 'imagify_init' );
+add_action('plugins_loaded', 'imagify_init');

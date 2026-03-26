@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Optimization\Process;
 
 use WP_Error;
@@ -16,7 +17,8 @@ use WP_Error;
  * @see    Imagify\Media\CustomFolders
  * @author Grégory Viguier
  */
-class CustomFolders extends AbstractProcess {
+class CustomFolders extends AbstractProcess
+{
 
 	/**
 	 * Restore the thumbnails.
@@ -28,7 +30,8 @@ class CustomFolders extends AbstractProcess {
 	 *
 	 * @return bool|WP_Error True on success. A \WP_Error instance on failure.
 	 */
-	protected function restore_thumbnails() {
+	protected function restore_thumbnails()
+	{
 		return true;
 	}
 
@@ -48,34 +51,35 @@ class CustomFolders extends AbstractProcess {
 	 * @return array|WP_Error A WP_Error object on failure. An empty array on success: this context has no thumbnails.
 	 *                        The tests are kept for consistency.
 	 */
-	public function get_missing_sizes() {
+	public function get_missing_sizes()
+	{
 		// The media must have been optimized once and have a backup.
-		if ( ! $this->is_valid() ) {
-			return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+		if (! $this->is_valid()) {
+			return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
 		$media = $this->get_media();
 
-		if ( ! $media ) {
-			return new WP_Error( 'no_media', __( 'No media found.', 'imagify' ) );
+		if (! $media) {
+			return new WP_Error('no_media', __('No media found.', 'imagify'));
 		}
 
-		if ( ! $media->is_supported() ) {
-			return new WP_Error( 'media_not_supported', __( 'This media is not supported.', 'imagify' ) );
+		if (! $media->is_supported()) {
+			return new WP_Error('media_not_supported', __('This media is not supported.', 'imagify'));
 		}
 
 		$data = $this->get_data();
 
-		if ( ! $data->is_optimized() ) {
-			return new WP_Error( 'media_not_optimized', __( 'This media is not optimized yet.', 'imagify' ) );
+		if (! $data->is_optimized()) {
+			return new WP_Error('media_not_optimized', __('This media is not optimized yet.', 'imagify'));
 		}
 
-		if ( ! $media->has_backup() ) {
-			return new WP_Error( 'no_backup', __( 'This file has no backup file.', 'imagify' ) );
+		if (! $media->has_backup()) {
+			return new WP_Error('no_backup', __('This file has no backup file.', 'imagify'));
 		}
 
-		if ( ! $media->is_image() ) {
-			return new WP_Error( 'media_not_an_image', __( 'This media is not an image.', 'imagify' ) );
+		if (! $media->is_image()) {
+			return new WP_Error('media_not_an_image', __('This media is not an image.', 'imagify'));
 		}
 
 		return [];
@@ -91,21 +95,22 @@ class CustomFolders extends AbstractProcess {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A \WP_Error instance on failure.
 	 */
-	public function optimize_missing_thumbnails() {
-		if ( ! $this->is_valid() ) {
-			return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function optimize_missing_thumbnails()
+	{
+		if (! $this->is_valid()) {
+			return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
 		$media = $this->get_media();
 
-		if ( ! $media ) {
-			return new WP_Error( 'no_media', __( 'No media found.', 'imagify' ) );
+		if (! $media) {
+			return new WP_Error('no_media', __('No media found.', 'imagify'));
 		}
 
-		if ( ! $media->is_supported() ) {
-			return new WP_Error( 'media_not_supported', __( 'This media is not supported.', 'imagify' ) );
+		if (! $media->is_supported()) {
+			return new WP_Error('media_not_supported', __('This media is not supported.', 'imagify'));
 		}
 
-		return new WP_Error( 'no_sizes', __( 'No thumbnails seem to be missing.', 'imagify' ) );
+		return new WP_Error('no_sizes', __('No thumbnails seem to be missing.', 'imagify'));
 	}
 }

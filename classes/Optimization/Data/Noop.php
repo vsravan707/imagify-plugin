@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Optimization\Data;
 
 use Imagify\Media\MediaInterface;
@@ -9,7 +10,8 @@ use Imagify\Media\MediaInterface;
  * @since  1.9
  * @author Grégory Viguier
  */
-class Noop implements DataInterface {
+class Noop implements DataInterface
+{
 
 	/**
 	 * Tell if the given entry can be accepted in the constructor.
@@ -22,7 +24,8 @@ class Noop implements DataInterface {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
+	public static function constructor_accepts($id)
+	{
 		return false;
 	}
 
@@ -35,7 +38,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return MediaInterface|false
 	 */
-	public function get_media() {
+	public function get_media()
+	{
 		return false;
 	}
 
@@ -48,7 +52,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_valid() {
+	public function is_valid()
+	{
 		return false;
 	}
 
@@ -66,7 +71,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return bool True if the media is optimized.
 	 */
-	public function is_optimized() {
+	public function is_optimized()
+	{
 		return false;
 	}
 
@@ -79,7 +85,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return bool True if the media is optimized.
 	 */
-	public function is_already_optimized() {
+	public function is_already_optimized()
+	{
 		return false;
 	}
 
@@ -92,7 +99,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return bool True if the media is optimized.
 	 */
-	public function is_error() {
+	public function is_error()
+	{
 		return false;
 	}
 
@@ -105,7 +113,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return array The data. See parent method for details.
 	 */
-	public function get_optimization_data() {
+	public function get_optimization_data()
+	{
 		return [
 			'status' => '',
 			'level'  => false,
@@ -128,7 +137,7 @@ class Noop implements DataInterface {
 	 * @param string $size The size name.
 	 * @param array  $data The optimization data. See parent method for details.
 	 */
-	public function update_size_optimization_data( $size, array $data ) {}
+	public function update_size_optimization_data($size, array $data) {}
 
 	/**
 	 * Delete the media optimization data, level, and status.
@@ -150,7 +159,7 @@ class Noop implements DataInterface {
 	 *
 	 * @param array $sizes A list of sizes to remove.
 	 */
-	public function delete_sizes_optimization_data( array $sizes ) {}
+	public function delete_sizes_optimization_data(array $sizes) {}
 
 	/**
 	 * Get the media's optimization level.
@@ -161,7 +170,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return int|bool The optimization level. False if not optimized.
 	 */
-	public function get_optimization_level() {
+	public function get_optimization_level()
+	{
 		return false;
 	}
 
@@ -174,7 +184,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return string The optimization status. An empty string if there is none.
 	 */
-	public function get_optimization_status() {
+	public function get_optimization_status()
+	{
 		return '';
 	}
 
@@ -187,7 +198,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return int Number of optimized sizes.
 	 */
-	public function get_optimized_sizes_count() {
+	public function get_optimized_sizes_count()
+	{
 		return 0;
 	}
 
@@ -202,8 +214,9 @@ class Noop implements DataInterface {
 	 * @param  int  $decimals     Precision of number of decimal places.
 	 * @return string|int
 	 */
-	public function get_original_size( $human_format = true, $decimals = 2 ) {
-		return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+	public function get_original_size($human_format = true, $decimals = 2)
+	{
+		return $human_format ? imagify_size_format(0, $decimals) : 0;
 	}
 
 	/**
@@ -219,8 +232,9 @@ class Noop implements DataInterface {
 	 * @param  bool $use_nextgen     Use the Nextgen size if available.
 	 * @return string|int
 	 */
-	public function get_optimized_size( $human_format = true, $decimals = 2, $use_nextgen = true ) {
-		return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+	public function get_optimized_size($human_format = true, $decimals = 2, $use_nextgen = true)
+	{
+		return $human_format ? imagify_size_format(0, $decimals) : 0;
 	}
 
 
@@ -239,7 +253,8 @@ class Noop implements DataInterface {
 	 * @param  string $key  The specific data slug.
 	 * @return array|string
 	 */
-	public function get_size_data( $size = 'full', $key = '' ) {
+	public function get_size_data($size = 'full', $key = '')
+	{
 		return $key ? '' : [];
 	}
 
@@ -253,7 +268,8 @@ class Noop implements DataInterface {
 	 * @param  string $key The specific data slug.
 	 * @return array|string
 	 */
-	public function get_stats_data( $key = '' ) {
+	public function get_stats_data($key = '')
+	{
 		return $key ? '' : [];
 	}
 
@@ -266,8 +282,9 @@ class Noop implements DataInterface {
 	 *
 	 * @return float A 2-decimals float.
 	 */
-	public function get_saving_percent() {
-		return round( (float) 0, 2 );
+	public function get_saving_percent()
+	{
+		return round((float) 0, 2);
 	}
 
 	/**
@@ -279,7 +296,8 @@ class Noop implements DataInterface {
 	 *
 	 * @return float A 2-decimals float.
 	 */
-	public function get_overall_saving_percent() {
-		return round( (float) 0, 2 );
+	public function get_overall_saving_percent()
+	{
+		return round((float) 0, 2);
 	}
 }

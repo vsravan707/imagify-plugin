@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Imagify Attachment base class.
@@ -8,7 +8,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since 1.9 Deprecated
  * @deprecated
  */
-abstract class Imagify_Abstract_Attachment {
+abstract class Imagify_Abstract_Attachment
+{
 
 	/**
 	 * Class version.
@@ -143,22 +144,23 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param int|object $id The attachment ID or the attachment itself.
 	 *                       If an integer, make sure the attachment exists.
 	 */
-	public function __construct( $id = 0 ) {
+	public function __construct($id = 0)
+	{
 		global $post;
 
-		if ( $id ) {
-			if ( $id instanceof WP_Post ) {
+		if ($id) {
+			if ($id instanceof WP_Post) {
 				$this->id = $id->ID;
-			} elseif ( is_numeric( $id ) ) {
+			} elseif (is_numeric($id)) {
 				$this->id = $id;
 			}
-		} elseif ( $post && $id instanceof WP_Post ) {
+		} elseif ($post && $id instanceof WP_Post) {
 			$this->id = $post->ID;
 		}
 
 		$this->id                           = (int) $this->id;
 		$this->filesystem                   = Imagify_Filesystem::get_instance();
-		$this->optimization_state_transient = 'wp' !== $this->get_context() ? strtolower( $this->get_context() ) . '-' : '';
+		$this->optimization_state_transient = 'wp' !== $this->get_context() ? strtolower($this->get_context()) . '-' : '';
 		$this->optimization_state_transient = 'imagify-' . $this->optimization_state_transient . 'async-in-progress-' . $this->id;
 	}
 
@@ -171,13 +173,14 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return string
 	 */
-	public function get_context() {
-		if ( $this->context ) {
+	public function get_context()
+	{
+		if ($this->context) {
 			return $this->context;
 		}
 
-		$this->context = str_replace( array( 'Imagify_', 'Attachment' ), '', get_class( $this ) );
-		$this->context = trim( $this->context, '_' );
+		$this->context = str_replace(array('Imagify_', 'Attachment'), '', get_class($this));
+		$this->context = trim($this->context, '_');
 		$this->context = $this->context ? $this->context : 'wp';
 
 		return $this->context;
@@ -192,7 +195,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function is_valid() {
+	public function is_valid()
+	{
 		return $this->id > 0;
 	}
 
@@ -205,7 +209,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return int
 	 */
-	public function get_id() {
+	public function get_id()
+	{
 		return $this->id;
 	}
 
@@ -248,14 +253,15 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return string|false The file path. False if it doesn't exist.
 	 */
-	public function get_backup_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_backup_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
 		$backup_path = $this->get_raw_backup_path();
 
-		if ( $backup_path && $this->filesystem->exists( $backup_path ) ) {
+		if ($backup_path && $this->filesystem->exists($backup_path)) {
 			return $backup_path;
 		}
 
@@ -270,12 +276,13 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return string|false
 	 */
-	public function get_backup_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_backup_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return get_imagify_attachment_url( $this->get_raw_backup_path() );
+		return get_imagify_attachment_url($this->get_raw_backup_path());
 	}
 
 	/**
@@ -316,11 +323,12 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return string The message error
 	 */
-	public function get_optimized_error() {
-		$error = $this->get_size_data( 'full', 'error' );
+	public function get_optimized_error()
+	{
+		$error = $this->get_size_data('full', 'error');
 
-		if ( is_string( $error ) ) {
-			return trim( $error );
+		if (is_string($error)) {
+			return trim($error);
 		}
 
 		return '';
@@ -334,19 +342,20 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return int
 	 */
-	public function get_optimized_sizes_count() {
+	public function get_optimized_sizes_count()
+	{
 		$data  = $this->get_data();
-		$sizes = ! empty( $data['sizes'] ) && is_array( $data['sizes'] ) ? $data['sizes'] : array();
+		$sizes = ! empty($data['sizes']) && is_array($data['sizes']) ? $data['sizes'] : array();
 		$count = 0;
 
-		unset( $sizes['full'] );
+		unset($sizes['full']);
 
-		if ( ! $sizes ) {
+		if (! $sizes) {
 			return 0;
 		}
 
-		foreach ( $sizes as $size ) {
-			if ( ! empty( $size['success'] ) ) {
+		foreach ($sizes as $size) {
+			if (! empty($size['success'])) {
 				$count++;
 			}
 		}
@@ -361,14 +370,15 @@ abstract class Imagify_Abstract_Attachment {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function delete_imagify_data() {
-		if ( ! $this->is_valid() ) {
+	public function delete_imagify_data()
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
-		delete_post_meta( $this->id, '_imagify_data' );
-		delete_post_meta( $this->id, '_imagify_status' );
-		delete_post_meta( $this->id, '_imagify_optimization_level' );
+		delete_post_meta($this->id, '_imagify_data');
+		delete_post_meta($this->id, '_imagify_status');
+		delete_post_meta($this->id, '_imagify_optimization_level');
 	}
 
 	/**
@@ -380,7 +390,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return array
 	 */
-	public function get_dimensions() {
+	public function get_dimensions()
+	{
 		return array(
 			'width'  => 0,
 			'height' => 0,
@@ -396,12 +407,13 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool Returns false in case it's an image but not in a supported format (bmp for example).
 	 */
-	public function is_image() {
-		if ( isset( $this->is_image ) ) {
+	public function is_image()
+	{
+		if (isset($this->is_image)) {
 			return $this->is_image;
 		}
 
-		$this->is_image = strpos( (string) $this->get_mime_type(), 'image/' ) === 0;
+		$this->is_image = strpos((string) $this->get_mime_type(), 'image/') === 0;
 
 		return $this->is_image;
 	}
@@ -415,8 +427,9 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function is_pdf() {
-		if ( isset( $this->is_pdf ) ) {
+	public function is_pdf()
+	{
+		if (isset($this->is_pdf)) {
 			return $this->is_pdf;
 		}
 
@@ -434,7 +447,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function get_mime_type() {
+	public function get_mime_type()
+	{
 		return $this->get_file_type()->type;
 	}
 
@@ -448,12 +462,13 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return object
 	 */
-	public function get_file_type() {
-		if ( isset( $this->file_type ) ) {
+	public function get_file_type()
+	{
+		if (isset($this->file_type)) {
 			return $this->file_type;
 		}
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			$this->file_type = (object) array(
 				'ext'  => '',
 				'type' => '',
@@ -463,7 +478,7 @@ abstract class Imagify_Abstract_Attachment {
 
 		$path = $this->get_original_path();
 
-		if ( ! $path ) {
+		if (! $path) {
 			$this->file_type = (object) array(
 				'ext'  => '',
 				'type' => '',
@@ -471,7 +486,7 @@ abstract class Imagify_Abstract_Attachment {
 			return $this->file_type;
 		}
 
-		$this->file_type = (object) wp_check_filetype( $path, imagify_get_mime_types() );
+		$this->file_type = (object) wp_check_filetype($path, imagify_get_mime_types());
 
 		return $this->file_type;
 	}
@@ -484,17 +499,18 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return string|null
 	 */
-	public function get_extension() {
-		if ( false !== $this->extension ) {
+	public function get_extension()
+	{
+		if (false !== $this->extension) {
 			return $this->extension;
 		}
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			$this->extension = null;
 			return $this->extension;
 		}
 
-		$this->extension = $this->filesystem->path_info( $this->get_original_path(), 'extension' );
+		$this->extension = $this->filesystem->path_info($this->get_original_path(), 'extension');
 
 		return $this->extension;
 	}
@@ -508,7 +524,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function is_extension_supported() {
+	public function is_extension_supported()
+	{
 		return (bool) $this->get_file_type()->ext;
 	}
 
@@ -522,7 +539,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function is_mime_type_supported() {
+	public function is_mime_type_supported()
+	{
 		return (bool) $this->get_mime_type();
 	}
 
@@ -535,12 +553,13 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function has_required_metadata() {
-		if ( ! $this->is_valid() ) {
+	public function has_required_metadata()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return imagify_attachment_has_required_metadata( $this->id );
+		return imagify_attachment_has_required_metadata($this->id);
 	}
 
 	/**
@@ -553,8 +572,9 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  string $format Format to display the label. Use %ICON% for the icon and %s for the label.
 	 * @return string
 	 */
-	public function get_optimization_level_label( $format = '%s' ) {
-		return imagify_get_optimization_level_label( $this->get_optimization_level(), $format );
+	public function get_optimization_level_label($format = '%s')
+	{
+		return imagify_get_optimization_level_label($this->get_optimization_level(), $format);
 	}
 
 	/**
@@ -567,27 +587,28 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  int  $decimals     Precision of number of decimal places.
 	 * @return string|int
 	 */
-	public function get_original_size( $human_format = true, $decimals = 2 ) {
-		if ( ! $this->is_valid() ) {
-			return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+	public function get_original_size($human_format = true, $decimals = 2)
+	{
+		if (! $this->is_valid()) {
+			return $human_format ? imagify_size_format(0, $decimals) : 0;
 		}
 
-		$size = $this->get_size_data( 'full', 'original_size' );
+		$size = $this->get_size_data('full', 'original_size');
 
-		if ( ! $size ) {
+		if (! $size) {
 			// Check for the backup file first.
 			$filepath = $this->get_backup_path();
 
-			if ( ! $filepath ) {
+			if (! $filepath) {
 				$filepath = $this->get_original_path();
-				$filepath = $filepath && $this->filesystem->exists( $filepath ) ? $filepath : false;
+				$filepath = $filepath && $this->filesystem->exists($filepath) ? $filepath : false;
 			}
 
-			$size = $filepath ? $this->filesystem->size( $filepath ) : 0;
+			$size = $filepath ? $this->filesystem->size($filepath) : 0;
 		}
 
-		if ( $human_format ) {
-			return imagify_size_format( (int) $size, $decimals );
+		if ($human_format) {
+			return imagify_size_format((int) $size, $decimals);
 		}
 
 		return (int) $size;
@@ -604,21 +625,22 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  int  $decimals     Precision of number of decimal places.
 	 * @return string|int
 	 */
-	public function get_optimized_size( $human_format = true, $decimals = 2 ) {
-		if ( ! $this->is_valid() ) {
-			return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+	public function get_optimized_size($human_format = true, $decimals = 2)
+	{
+		if (! $this->is_valid()) {
+			return $human_format ? imagify_size_format(0, $decimals) : 0;
 		}
 
-		$size = $this->get_size_data( 'full', 'optimized_size' );
+		$size = $this->get_size_data('full', 'optimized_size');
 
-		if ( ! $size ) {
+		if (! $size) {
 			$filepath = $this->get_original_path();
-			$filepath = $filepath && $this->filesystem->exists( $filepath ) ? $filepath : false;
-			$size     = $filepath ? $this->filesystem->size( $filepath ) : 0;
+			$filepath = $filepath && $this->filesystem->exists($filepath) ? $filepath : false;
+			$size     = $filepath ? $this->filesystem->size($filepath) : 0;
 		}
 
-		if ( $human_format ) {
-			return imagify_size_format( (int) $size, $decimals );
+		if ($human_format) {
+			return imagify_size_format((int) $size, $decimals);
 		}
 
 		return (int) $size;
@@ -633,15 +655,16 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return float A 2-decimals float.
 	 */
-	public function get_saving_percent() {
-		if ( ! $this->is_valid() ) {
-			return round( (float) 0, 2 );
+	public function get_saving_percent()
+	{
+		if (! $this->is_valid()) {
+			return round((float) 0, 2);
 		}
 
-		$percent = $this->get_size_data( 'full', 'percent' );
+		$percent = $this->get_size_data('full', 'percent');
 		$percent = $percent ? $percent : (float) 0;
 
-		return round( $percent, 2 );
+		return round($percent, 2);
 	}
 
 	/**
@@ -653,15 +676,16 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return float A 2-decimals float.
 	 */
-	public function get_overall_saving_percent() {
-		if ( ! $this->is_valid() ) {
-			return round( (float) 0, 2 );
+	public function get_overall_saving_percent()
+	{
+		if (! $this->is_valid()) {
+			return round((float) 0, 2);
 		}
 
 		$percent = $this->get_data();
-		$percent = ! empty( $percent['stats']['percent'] ) ? $percent['stats']['percent'] : (float) 0;
+		$percent = ! empty($percent['stats']['percent']) ? $percent['stats']['percent'] : (float) 0;
 
-		return round( $percent, 2 );
+		return round($percent, 2);
 	}
 
 	/**
@@ -674,16 +698,17 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  string $key   The specific data slug.
 	 * @return array|string
 	 */
-	public function get_size_data( $size = 'full', $key = '' ) {
+	public function get_size_data($size = 'full', $key = '')
+	{
 		$data  = $this->get_data();
 		$stats = array();
 
-		if ( isset( $data['sizes'][ $size ] ) ) {
-			$stats = $data['sizes'][ $size ];
+		if (isset($data['sizes'][$size])) {
+			$stats = $data['sizes'][$size];
 		}
 
-		if ( isset( $stats[ $key ] ) ) {
-			$stats = $stats[ $key ];
+		if (isset($stats[$key])) {
+			$stats = $stats[$key];
 		}
 
 		return $stats;
@@ -698,16 +723,17 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  string $key The specific data slug.
 	 * @return array|string
 	 */
-	public function get_stats_data( $key = '' ) {
+	public function get_stats_data($key = '')
+	{
 		$data  = $this->get_data();
 		$stats = '';
 
-		if ( isset( $data['stats'] ) ) {
+		if (isset($data['stats'])) {
 			$stats = $data['stats'];
 		}
 
-		if ( isset( $stats[ $key ] ) ) {
-			$stats = $stats[ $key ];
+		if (isset($stats[$key])) {
+			$stats = $stats[$key];
 		}
 
 		return $stats;
@@ -721,7 +747,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool True if the attachment is optimized.
 	 */
-	public function is_already_optimized() {
+	public function is_already_optimized()
+	{
 		return 'already_optimized' === $this->get_status();
 	}
 
@@ -733,7 +760,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool True if the attachment is optimized.
 	 */
-	public function is_optimized() {
+	public function is_optimized()
+	{
 		return 'success' === $this->get_status();
 	}
 
@@ -745,12 +773,13 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool True if the attachment is skipped.
 	 */
-	public function is_exceeded() {
+	public function is_exceeded()
+	{
 		$filepath = $this->get_original_path();
 		$size     = 0;
 
-		if ( $filepath && $this->filesystem->exists( $filepath ) ) {
-			$size = $this->filesystem->size( $filepath );
+		if ($filepath && $this->filesystem->exists($filepath)) {
+			$size = $this->filesystem->size($filepath);
 		}
 
 		return $size > IMAGIFY_MAX_BYTES;
@@ -764,7 +793,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool True if the attachment has a backup.
 	 */
-	public function has_backup() {
+	public function has_backup()
+	{
 		return (bool) $this->get_backup_path();
 	}
 
@@ -776,7 +806,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool True if the attachment has an error.
 	 */
-	public function has_error() {
+	public function has_error()
+	{
 		return 'error' === $this->get_status();
 	}
 
@@ -790,16 +821,17 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  string $path A file path.
 	 * @return object       An image editor instance (WP_Image_Editor_Imagick, WP_Image_Editor_GD). A WP_Error object on error.
 	 */
-	protected function get_editor( $path ) {
-		if ( isset( $this->editors[ $path ] ) ) {
-			return $this->editors[ $path ];
+	protected function get_editor($path)
+	{
+		if (isset($this->editors[$path])) {
+			return $this->editors[$path];
 		}
 
-		$this->editors[ $path ] = wp_get_image_editor( $path, array(
+		$this->editors[$path] = wp_get_image_editor($path, array(
 			'methods' => self::get_editor_methods(),
-		) );
+		));
 
-		return $this->editors[ $path ];
+		return $this->editors[$path];
 	}
 
 	/**
@@ -811,10 +843,11 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return array
 	 */
-	public static function get_editor_methods() {
+	public static function get_editor_methods()
+	{
 		static $methods;
 
-		if ( isset( $methods ) ) {
+		if (isset($methods)) {
 			return $methods;
 		}
 
@@ -825,7 +858,7 @@ abstract class Imagify_Abstract_Attachment {
 			'save',
 		);
 
-		if ( Imagify_Filesystem::get_instance()->can_get_exif() ) {
+		if (Imagify_Filesystem::get_instance()->can_get_exif()) {
 			$methods[] = 'rotate';
 		}
 
@@ -850,11 +883,12 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return void
 	 */
-	public function delete_backup() {
+	public function delete_backup()
+	{
 		$backup_path = $this->get_backup_path();
 
-		if ( $backup_path ) {
-			$this->filesystem->delete( $backup_path );
+		if ($backup_path) {
+			$this->filesystem->delete($backup_path);
 		}
 	}
 
@@ -867,10 +901,11 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return array Data for the registered thumbnail sizes.
 	 */
-	public static function get_registered_sizes() {
+	public static function get_registered_sizes()
+	{
 		static $registered_sizes;
 
-		if ( ! isset( $registered_sizes ) ) {
+		if (! isset($registered_sizes)) {
 			$registered_sizes = get_imagify_thumbnail_sizes();
 		}
 
@@ -887,65 +922,66 @@ abstract class Imagify_Abstract_Attachment {
 	 * @return array Data for the unoptimized thumbnail sizes.
 	 *               Each size data has a "file" key containing the name the thumbnail "should" have.
 	 */
-	public function get_unoptimized_sizes() {
+	public function get_unoptimized_sizes()
+	{
 		// The attachment must have been optimized once and have a backup.
-		if ( ! $this->is_valid() || ! $this->is_optimized() || ! $this->has_backup() || ! $this->is_image() ) {
+		if (! $this->is_valid() || ! $this->is_optimized() || ! $this->has_backup() || ! $this->is_image()) {
 			return array();
 		}
 
 		$registered_sizes = self::get_registered_sizes();
 		$attachment_sizes = $this->get_data();
-		$attachment_sizes = ! empty( $attachment_sizes['sizes'] ) ? $attachment_sizes['sizes'] : array();
-		$missing_sizes    = array_diff_key( $registered_sizes, $attachment_sizes );
+		$attachment_sizes = ! empty($attachment_sizes['sizes']) ? $attachment_sizes['sizes'] : array();
+		$missing_sizes    = array_diff_key($registered_sizes, $attachment_sizes);
 
-		if ( ! $missing_sizes ) {
+		if (! $missing_sizes) {
 			// We have everything we need.
 			return array();
 		}
 
 		// Get full size dimensions.
-		$orig   = wp_get_attachment_metadata( $this->id );
-		$orig_f = ! empty( $orig['file'] )   ? $orig['file']         : '';
-		$orig_w = ! empty( $orig['width'] )  ? (int) $orig['width']  : 0;
-		$orig_h = ! empty( $orig['height'] ) ? (int) $orig['height'] : 0;
+		$orig   = wp_get_attachment_metadata($this->id);
+		$orig_f = ! empty($orig['file'])   ? $orig['file']         : '';
+		$orig_w = ! empty($orig['width'])  ? (int) $orig['width']  : 0;
+		$orig_h = ! empty($orig['height']) ? (int) $orig['height'] : 0;
 
-		if ( ! $orig_f || ! $orig_w || ! $orig_h ) {
+		if (! $orig_f || ! $orig_w || ! $orig_h) {
 			return array();
 		}
 
-		$orig_f = $this->filesystem->path_info( $orig_f );
+		$orig_f = $this->filesystem->path_info($orig_f);
 		$orig_f = $orig_f['file_base'] . '-{%suffix%}.' . $orig_f['extension'];
 
 		// Test if the missing sizes are needed.
-		$disallowed_sizes      = get_imagify_option( 'disallowed-sizes' );
+		$disallowed_sizes      = get_imagify_option('disallowed-sizes');
 		$is_active_for_network = imagify_is_active_for_network();
 
-		foreach ( $missing_sizes as $size_name => $size_data ) {
-			$duplicate = ( $orig_w === $size_data['width'] ) && ( $orig_h === $size_data['height'] );
+		foreach ($missing_sizes as $size_name => $size_data) {
+			$duplicate = ($orig_w === $size_data['width']) && ($orig_h === $size_data['height']);
 
-			if ( $duplicate ) {
+			if ($duplicate) {
 				// Same dimensions as the full size.
-				unset( $missing_sizes[ $size_name ] );
+				unset($missing_sizes[$size_name]);
 				continue;
 			}
 
-			if ( ! $is_active_for_network && isset( $disallowed_sizes[ $size_name ] ) ) {
+			if (! $is_active_for_network && isset($disallowed_sizes[$size_name])) {
 				// This size must be optimized.
-				unset( $missing_sizes[ $size_name ] );
+				unset($missing_sizes[$size_name]);
 				continue;
 			}
 
-			$resize_result = image_resize_dimensions( $orig_w, $orig_h, $size_data['width'], $size_data['height'], $size_data['crop'] );
+			$resize_result = image_resize_dimensions($orig_w, $orig_h, $size_data['width'], $size_data['height'], $size_data['crop']);
 
-			if ( ! $resize_result ) {
+			if (! $resize_result) {
 				// This size is not needed.
-				unset( $missing_sizes[ $size_name ] );
+				unset($missing_sizes[$size_name]);
 				continue;
 			}
 
 			// Provide what should be the file name.
-			list( , , , , $dst_w, $dst_h ) = $resize_result;
-			$missing_sizes[ $size_name ]['file'] = str_replace( '{%suffix%}', "{$dst_w}x{$dst_h}", $orig_f );
+			list(,,,, $dst_w, $dst_h) = $resize_result;
+			$missing_sizes[$size_name]['file'] = str_replace('{%suffix%}', "{$dst_w}x{$dst_h}", $orig_f);
 		}
 
 		return $missing_sizes;
@@ -965,7 +1001,7 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  string $size     The attachment size key.
 	 * @return bool|array False if the original size has an error or an array contains the data for other result.
 	 */
-	abstract public function fill_data( $data, $response, $size = 'full' );
+	abstract public function fill_data($data, $response, $size = 'full');
 
 	/**
 	 * Optimize all sizes with Imagify.
@@ -977,7 +1013,7 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  array $metadata           The attachment meta data.
 	 * @return array $optimized_data     The optimization data.
 	 */
-	abstract public function optimize( $optimization_level = null, $metadata = array() );
+	abstract public function optimize($optimization_level = null, $metadata = array());
 
 	/**
 	 * Optimize missing sizes with Imagify.
@@ -989,7 +1025,7 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  int $optimization_level The optimization level (2=ultra, 1=aggressive, 0=normal).
 	 * @return array|object            An array of thumbnail data, size by size. A WP_Error object on failure.
 	 */
-	abstract public function optimize_missing_thumbnails( $optimization_level = null );
+	abstract public function optimize_missing_thumbnails($optimization_level = null);
 
 	/**
 	 * Re-optimize the given thumbnail sizes to the same level.
@@ -1002,7 +1038,7 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  array $sizes The sizes to optimize.
 	 * @return array|void             A WP_Error object on failure.
 	 */
-	abstract public function reoptimize_thumbnails( $sizes );
+	abstract public function reoptimize_thumbnails($sizes);
 
 	/**
 	 * Process an attachment restoration from the backup file.
@@ -1027,53 +1063,54 @@ abstract class Imagify_Abstract_Attachment {
 	 * @param  int    $max_width        Maximum width defined in the settings.
 	 * @return string Path the the resized image or the original image if the resize failed.
 	 */
-	public function resize( $attachment_path, $attachment_sizes, $max_width ) {
-		if ( ! $this->is_valid() || ! $this->is_image() ) {
+	public function resize($attachment_path, $attachment_sizes, $max_width)
+	{
+		if (! $this->is_valid() || ! $this->is_image()) {
 			return '';
 		}
 
-		$editor = $this->get_editor( $attachment_path );
+		$editor = $this->get_editor($attachment_path);
 
-		if ( is_wp_error( $editor ) ) {
+		if (is_wp_error($editor)) {
 			return $editor;
 		}
 
-		$new_sizes  = wp_constrain_dimensions( $attachment_sizes['width'], $attachment_sizes['height'], $max_width );
-		$image_type = strtolower( (string) $this->filesystem->path_info( $attachment_path, 'extension' ) );
+		$new_sizes  = wp_constrain_dimensions($attachment_sizes['width'], $attachment_sizes['height'], $max_width);
+		$image_type = strtolower((string) $this->filesystem->path_info($attachment_path, 'extension'));
 
 		// Try to correct for auto-rotation if the info is available.
-		if ( $this->filesystem->can_get_exif() && ( 'jpg' === $image_type || 'jpe' === $image_type || 'jpeg' === $image_type ) ) {
-			$exif        = $this->filesystem->get_image_exif( $attachment_path );
-			$orientation = isset( $exif['Orientation'] ) ? (int) $exif['Orientation'] : 1;
+		if ($this->filesystem->can_get_exif() && ('jpg' === $image_type || 'jpe' === $image_type || 'jpeg' === $image_type)) {
+			$exif        = $this->filesystem->get_image_exif($attachment_path);
+			$orientation = isset($exif['Orientation']) ? (int) $exif['Orientation'] : 1;
 
-			switch ( $orientation ) {
+			switch ($orientation) {
 				case 3:
-					$editor->rotate( 180 );
+					$editor->rotate(180);
 					break;
 				case 6:
-					$editor->rotate( -90 );
+					$editor->rotate(-90);
 					break;
 				case 8:
-					$editor->rotate( 90 );
+					$editor->rotate(90);
 			}
 		}
 
 		// Prevent removal of the exif data when resizing (only works with Imagick).
-		add_filter( 'image_strip_meta', '__return_false', 789 );
+		add_filter('image_strip_meta', '__return_false', 789);
 
-		$resized = $editor->resize( $new_sizes[0], $new_sizes[1], false );
+		$resized = $editor->resize($new_sizes[0], $new_sizes[1], false);
 
 		// Remove the filter when we're done to prevent any conflict.
-		remove_filter( 'image_strip_meta', '__return_false', 789 );
+		remove_filter('image_strip_meta', '__return_false', 789);
 
-		if ( is_wp_error( $resized ) ) {
+		if (is_wp_error($resized)) {
 			return $resized;
 		}
 
-		$resized_image_path  = $editor->generate_filename( 'imagifyresized' );
-		$resized_image_saved = $editor->save( $resized_image_path );
+		$resized_image_path  = $editor->generate_filename('imagifyresized');
+		$resized_image_saved = $editor->save($resized_image_path);
 
-		if ( is_wp_error( $resized_image_saved ) ) {
+		if (is_wp_error($resized_image_saved)) {
 			return $resized_image_saved;
 		}
 
@@ -1094,10 +1131,11 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return bool
 	 */
-	public function is_running() {
+	public function is_running()
+	{
 		$callback = $this->optimization_state_network_wide ? 'get_site_transient' : 'get_transient';
 
-		return false !== call_user_func( $callback, $this->optimization_state_transient );
+		return false !== call_user_func($callback, $this->optimization_state_transient);
 	}
 
 	/**
@@ -1107,10 +1145,11 @@ abstract class Imagify_Abstract_Attachment {
 	 * @author Grégory Viguier
 	 * @access public
 	 */
-	public function set_running_status() {
+	public function set_running_status()
+	{
 		$callback = $this->optimization_state_network_wide ? 'set_site_transient' : 'set_transient';
 
-		call_user_func( $callback, $this->optimization_state_transient, true, 10 * MINUTE_IN_SECONDS );
+		call_user_func($callback, $this->optimization_state_transient, true, 10 * MINUTE_IN_SECONDS);
 	}
 
 	/**
@@ -1120,10 +1159,11 @@ abstract class Imagify_Abstract_Attachment {
 	 * @author Grégory Viguier
 	 * @access public
 	 */
-	public function delete_running_status() {
+	public function delete_running_status()
+	{
 		$callback = $this->optimization_state_network_wide ? 'delete_site_transient' : 'delete_transient';
 
-		call_user_func( $callback, $this->optimization_state_transient );
+		call_user_func($callback, $this->optimization_state_transient);
 	}
 
 
@@ -1140,18 +1180,19 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return array
 	 */
-	public function get_row() {
-		if ( isset( $this->row ) ) {
+	public function get_row()
+	{
+		if (isset($this->row)) {
 			return $this->row;
 		}
 
-		if ( ! $this->db_class_name || ! $this->is_valid() ) {
+		if (! $this->db_class_name || ! $this->is_valid()) {
 			return $this->invalidate_row();
 		}
 
-		$this->row = $this->get_row_db_instance()->get( $this->id );
+		$this->row = $this->get_row_db_instance()->get($this->id);
 
-		if ( ! $this->row ) {
+		if (! $this->row) {
 			return $this->invalidate_row();
 		}
 
@@ -1167,12 +1208,13 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @param  array $data The data to update.
 	 */
-	public function update_row( $data ) {
-		if ( ! $this->db_class_name || ! $this->is_valid() ) {
+	public function update_row($data)
+	{
+		if (! $this->db_class_name || ! $this->is_valid()) {
 			return;
 		}
 
-		$this->get_row_db_instance()->update( $this->id, $data );
+		$this->get_row_db_instance()->update($this->id, $data);
 
 		$this->reset_row_cache();
 	}
@@ -1184,12 +1226,13 @@ abstract class Imagify_Abstract_Attachment {
 	 * @author Grégory Viguier
 	 * @access public
 	 */
-	public function delete_row() {
-		if ( ! $this->db_class_name || ! $this->is_valid() ) {
+	public function delete_row()
+	{
+		if (! $this->db_class_name || ! $this->is_valid()) {
 			return;
 		}
 
-		$this->get_row_db_instance()->delete( $this->id );
+		$this->get_row_db_instance()->delete($this->id);
 
 		$this->invalidate_row();
 	}
@@ -1203,8 +1246,9 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return object The DB table instance.
 	 */
-	public function get_row_db_instance() {
-		return call_user_func( array( $this->db_class_name, 'get_instance' ) );
+	public function get_row_db_instance()
+	{
+		return call_user_func(array($this->db_class_name, 'get_instance'));
 	}
 
 	/**
@@ -1216,7 +1260,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return array The row
 	 */
-	public function invalidate_row() {
+	public function invalidate_row()
+	{
 		$this->row = array();
 		return $this->row;
 	}
@@ -1230,7 +1275,8 @@ abstract class Imagify_Abstract_Attachment {
 	 *
 	 * @return null The row.
 	 */
-	public function reset_row_cache() {
+	public function reset_row_cache()
+	{
 		$this->row = null;
 		return $this->row;
 	}

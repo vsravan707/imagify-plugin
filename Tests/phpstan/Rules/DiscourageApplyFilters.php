@@ -15,17 +15,17 @@ class DiscourageApplyFilters implements Rule
 		return FuncCall::class;
 	}
 
-	public function processNode( Node $node, Scope $scope ): array
+	public function processNode(Node $node, Scope $scope): array
 	{
 		if (!$node instanceof FuncCall) {
 			return [];
 		}
 
-		if ( $node->name instanceof Node\Name && $node->name->toString() === 'apply_filters' ) {
+		if ($node->name instanceof Node\Name && $node->name->toString() === 'apply_filters') {
 			return [
-				RuleErrorBuilder::message( 'Usage of apply_filters() is discouraged. Use wpm_apply_filters_typed() instead.' )
-					->identifier( 'custom.rules.discourageApplyFilters' )
-					->addTip( 'We\'ve created a wpm_apply_filters library to help you type hint your filters. You can use it to type hint your filters and make your code more predictable. More info: https://github.com/wp-media/apply-filters-typed' )
+				RuleErrorBuilder::message('Usage of apply_filters() is discouraged. Use wpm_apply_filters_typed() instead.')
+					->identifier('custom.rules.discourageApplyFilters')
+					->addTip('We\'ve created a wpm_apply_filters library to help you type hint your filters. You can use it to type hint your filters and make your code more predictable. More info: https://github.com/wp-media/apply-filters-typed')
 					->build(),
 			];
 		}

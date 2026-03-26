@@ -5,21 +5,24 @@
  *
  * @codeCoverageIgnore
  */
-class ActionScheduler_wpPostStore_TaxonomyRegistrar {
+class ActionScheduler_wpPostStore_TaxonomyRegistrar
+{
 
 	/**
 	 * Registrar.
 	 */
-	public function register() {
-		register_taxonomy( ActionScheduler_wpPostStore::GROUP_TAXONOMY, ActionScheduler_wpPostStore::POST_TYPE, $this->taxonomy_args() );
+	public function register()
+	{
+		register_taxonomy(ActionScheduler_wpPostStore::GROUP_TAXONOMY, ActionScheduler_wpPostStore::POST_TYPE, $this->taxonomy_args());
 	}
 
 	/**
 	 * Get taxonomy arguments.
 	 */
-	protected function taxonomy_args() {
+	protected function taxonomy_args()
+	{
 		$args = array(
-			'label'             => __( 'Action Group', 'action-scheduler' ),
+			'label'             => __('Action Group', 'action-scheduler'),
 			'public'            => false,
 			'hierarchical'      => false,
 			'show_admin_column' => true,
@@ -27,7 +30,7 @@ class ActionScheduler_wpPostStore_TaxonomyRegistrar {
 			'rewrite'           => false,
 		);
 
-		$args = apply_filters( 'action_scheduler_taxonomy_args', $args );
+		$args = apply_filters('action_scheduler_taxonomy_args', $args);
 		return $args;
 	}
 }

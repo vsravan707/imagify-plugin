@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Plugins.

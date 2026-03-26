@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Media;
 
 use Imagify\Traits\MediaRowTrait;
@@ -11,7 +12,8 @@ use WP_Error;
  * @since  1.9
  * @author Grégory Viguier
  */
-class CustomFolders extends AbstractMedia {
+class CustomFolders extends AbstractMedia
+{
 	use MediaRowTrait;
 	use CustomFoldersDeprecatedTrait;
 
@@ -54,23 +56,24 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @param int|array|object $id The file ID. It can also be an array or object representing the file data.
 	 */
-	public function __construct( $id ) {
-		if ( ! static::constructor_accepts( $id ) ) {
+	public function __construct($id)
+	{
+		if (! static::constructor_accepts($id)) {
 			$this->invalidate_row();
-			parent::__construct( 0 );
+			parent::__construct(0);
 			return;
 		}
 
-		if ( is_numeric( $id ) ) {
+		if (is_numeric($id)) {
 			$this->id = (int) $id;
 			$this->get_row();
 		} else {
 			$prim_key  = $this->get_row_db_instance()->get_primary_key();
 			$this->row = (array) $id;
-			$this->id  = $this->row[ $prim_key ];
+			$this->id  = $this->row[$prim_key];
 		}
 
-		parent::__construct( $this->id );
+		parent::__construct($this->id);
 	}
 
 	/**
@@ -83,8 +86,9 @@ class CustomFolders extends AbstractMedia {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
-		return $id && ( is_numeric( $id ) || is_array( $id ) || is_object( $id ) );
+	public static function constructor_accepts($id)
+	{
+		return $id && (is_numeric($id) || is_array($id) || is_object($id));
 	}
 
 
@@ -101,22 +105,23 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_original_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_original_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
-			return $this->get_cdn()->get_file_path( 'original' );
+		if ($this->get_cdn()) {
+			return $this->get_cdn()->get_file_path('original');
 		}
 
 		$row = $this->get_row();
 
-		if ( ! $row || empty( $row['path'] ) ) {
+		if (! $row || empty($row['path'])) {
 			return false;
 		}
 
-		return \Imagify_Files_Scan::remove_placeholder( $row['path'] );
+		return \Imagify_Files_Scan::remove_placeholder($row['path']);
 	}
 
 
@@ -133,22 +138,23 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_fullsize_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_fullsize_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_url();
 		}
 
 		$row = $this->get_row();
 
-		if ( ! $row || empty( $row['path'] ) ) {
+		if (! $row || empty($row['path'])) {
 			return false;
 		}
 
-		return \Imagify_Files_Scan::remove_placeholder( $row['path'], 'url' );
+		return \Imagify_Files_Scan::remove_placeholder($row['path'], 'url');
 	}
 
 	/**
@@ -160,22 +166,23 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_fullsize_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_fullsize_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_path();
 		}
 
 		$row = $this->get_row();
 
-		if ( ! $row || empty( $row['path'] ) ) {
+		if (! $row || empty($row['path'])) {
 			return false;
 		}
 
-		return \Imagify_Files_Scan::remove_placeholder( $row['path'] );
+		return \Imagify_Files_Scan::remove_placeholder($row['path']);
 	}
 
 
@@ -192,12 +199,13 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_backup_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_backup_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return site_url( $this->filesystem->make_path_relative( $this->get_raw_backup_path() ) );
+		return site_url($this->filesystem->make_path_relative($this->get_raw_backup_path()));
 	}
 
 	/**
@@ -209,12 +217,13 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_backup_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_backup_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return \Imagify_Custom_Folders::get_file_backup_path( $this->get_raw_original_path() );
+		return \Imagify_Custom_Folders::get_file_backup_path($this->get_raw_original_path());
 	}
 
 
@@ -232,9 +241,10 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return bool|WP_Error True on success. A WP_Error instance on failure.
 	 */
-	public function generate_thumbnails() {
-		if ( ! $this->is_valid() ) {
-			return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function generate_thumbnails()
+	{
+		if (! $this->is_valid()) {
+			return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
 		return true;
@@ -254,7 +264,8 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return bool
 	 */
-	public function has_required_media_data() {
+	public function has_required_media_data()
+	{
 		return $this->is_valid();
 	}
 
@@ -276,14 +287,15 @@ class CustomFolders extends AbstractMedia {
 	 *     @type bool   $disabled  True if the size is disabled in the plugin’s settings.
 	 * }
 	 */
-	public function get_media_files() {
-		if ( ! $this->is_valid() ) {
+	public function get_media_files()
+	{
+		if (! $this->is_valid()) {
 			return [];
 		}
 
 		$fullsize_path = $this->get_raw_fullsize_path();
 
-		if ( ! $fullsize_path ) {
+		if (! $fullsize_path) {
 			return [];
 		}
 
@@ -299,7 +311,7 @@ class CustomFolders extends AbstractMedia {
 			],
 		];
 
-		return $this->filter_media_files( $sizes );
+		return $this->filter_media_files($sizes);
 	}
 
 	/**
@@ -311,8 +323,9 @@ class CustomFolders extends AbstractMedia {
 	 *
 	 * @return array
 	 */
-	public function get_dimensions() {
-		if ( ! $this->is_image() ) {
+	public function get_dimensions()
+	{
+		if (! $this->is_image()) {
 			return [
 				'width'  => 0,
 				'height' => 0,
@@ -322,8 +335,8 @@ class CustomFolders extends AbstractMedia {
 		$row = $this->get_row();
 
 		return [
-			'width'  => ! empty( $row['width'] ) ? $row['width'] : 0,
-			'height' => ! empty( $row['height'] ) ? $row['height'] : 0,
+			'width'  => ! empty($row['width']) ? $row['width'] : 0,
+			'height' => ! empty($row['height']) ? $row['height'] : 0,
 		];
 	}
 
@@ -341,20 +354,21 @@ class CustomFolders extends AbstractMedia {
 	 *     @type int $height The image height.
 	 * }
 	 */
-	protected function update_media_data_dimensions( $dimensions ) {
+	protected function update_media_data_dimensions($dimensions)
+	{
 		$row = $this->get_row();
 
-		if ( ! is_array( $row ) ) {
+		if (! is_array($row)) {
 			$row = [];
 		}
 
-		if ( isset( $row['width'], $row['height'] ) && $row['width'] === $dimensions['width'] && $row['height'] === $dimensions['height'] ) {
+		if (isset($row['width'], $row['height']) && $row['width'] === $dimensions['width'] && $row['height'] === $dimensions['height']) {
 			return;
 		}
 
 		$row['width']  = $dimensions['width'];
 		$row['height'] = $dimensions['height'];
 
-		$this->update_row( $row );
+		$this->update_row($row);
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Context;
 
 /**
@@ -7,7 +8,8 @@ namespace Imagify\Context;
  * @since  1.9
  * @author Grégory Viguier
  */
-abstract class AbstractContext implements ContextInterface {
+abstract class AbstractContext implements ContextInterface
+{
 
 	/**
 	 * Context "short name".
@@ -74,7 +76,8 @@ abstract class AbstractContext implements ContextInterface {
 	 *
 	 * @return string
 	 */
-	public function get_name() {
+	public function get_name()
+	{
 		return $this->context;
 	}
 
@@ -86,7 +89,8 @@ abstract class AbstractContext implements ContextInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_network_wide() {
+	public function is_network_wide()
+	{
 		return $this->is_network_wide;
 	}
 
@@ -102,7 +106,8 @@ abstract class AbstractContext implements ContextInterface {
 	 *                - 'image' to allow only images.
 	 *                - 'not-image' to allow only pdf files.
 	 */
-	public function get_allowed_mime_types() {
+	public function get_allowed_mime_types()
+	{
 		return $this->allowed_mime_types;
 	}
 
@@ -122,7 +127,8 @@ abstract class AbstractContext implements ContextInterface {
 	 *     @type string $name   The size name.
 	 * }
 	 */
-	public function get_thumbnail_sizes() {
+	public function get_thumbnail_sizes()
+	{
 		return $this->thumbnail_sizes;
 	}
 
@@ -134,7 +140,8 @@ abstract class AbstractContext implements ContextInterface {
 	 *
 	 * @return bool
 	 */
-	public function can_resize() {
+	public function can_resize()
+	{
 		return $this->get_resizing_threshold() > 0;
 	}
 
@@ -146,7 +153,8 @@ abstract class AbstractContext implements ContextInterface {
 	 *
 	 * @return bool
 	 */
-	public function can_backup() {
+	public function can_backup()
+	{
 		return $this->can_backup;
 	}
 
@@ -160,8 +168,9 @@ abstract class AbstractContext implements ContextInterface {
 	 * @param  int    $media_id  A media ID.
 	 * @return bool
 	 */
-	public function current_user_can( $describer, $media_id = null ) {
-		return $this->user_can( 0, $describer, $media_id );
+	public function current_user_can($describer, $media_id = null)
+	{
+		return $this->user_can(0, $describer, $media_id);
 	}
 
 	/**
@@ -175,32 +184,33 @@ abstract class AbstractContext implements ContextInterface {
 	 * @param  int          $media_id  A media ID.
 	 * @return bool
 	 */
-	public function user_can( $user_id, $describer, $media_id = null ) {
+	public function user_can($user_id, $describer, $media_id = null)
+	{
 		$user            = 0;
 		$current_user_id = get_current_user_id();
 
-		if ( ! $user_id ) {
+		if (! $user_id) {
 			$user    = $current_user_id;
 			$user_id = $current_user_id;
-		} elseif ( $user_id instanceof \WP_User ) {
+		} elseif ($user_id instanceof \WP_User) {
 			$user    = $user_id;
 			$user_id = (int) $user->ID;
-		} elseif ( is_numeric( $user_id ) ) {
+		} elseif (is_numeric($user_id)) {
 			$user    = (int) $user_id;
 			$user_id = $user;
 		} else {
 			$user_id = 0;
 		}
 
-		if ( ! $user_id ) {
+		if (! $user_id) {
 			return false;
 		}
 
 		$media_id = $media_id ? (int) $media_id : null;
-		$capacity = $this->get_capacity( $describer );
+		$capacity = $this->get_capacity($describer);
 
-		if ( $user_id === $current_user_id ) {
-			$user_can = current_user_can( $capacity, $media_id );
+		if ($user_id === $current_user_id) {
+			$user_can = current_user_can($capacity, $media_id);
 
 			/**
 			 * Tell if the current user is allowed to operate Imagify in this context.
@@ -214,9 +224,9 @@ abstract class AbstractContext implements ContextInterface {
 			 * @param int    $media_id  A media ID.
 			 * @param string $context   The context name.
 			 */
-			$user_can = wpm_apply_filters_typed( 'boolean', 'imagify_current_user_can', $user_can, $capacity, $describer, $media_id, $this->get_name() );
+			$user_can = wpm_apply_filters_typed('boolean', 'imagify_current_user_can', $user_can, $capacity, $describer, $media_id, $this->get_name());
 		} else {
-			$user_can = user_can( $user, $capacity, $media_id );
+			$user_can = user_can($user, $capacity, $media_id);
 		}
 
 		/**
@@ -231,7 +241,7 @@ abstract class AbstractContext implements ContextInterface {
 		 * @param int    $media_id  A media ID.
 		 * @param string $context   The context name.
 		 */
-		return wpm_apply_filters_typed( 'boolean', 'imagify_user_can', $user_can, $user_id, $capacity, $describer, $media_id, $this->get_name() );
+		return wpm_apply_filters_typed('boolean', 'imagify_user_can', $user_can, $user_id, $capacity, $describer, $media_id, $this->get_name());
 	}
 
 	/**
@@ -244,7 +254,8 @@ abstract class AbstractContext implements ContextInterface {
 	 * @param  string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 	 * @return string
 	 */
-	protected function filter_capacity( $capacity, $describer ) {
+	protected function filter_capacity($capacity, $describer)
+	{
 		/**
 		 * Filter a user capacity used to operate Imagify in this context.
 		 *
@@ -257,6 +268,6 @@ abstract class AbstractContext implements ContextInterface {
 		 * @param string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 		 * @param string $context   The context name.
 		 */
-		return wpm_apply_filters_typed( 'string', 'imagify_capacity', $capacity, $describer, $this->get_name() );
+		return wpm_apply_filters_typed('string', 'imagify_capacity', $capacity, $describer, $this->get_name());
 	}
 }

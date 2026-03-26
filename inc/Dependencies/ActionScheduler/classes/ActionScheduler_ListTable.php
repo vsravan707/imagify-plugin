@@ -5,7 +5,8 @@
  *
  * @codeCoverageIgnore
  */
-class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
+class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable
+{
 
 	/**
 	 * The package name.
@@ -80,26 +81,27 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param ActionScheduler_Logger      $logger Logger object.
 	 * @param ActionScheduler_QueueRunner $runner Runner object.
 	 */
-	public function __construct( ActionScheduler_Store $store, ActionScheduler_Logger $logger, ActionScheduler_QueueRunner $runner ) {
+	public function __construct(ActionScheduler_Store $store, ActionScheduler_Logger $logger, ActionScheduler_QueueRunner $runner)
+	{
 
 		$this->store  = $store;
 		$this->logger = $logger;
 		$this->runner = $runner;
 
-		$this->table_header = __( 'Scheduled Actions', 'action-scheduler' );
+		$this->table_header = __('Scheduled Actions', 'action-scheduler');
 
 		$this->bulk_actions = array(
-			'delete' => __( 'Delete', 'action-scheduler' ),
+			'delete' => __('Delete', 'action-scheduler'),
 		);
 
 		$this->columns = array(
-			'hook'        => __( 'Hook', 'action-scheduler' ),
-			'status'      => __( 'Status', 'action-scheduler' ),
-			'args'        => __( 'Arguments', 'action-scheduler' ),
-			'group'       => __( 'Group', 'action-scheduler' ),
-			'recurrence'  => __( 'Recurrence', 'action-scheduler' ),
-			'schedule'    => __( 'Scheduled Date', 'action-scheduler' ),
-			'log_entries' => __( 'Log', 'action-scheduler' ),
+			'hook'        => __('Hook', 'action-scheduler'),
+			'status'      => __('Status', 'action-scheduler'),
+			'args'        => __('Arguments', 'action-scheduler'),
+			'group'       => __('Group', 'action-scheduler'),
+			'recurrence'  => __('Recurrence', 'action-scheduler'),
+			'schedule'    => __('Scheduled Date', 'action-scheduler'),
+			'log_entries' => __('Log', 'action-scheduler'),
 		);
 
 		$this->sort_by = array(
@@ -116,22 +118,22 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 
 		$request_status = $this->get_request_status();
 
-		if ( empty( $request_status ) ) {
+		if (empty($request_status)) {
 			$this->sort_by[] = 'status';
-		} elseif ( in_array( $request_status, array( 'in-progress', 'failed' ), true ) ) {
-			$this->columns  += array( 'claim_id' => __( 'Claim ID', 'action-scheduler' ) );
+		} elseif (in_array($request_status, array('in-progress', 'failed'), true)) {
+			$this->columns  += array('claim_id' => __('Claim ID', 'action-scheduler'));
 			$this->sort_by[] = 'claim_id';
 		}
 
 		$this->row_actions = array(
 			'hook' => array(
 				'run'    => array(
-					'name' => __( 'Run', 'action-scheduler' ),
-					'desc' => __( 'Process the action now as if it were run as part of a queue', 'action-scheduler' ),
+					'name' => __('Run', 'action-scheduler'),
+					'desc' => __('Process the action now as if it were run as part of a queue', 'action-scheduler'),
 				),
 				'cancel' => array(
-					'name'  => __( 'Cancel', 'action-scheduler' ),
-					'desc'  => __( 'Cancel the action now to avoid it being run in future', 'action-scheduler' ),
+					'name'  => __('Cancel', 'action-scheduler'),
+					'desc'  => __('Cancel the action now to avoid it being run in future', 'action-scheduler'),
 					'class' => 'cancel trash',
 				),
 			),
@@ -141,37 +143,37 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 			array(
 				'seconds' => YEAR_IN_SECONDS,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s year', '%s years', 'action-scheduler' ),
+				'names'   => _n_noop('%s year', '%s years', 'action-scheduler'),
 			),
 			array(
 				'seconds' => MONTH_IN_SECONDS,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s month', '%s months', 'action-scheduler' ),
+				'names'   => _n_noop('%s month', '%s months', 'action-scheduler'),
 			),
 			array(
 				'seconds' => WEEK_IN_SECONDS,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s week', '%s weeks', 'action-scheduler' ),
+				'names'   => _n_noop('%s week', '%s weeks', 'action-scheduler'),
 			),
 			array(
 				'seconds' => DAY_IN_SECONDS,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s day', '%s days', 'action-scheduler' ),
+				'names'   => _n_noop('%s day', '%s days', 'action-scheduler'),
 			),
 			array(
 				'seconds' => HOUR_IN_SECONDS,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s hour', '%s hours', 'action-scheduler' ),
+				'names'   => _n_noop('%s hour', '%s hours', 'action-scheduler'),
 			),
 			array(
 				'seconds' => MINUTE_IN_SECONDS,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s minute', '%s minutes', 'action-scheduler' ),
+				'names'   => _n_noop('%s minute', '%s minutes', 'action-scheduler'),
 			),
 			array(
 				'seconds' => 1,
 				/* translators: %s: amount of time */
-				'names'   => _n_noop( '%s second', '%s seconds', 'action-scheduler' ),
+				'names'   => _n_noop('%s second', '%s seconds', 'action-scheduler'),
 			),
 		);
 
@@ -190,7 +192,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 			)
 		);
 
-		add_filter( 'set_screen_option_' . $this->get_per_page_option_name(), array( $this, 'set_items_per_page_option' ), 10, 3 );
+		add_filter('set_screen_option_' . $this->get_per_page_option_name(), array($this, 'set_items_per_page_option'), 10, 3);
 		set_screen_options();
 	}
 
@@ -202,7 +204,8 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param int    $value  Screen option value.
 	 * @return int
 	 */
-	public function set_items_per_page_option( $status, $option, $value ) {
+	public function set_items_per_page_option($status, $option, $value)
+	{
 		return $value;
 	}
 	/**
@@ -218,25 +221,26 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param int $periods_to_include Depth of time periods to include, e.g. for an interval of 70, and $periods_to_include of 2, both minutes and seconds would be included. With a value of 1, only minutes would be included.
 	 * @return string A human friendly string representation of the interval.
 	 */
-	private static function human_interval( $interval, $periods_to_include = 2 ) {
+	private static function human_interval($interval, $periods_to_include = 2)
+	{
 
-		if ( $interval <= 0 ) {
-			return __( 'Now!', 'action-scheduler' );
+		if ($interval <= 0) {
+			return __('Now!', 'action-scheduler');
 		}
 
 		$output           = '';
-		$num_time_periods = count( self::$time_periods );
+		$num_time_periods = count(self::$time_periods);
 
-		for ( $time_period_index = 0, $periods_included = 0, $seconds_remaining = $interval; $time_period_index < $num_time_periods && $seconds_remaining > 0 && $periods_included < $periods_to_include; $time_period_index++ ) {
+		for ($time_period_index = 0, $periods_included = 0, $seconds_remaining = $interval; $time_period_index < $num_time_periods && $seconds_remaining > 0 && $periods_included < $periods_to_include; $time_period_index++) {
 
-			$periods_in_interval = floor( $seconds_remaining / self::$time_periods[ $time_period_index ]['seconds'] );
+			$periods_in_interval = floor($seconds_remaining / self::$time_periods[$time_period_index]['seconds']);
 
-			if ( $periods_in_interval > 0 ) {
-				if ( ! empty( $output ) ) {
+			if ($periods_in_interval > 0) {
+				if (! empty($output)) {
 					$output .= ' ';
 				}
-				$output            .= sprintf( translate_nooped_plural( self::$time_periods[ $time_period_index ]['names'], $periods_in_interval, 'action-scheduler' ), $periods_in_interval );
-				$seconds_remaining -= $periods_in_interval * self::$time_periods[ $time_period_index ]['seconds'];
+				$output            .= sprintf(translate_nooped_plural(self::$time_periods[$time_period_index]['names'], $periods_in_interval, 'action-scheduler'), $periods_in_interval);
+				$seconds_remaining -= $periods_in_interval * self::$time_periods[$time_period_index]['seconds'];
 				$periods_included++;
 			}
 		}
@@ -251,20 +255,21 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *
 	 * @return string
 	 */
-	protected function get_recurrence( $action ) {
+	protected function get_recurrence($action)
+	{
 		$schedule = $action->get_schedule();
-		if ( $schedule->is_recurring() && method_exists( $schedule, 'get_recurrence' ) ) {
+		if ($schedule->is_recurring() && method_exists($schedule, 'get_recurrence')) {
 			$recurrence = $schedule->get_recurrence();
 
-			if ( is_numeric( $recurrence ) ) {
+			if (is_numeric($recurrence)) {
 				/* translators: %s: time interval */
-				return sprintf( __( 'Every %s', 'action-scheduler' ), self::human_interval( $recurrence ) );
+				return sprintf(__('Every %s', 'action-scheduler'), self::human_interval($recurrence));
 			} else {
 				return $recurrence;
 			}
 		}
 
-		return __( 'Non-repeating', 'action-scheduler' );
+		return __('Non-repeating', 'action-scheduler');
 	}
 
 	/**
@@ -274,18 +279,19 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *
 	 * @return string
 	 */
-	public function column_args( array $row ) {
-		if ( empty( $row['args'] ) ) {
-			return apply_filters( 'action_scheduler_list_table_column_args', '', $row );
+	public function column_args(array $row)
+	{
+		if (empty($row['args'])) {
+			return apply_filters('action_scheduler_list_table_column_args', '', $row);
 		}
 
 		$row_html = '<ul>';
-		foreach ( $row['args'] as $key => $value ) {
-			$row_html .= sprintf( '<li><code>%s => %s</code></li>', esc_html( var_export( $key, true ) ), esc_html( var_export( $value, true ) ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+		foreach ($row['args'] as $key => $value) {
+			$row_html .= sprintf('<li><code>%s => %s</code></li>', esc_html(var_export($key, true)), esc_html(var_export($value, true))); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
 		}
 		$row_html .= '</ul>';
 
-		return apply_filters( 'action_scheduler_list_table_column_args', $row_html, $row );
+		return apply_filters('action_scheduler_list_table_column_args', $row_html, $row);
 	}
 
 	/**
@@ -294,14 +300,15 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param array $row Action array.
 	 * @return string
 	 */
-	public function column_log_entries( array $row ) {
+	public function column_log_entries(array $row)
+	{
 
 		$log_entries_html = '<ol>';
 
-		$timezone = new DateTimezone( 'UTC' );
+		$timezone = new DateTimezone('UTC');
 
-		foreach ( $row['log_entries'] as $log_entry ) {
-			$log_entries_html .= $this->get_log_entry_html( $log_entry, $timezone );
+		foreach ($row['log_entries'] as $log_entry) {
+			$log_entries_html .= $this->get_log_entry_html($log_entry, $timezone);
 		}
 
 		$log_entries_html .= '</ol>';
@@ -316,10 +323,11 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param DateTimezone             $timezone Timestamp.
 	 * @return string
 	 */
-	protected function get_log_entry_html( ActionScheduler_LogEntry $log_entry, DateTimezone $timezone ) {
+	protected function get_log_entry_html(ActionScheduler_LogEntry $log_entry, DateTimezone $timezone)
+	{
 		$date = $log_entry->get_date();
-		$date->setTimezone( $timezone );
-		return sprintf( '<li><strong>%s</strong><br/>%s</li>', esc_html( $date->format( 'Y-m-d H:i:s O' ) ), esc_html( $log_entry->get_message() ) );
+		$date->setTimezone($timezone);
+		return sprintf('<li><strong>%s</strong><br/>%s</li>', esc_html($date->format('Y-m-d H:i:s O')), esc_html($log_entry->get_message()));
 	}
 
 	/**
@@ -330,9 +338,10 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *
 	 * @return string
 	 */
-	protected function maybe_render_actions( $row, $column_name ) {
-		if ( 'pending' === strtolower( $row['status_name'] ) ) {
-			return parent::maybe_render_actions( $row, $column_name );
+	protected function maybe_render_actions($row, $column_name)
+	{
+		if ('pending' === strtolower($row['status_name'])) {
+			return parent::maybe_render_actions($row, $column_name);
 		}
 
 		return '';
@@ -346,10 +355,11 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *  2. Notifications when a task is manually executed.
 	 *  3. Tables are missing.
 	 */
-	public function display_admin_notices() {
+	public function display_admin_notices()
+	{
 		global $wpdb;
 
-		if ( ( is_a( $this->store, 'ActionScheduler_HybridStore' ) || is_a( $this->store, 'ActionScheduler_DBStore' ) ) && apply_filters( 'action_scheduler_enable_recreate_data_store', true ) ) {
+		if ((is_a($this->store, 'ActionScheduler_HybridStore') || is_a($this->store, 'ActionScheduler_DBStore')) && apply_filters('action_scheduler_enable_recreate_data_store', true)) {
 			$table_list = array(
 				'actionscheduler_actions',
 				'actionscheduler_logs',
@@ -357,12 +367,12 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 				'actionscheduler_claims',
 			);
 
-			$found_tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}actionscheduler%'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			foreach ( $table_list as $table_name ) {
-				if ( ! in_array( $wpdb->prefix . $table_name, $found_tables, true ) ) {
+			$found_tables = $wpdb->get_col("SHOW TABLES LIKE '{$wpdb->prefix}actionscheduler%'"); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			foreach ($table_list as $table_name) {
+				if (! in_array($wpdb->prefix . $table_name, $found_tables, true)) {
 					$this->admin_notices[] = array(
 						'class'   => 'error',
-						'message' => __( 'It appears one or more database tables were missing. Attempting to re-create the missing table(s).', 'action-scheduler' ),
+						'message' => __('It appears one or more database tables were missing. Attempting to re-create the missing table(s).', 'action-scheduler'),
 					);
 					$this->recreate_tables();
 					parent::display_admin_notices();
@@ -372,7 +382,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 			}
 		}
 
-		if ( $this->runner->has_maximum_concurrent_batches() ) {
+		if ($this->runner->has_maximum_concurrent_batches()) {
 			$claim_count           = $this->store->get_claim_count();
 			$this->admin_notices[] = array(
 				'class'   => 'updated',
@@ -387,18 +397,18 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 					$claim_count
 				),
 			);
-		} elseif ( $this->store->has_pending_actions_due() ) {
+		} elseif ($this->store->has_pending_actions_due()) {
 
-			$async_request_lock_expiration = ActionScheduler::lock()->get_expiration( 'async-request-runner' );
+			$async_request_lock_expiration = ActionScheduler::lock()->get_expiration('async-request-runner');
 
 			// No lock set or lock expired.
-			if ( false === $async_request_lock_expiration || $async_request_lock_expiration < time() ) {
-				$in_progress_url = add_query_arg( 'status', 'in-progress', remove_query_arg( 'status' ) );
+			if (false === $async_request_lock_expiration || $async_request_lock_expiration < time()) {
+				$in_progress_url = add_query_arg('status', 'in-progress', remove_query_arg('status'));
 				/* translators: %s: process URL */
-				$async_request_message = sprintf( __( 'A new queue has begun processing. <a href="%s">View actions in-progress &raquo;</a>', 'action-scheduler' ), esc_url( $in_progress_url ) );
+				$async_request_message = sprintf(__('A new queue has begun processing. <a href="%s">View actions in-progress &raquo;</a>', 'action-scheduler'), esc_url($in_progress_url));
 			} else {
 				/* translators: %d: seconds */
-				$async_request_message = sprintf( __( 'The next queue will begin processing in approximately %d seconds.', 'action-scheduler' ), $async_request_lock_expiration - time() );
+				$async_request_message = sprintf(__('The next queue will begin processing in approximately %d seconds.', 'action-scheduler'), $async_request_lock_expiration - time());
 			}
 
 			$this->admin_notices[] = array(
@@ -407,37 +417,37 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 			);
 		}
 
-		$notification = get_transient( 'action_scheduler_admin_notice' );
+		$notification = get_transient('action_scheduler_admin_notice');
 
-		if ( is_array( $notification ) ) {
-			delete_transient( 'action_scheduler_admin_notice' );
+		if (is_array($notification)) {
+			delete_transient('action_scheduler_admin_notice');
 
-			$action           = $this->store->fetch_action( $notification['action_id'] );
+			$action           = $this->store->fetch_action($notification['action_id']);
 			$action_hook_html = '<strong><code>' . $action->get_hook() . '</code></strong>';
 
-			if ( 1 === absint( $notification['success'] ) ) {
+			if (1 === absint($notification['success'])) {
 				$class = 'updated';
-				switch ( $notification['row_action_type'] ) {
+				switch ($notification['row_action_type']) {
 					case 'run':
 						/* translators: %s: action HTML */
-						$action_message_html = sprintf( __( 'Successfully executed action: %s', 'action-scheduler' ), $action_hook_html );
+						$action_message_html = sprintf(__('Successfully executed action: %s', 'action-scheduler'), $action_hook_html);
 						break;
 					case 'cancel':
 						/* translators: %s: action HTML */
-						$action_message_html = sprintf( __( 'Successfully canceled action: %s', 'action-scheduler' ), $action_hook_html );
+						$action_message_html = sprintf(__('Successfully canceled action: %s', 'action-scheduler'), $action_hook_html);
 						break;
 					default:
 						/* translators: %s: action HTML */
-						$action_message_html = sprintf( __( 'Successfully processed change for action: %s', 'action-scheduler' ), $action_hook_html );
+						$action_message_html = sprintf(__('Successfully processed change for action: %s', 'action-scheduler'), $action_hook_html);
 						break;
 				}
 			} else {
 				$class = 'error';
 				/* translators: 1: action HTML 2: action ID 3: error message */
-				$action_message_html = sprintf( __( 'Could not process change for action: "%1$s" (ID: %2$d). Error: %3$s', 'action-scheduler' ), $action_hook_html, esc_html( $notification['action_id'] ), esc_html( $notification['error_message'] ) );
+				$action_message_html = sprintf(__('Could not process change for action: "%1$s" (ID: %2$d). Error: %3$s', 'action-scheduler'), $action_hook_html, esc_html($notification['action_id']), esc_html($notification['error_message']));
 			}
 
-			$action_message_html = apply_filters( 'action_scheduler_admin_notice_html', $action_message_html, $action, $notification );
+			$action_message_html = apply_filters('action_scheduler_admin_notice_html', $action_message_html, $action, $notification);
 
 			$this->admin_notices[] = array(
 				'class'   => $class,
@@ -455,8 +465,9 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *
 	 * @return string
 	 */
-	public function column_schedule( $row ) {
-		return $this->get_schedule_display_string( $row['schedule'] );
+	public function column_schedule($row)
+	{
+		return $this->get_schedule_display_string($row['schedule']);
 	}
 
 	/**
@@ -465,29 +476,30 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param ActionScheduler_Schedule $schedule Action's schedule.
 	 * @return string
 	 */
-	protected function get_schedule_display_string( ActionScheduler_Schedule $schedule ) {
+	protected function get_schedule_display_string(ActionScheduler_Schedule $schedule)
+	{
 
 		$schedule_display_string = '';
 
-		if ( is_a( $schedule, 'ActionScheduler_NullSchedule' ) ) {
-			return __( 'async', 'action-scheduler' );
+		if (is_a($schedule, 'ActionScheduler_NullSchedule')) {
+			return __('async', 'action-scheduler');
 		}
 
-		if ( ! method_exists( $schedule, 'get_date' ) || ! $schedule->get_date() ) {
+		if (! method_exists($schedule, 'get_date') || ! $schedule->get_date()) {
 			return '0000-00-00 00:00:00';
 		}
 
 		$next_timestamp = $schedule->get_date()->getTimestamp();
 
-		$schedule_display_string .= $schedule->get_date()->format( 'Y-m-d H:i:s O' );
+		$schedule_display_string .= $schedule->get_date()->format('Y-m-d H:i:s O');
 		$schedule_display_string .= '<br/>';
 
-		if ( gmdate( 'U' ) > $next_timestamp ) {
+		if (gmdate('U') > $next_timestamp) {
 			/* translators: %s: date interval */
-			$schedule_display_string .= sprintf( __( ' (%s ago)', 'action-scheduler' ), self::human_interval( gmdate( 'U' ) - $next_timestamp ) );
+			$schedule_display_string .= sprintf(__(' (%s ago)', 'action-scheduler'), self::human_interval(gmdate('U') - $next_timestamp));
 		} else {
 			/* translators: %s: date interval */
-			$schedule_display_string .= sprintf( __( ' (%s)', 'action-scheduler' ), self::human_interval( $next_timestamp - gmdate( 'U' ) ) );
+			$schedule_display_string .= sprintf(__(' (%s)', 'action-scheduler'), self::human_interval($next_timestamp - gmdate('U')));
 		}
 
 		return $schedule_display_string;
@@ -502,18 +514,19 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param int[]  $ids Action IDs.
 	 * @param string $ids_sql Inherited and unused.
 	 */
-	protected function bulk_delete( array $ids, $ids_sql ) {
-		foreach ( $ids as $id ) {
+	protected function bulk_delete(array $ids, $ids_sql)
+	{
+		foreach ($ids as $id) {
 			try {
-				$this->store->delete_action( $id );
-			} catch ( Exception $e ) {
+				$this->store->delete_action($id);
+			} catch (Exception $e) {
 				// A possible reason for an exception would include a scenario where the same action is deleted by a
 				// concurrent request.
 				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 				error_log(
 					sprintf(
 						/* translators: 1: action ID 2: exception message. */
-						__( 'Action Scheduler was unable to delete action %1$d. Reason: %2$s', 'action-scheduler' ),
+						__('Action Scheduler was unable to delete action %1$d. Reason: %2$s', 'action-scheduler'),
 						$id,
 						$e->getMessage()
 					)
@@ -528,8 +541,9 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *
 	 * @param int $action_id Action ID.
 	 */
-	protected function row_action_cancel( $action_id ) {
-		$this->process_row_action( $action_id, 'cancel' );
+	protected function row_action_cancel($action_id)
+	{
+		$this->process_row_action($action_id, 'cancel');
 	}
 
 	/**
@@ -538,27 +552,29 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 *
 	 * @param int $action_id Action ID.
 	 */
-	protected function row_action_run( $action_id ) {
-		$this->process_row_action( $action_id, 'run' );
+	protected function row_action_run($action_id)
+	{
+		$this->process_row_action($action_id, 'run');
 	}
 
 	/**
 	 * Force the data store schema updates.
 	 */
-	protected function recreate_tables() {
-		if ( is_a( $this->store, 'ActionScheduler_HybridStore' ) ) {
+	protected function recreate_tables()
+	{
+		if (is_a($this->store, 'ActionScheduler_HybridStore')) {
 			$store = $this->store;
 		} else {
 			$store = new ActionScheduler_HybridStore();
 		}
-		add_action( 'action_scheduler/created_table', array( $store, 'set_autoincrement' ), 10, 2 );
+		add_action('action_scheduler/created_table', array($store, 'set_autoincrement'), 10, 2);
 
 		$store_schema  = new ActionScheduler_StoreSchema();
 		$logger_schema = new ActionScheduler_LoggerSchema();
-		$store_schema->register_tables( true );
-		$logger_schema->register_tables( true );
+		$store_schema->register_tables(true);
+		$logger_schema->register_tables(true);
 
-		remove_action( 'action_scheduler/created_table', array( $store, 'set_autoincrement' ), 10 );
+		remove_action('action_scheduler/created_table', array($store, 'set_autoincrement'), 10);
 	}
 	/**
 	 * Implements the logic behind processing an action once an action link is clicked on the list table.
@@ -566,33 +582,35 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	 * @param int    $action_id Action ID.
 	 * @param string $row_action_type The type of action to perform on the action.
 	 */
-	protected function process_row_action( $action_id, $row_action_type ) {
+	protected function process_row_action($action_id, $row_action_type)
+	{
 		try {
-			switch ( $row_action_type ) {
+			switch ($row_action_type) {
 				case 'run':
-					$this->runner->process_action( $action_id, 'Admin List Table' );
+					$this->runner->process_action($action_id, 'Admin List Table');
 					break;
 				case 'cancel':
-					$this->store->cancel_action( $action_id );
+					$this->store->cancel_action($action_id);
 					break;
 			}
 			$success       = 1;
 			$error_message = '';
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			$success       = 0;
 			$error_message = $e->getMessage();
 		}
 
-		set_transient( 'action_scheduler_admin_notice', compact( 'action_id', 'success', 'error_message', 'row_action_type' ), 30 );
+		set_transient('action_scheduler_admin_notice', compact('action_id', 'success', 'error_message', 'row_action_type'), 30);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function prepare_items() {
+	public function prepare_items()
+	{
 		$this->prepare_column_headers();
 
-		$per_page = $this->get_items_per_page( $this->get_per_page_option_name(), $this->items_per_page );
+		$per_page = $this->get_items_per_page($this->get_per_page_option_name(), $this->items_per_page);
 
 		$query = array(
 			'per_page' => $per_page,
@@ -608,36 +626,36 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 		 * Past-due actions have the 'pending' status and are in the past.
 		 * This is needed because registering 'past-due' as a status is overkill.
 		 */
-		if ( 'past-due' === $this->get_request_status() ) {
+		if ('past-due' === $this->get_request_status()) {
 			$query['status'] = ActionScheduler_Store::STATUS_PENDING;
 			$query['date']   = as_get_datetime_object();
 		}
 
 		$this->items = array();
 
-		$total_items = $this->store->query_actions( $query, 'count' );
+		$total_items = $this->store->query_actions($query, 'count');
 
 		$status_labels = $this->store->get_status_labels();
 
-		foreach ( $this->store->query_actions( $query ) as $action_id ) {
+		foreach ($this->store->query_actions($query) as $action_id) {
 			try {
-				$action = $this->store->fetch_action( $action_id );
-			} catch ( Exception $e ) {
+				$action = $this->store->fetch_action($action_id);
+			} catch (Exception $e) {
 				continue;
 			}
-			if ( is_a( $action, 'ActionScheduler_NullAction' ) ) {
+			if (is_a($action, 'ActionScheduler_NullAction')) {
 				continue;
 			}
-			$this->items[ $action_id ] = array(
+			$this->items[$action_id] = array(
 				'ID'          => $action_id,
 				'hook'        => $action->get_hook(),
-				'status_name' => $this->store->get_status( $action_id ),
-				'status'      => $status_labels[ $this->store->get_status( $action_id ) ],
+				'status_name' => $this->store->get_status($action_id),
+				'status'      => $status_labels[$this->store->get_status($action_id)],
 				'args'        => $action->get_args(),
 				'group'       => $action->get_group(),
-				'log_entries' => $this->logger->get_logs( $action_id ),
-				'claim_id'    => $this->store->get_claim_id( $action_id ),
-				'recurrence'  => $this->get_recurrence( $action ),
+				'log_entries' => $this->logger->get_logs($action_id),
+				'claim_id'    => $this->store->get_claim_id($action_id),
+				'recurrence'  => $this->get_recurrence($action),
 				'schedule'    => $action->get_schedule(),
 			);
 		}
@@ -646,7 +664,7 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 			array(
 				'total_items' => $total_items,
 				'per_page'    => $per_page,
-				'total_pages' => ceil( $total_items / $per_page ),
+				'total_pages' => ceil($total_items / $per_page),
 			)
 		);
 	}
@@ -654,7 +672,8 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	/**
 	 * Prints the available statuses so the user can click to filter.
 	 */
-	protected function display_filter_by_status() {
+	protected function display_filter_by_status()
+	{
 		$this->status_counts = $this->store->action_counts() + $this->store->extra_action_counts();
 		parent::display_filter_by_status();
 	}
@@ -662,14 +681,16 @@ class ActionScheduler_ListTable extends ActionScheduler_Abstract_ListTable {
 	/**
 	 * Get the text to display in the search box on the list table.
 	 */
-	protected function get_search_box_button_text() {
-		return __( 'Search hook, args and claim ID', 'action-scheduler' );
+	protected function get_search_box_button_text()
+	{
+		return __('Search hook, args and claim ID', 'action-scheduler');
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function get_per_page_option_name() {
-		return str_replace( '-', '_', $this->screen->id ) . '_per_page';
+	protected function get_per_page_option_name()
+	{
+		return str_replace('-', '_', $this->screen->id) . '_per_page';
 	}
 }

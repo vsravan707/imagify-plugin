@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\WriteFile;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Abstract class used to add and remove contents to a directory conf file (.htaccess, etc).
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.9
  * @author Grégory Viguier
  */
-abstract class AbstractWriteDirConfFile implements WriteFileInterface {
+abstract class AbstractWriteDirConfFile implements WriteFileInterface
+{
 
 	/**
 	 * Name of the tag used as block delemiter.
@@ -37,7 +39,8 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->filesystem = \Imagify_Filesystem::get_instance();
 	}
 
@@ -50,21 +53,22 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return bool|\WP_Error True on success. A \WP_Error object on error.
 	 */
-	public function add() {
-		$result = $this->insert_contents( $this->get_new_contents() );
+	public function add()
+	{
+		$result = $this->insert_contents($this->get_new_contents());
 
-		if ( ! is_wp_error( $result ) ) {
+		if (! is_wp_error($result)) {
 			return true;
 		}
 		$file_path = $this->get_file_path();
-		$file_name = $this->filesystem->make_path_relative( $file_path );
+		$file_name = $this->filesystem->make_path_relative($file_path);
 
-		if ( 'edition_disabled' === $result->get_error_code() ) {
+		if ('edition_disabled' === $result->get_error_code()) {
 			return new \WP_Error(
 				'edition_disabled',
 				sprintf(
 					/* translators: %s is a file name. */
-					__( 'Imagify did not add contents to the %s file, as its edition is disabled.', 'imagify' ),
+					__('Imagify did not add contents to the %s file, as its edition is disabled.', 'imagify'),
 					$file_name
 				)
 			);
@@ -74,11 +78,11 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 			'add_contents_failure',
 			sprintf(
 				/* translators: 1 is a file name, 2 is an error message. */
-				__( 'Imagify could not insert contents into the %1$s file: %2$s', 'imagify' ),
+				__('Imagify could not insert contents into the %1$s file: %2$s', 'imagify'),
 				$file_name,
 				$result->get_error_message()
 			),
-			[ 'code' => $result->get_error_code() ]
+			['code' => $result->get_error_code()]
 		);
 	}
 
@@ -91,21 +95,22 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return bool|\WP_Error True on success. A \WP_Error object on error.
 	 */
-	public function remove() {
-		$result = $this->insert_contents( '' );
+	public function remove()
+	{
+		$result = $this->insert_contents('');
 
-		if ( ! is_wp_error( $result ) ) {
+		if (! is_wp_error($result)) {
 			return true;
 		}
 
-		$file_name = $this->filesystem->make_path_relative( $file_path );
+		$file_name = $this->filesystem->make_path_relative($file_path);
 
-		if ( 'edition_disabled' === $result->get_error_code() ) {
+		if ('edition_disabled' === $result->get_error_code()) {
 			return new \WP_Error(
 				'edition_disabled',
 				sprintf(
 					/* translators: %s is a file name. */
-					__( 'Imagify did not remove the contents from the %s file, as its edition is disabled.', 'imagify' ),
+					__('Imagify did not remove the contents from the %s file, as its edition is disabled.', 'imagify'),
 					$file_name
 				)
 			);
@@ -115,11 +120,11 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 			'add_contents_failure',
 			sprintf(
 				/* translators: 1 is a file name, 2 is an error message. */
-				__( 'Imagify could not remove contents from the %1$s file: %2$s', 'imagify' ),
+				__('Imagify could not remove contents from the %1$s file: %2$s', 'imagify'),
 				$file_name,
 				$result->get_error_message()
 			),
-			[ 'code' => $result->get_error_code() ]
+			['code' => $result->get_error_code()]
 		);
 	}
 
@@ -132,7 +137,8 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return string
 	 */
-	public function get_file_path() {
+	public function get_file_path()
+	{
 		$file_path = $this->get_raw_file_path();
 
 		/**
@@ -143,9 +149,9 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 		 *
 		 * @param string $file_path Path to the file.
 		 */
-		$new_file_path = apply_filters( 'imagify_dir_conf_path', $file_path );
+		$new_file_path = apply_filters('imagify_dir_conf_path', $file_path);
 
-		if ( $new_file_path && is_string( $new_file_path ) ) {
+		if ($new_file_path && is_string($new_file_path)) {
 			return $new_file_path;
 		}
 
@@ -161,53 +167,54 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return bool|\WP_Error True if writable. A \WP_Error object if not.
 	 */
-	public function is_file_writable() {
+	public function is_file_writable()
+	{
 		$file_path = $this->get_file_path();
-		$file_name = $this->filesystem->make_path_relative( $file_path );
+		$file_name = $this->filesystem->make_path_relative($file_path);
 
-		if ( $this->is_conf_edition_disabled() ) {
+		if ($this->is_conf_edition_disabled()) {
 			return new \WP_Error(
 				'edition_disabled',
 				sprintf(
 					/* translators: %s is a file name. */
-					__( 'Edition of the %s file is disabled.', 'imagify' ),
-					'<code>' . esc_html( $file_name ) . '</code>'
+					__('Edition of the %s file is disabled.', 'imagify'),
+					'<code>' . esc_html($file_name) . '</code>'
 				)
 			);
 		}
 
-		if ( ! $this->filesystem->exists( $file_path ) ) {
-			$dir_path = $this->filesystem->dir_path( $file_path );
+		if (! $this->filesystem->exists($file_path)) {
+			$dir_path = $this->filesystem->dir_path($file_path);
 
-			$this->filesystem->make_dir( $dir_path );
+			$this->filesystem->make_dir($dir_path);
 
-			if ( ! $this->filesystem->is_writable( $dir_path ) ) {
+			if (! $this->filesystem->is_writable($dir_path)) {
 				return new \WP_Error(
 					'parent_not_writable',
 					sprintf(
 						/* translators: %s is a file name. */
-						__( '%s’s parent folder is not writable.', 'imagify' ),
-						'<code>' . esc_html( $file_name ) . '</code>'
+						__('%s’s parent folder is not writable.', 'imagify'),
+						'<code>' . esc_html($file_name) . '</code>'
 					)
 				);
 			}
-			if ( ! $this->filesystem->touch( $file_path ) ) {
+			if (! $this->filesystem->touch($file_path)) {
 				return new \WP_Error(
 					'not_created',
 					sprintf(
 						/* translators: %s is a file name. */
-						__( 'The %s file could not be created.', 'imagify' ),
-						'<code>' . esc_html( $file_name ) . '</code>'
+						__('The %s file could not be created.', 'imagify'),
+						'<code>' . esc_html($file_name) . '</code>'
 					)
 				);
 			}
-		} elseif ( ! $this->filesystem->is_writable( $file_path ) ) {
+		} elseif (! $this->filesystem->is_writable($file_path)) {
 			return new \WP_Error(
 				'not_writable',
 				sprintf(
 					/* translators: %s is a file name. */
-					__( 'The %s file is not writable.', 'imagify' ),
-					'<code>' . esc_html( $file_name ) . '</code>'
+					__('The %s file is not writable.', 'imagify'),
+					'<code>' . esc_html($file_name) . '</code>'
 				)
 			);
 		}
@@ -224,7 +231,8 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return string
 	 */
-	public function get_new_contents() {
+	public function get_new_contents()
+	{
 		$contents = $this->get_raw_new_contents();
 
 		/**
@@ -235,9 +243,9 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 		 *
 		 * @param string $contents The contents.
 		 */
-		$new_contents = apply_filters( 'imagify_dir_conf_contents', $contents );
+		$new_contents = apply_filters('imagify_dir_conf_contents', $contents);
 
-		if ( $new_contents && is_string( $new_contents ) ) {
+		if ($new_contents && is_string($new_contents)) {
 			return $new_contents;
 		}
 
@@ -259,7 +267,7 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 * @param  string $new_contents Contents to insert.
 	 * @return bool|\WP_Error       True on write success, a \WP_Error object on failure.
 	 */
-	abstract protected function insert_contents( $new_contents );
+	abstract protected function insert_contents($new_contents);
 
 	/**
 	 * Get the unfiltered path to the file.
@@ -296,29 +304,30 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return mixed|\WP_Error The file contents on success, a \WP_Error object on failure.
 	 */
-	protected function get_file_contents() {
+	protected function get_file_contents()
+	{
 		$writable = $this->is_file_writable();
 
-		if ( is_wp_error( $writable ) ) {
+		if (is_wp_error($writable)) {
 			return $writable;
 		}
 
 		$file_path = $this->get_file_path();
 
-		if ( ! $this->filesystem->exists( $file_path ) ) {
+		if (! $this->filesystem->exists($file_path)) {
 			// This should not happen.
 			return '';
 		}
 
-		$contents = $this->filesystem->get_contents( $file_path );
+		$contents = $this->filesystem->get_contents($file_path);
 
-		if ( false === $contents ) {
+		if (false === $contents) {
 			return new \WP_Error(
 				'not_read',
 				sprintf(
 					/* translators: %s is a file name. */
-					__( 'The %s file could not be read.', 'imagify' ),
-					'<code>' . esc_html( $file_name ) . '</code>'
+					__('The %s file could not be read.', 'imagify'),
+					'<code>' . esc_html($file_name) . '</code>'
 				)
 			);
 		}
@@ -336,22 +345,23 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 * @param  string $contents New contents to add to the file.
 	 * @return bool|\WP_Error   True on success, a \WP_Error object on failure.
 	 */
-	protected function put_file_contents( $contents ) {
+	protected function put_file_contents($contents)
+	{
 		$file_path = $this->get_file_path();
-		$result    = $this->filesystem->put_contents( $file_path, $contents );
+		$result    = $this->filesystem->put_contents($file_path, $contents);
 
-		if ( $result ) {
+		if ($result) {
 			return true;
 		}
 
-		$file_name = $this->filesystem->make_path_relative( $file_path );
+		$file_name = $this->filesystem->make_path_relative($file_path);
 
 		return new \WP_Error(
 			'edition_failed',
 			sprintf(
 				/* translators: %s is a file name. */
-				__( 'Could not write into the %s file.', 'imagify' ),
-				'<code>' . esc_html( $file_name ) . '</code>'
+				__('Could not write into the %s file.', 'imagify'),
+				'<code>' . esc_html($file_name) . '</code>'
 			)
 		);
 	}
@@ -365,7 +375,8 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return bool True to disable, false otherwise.
 	 */
-	protected function is_conf_edition_disabled() {
+	protected function is_conf_edition_disabled()
+	{
 		/**
 		 * Disable directory conf edition.
 		 *
@@ -374,7 +385,7 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 		 *
 		 * @param bool $disable True to disable, false otherwise.
 		 */
-		return (bool) apply_filters( 'imagify_disable_dir_conf_edition', false );
+		return (bool) apply_filters('imagify_disable_dir_conf_edition', false);
 	}
 
 	/**
@@ -386,10 +397,11 @@ abstract class AbstractWriteDirConfFile implements WriteFileInterface {
 	 *
 	 * @return string
 	 */
-	protected function get_extensions_pattern() {
-		$extensions = imagify_get_mime_types( 'image' );
-		$extensions = array_keys( $extensions );
+	protected function get_extensions_pattern()
+	{
+		$extensions = imagify_get_mime_types('image');
+		$extensions = array_keys($extensions);
 
-		return implode( '|', $extensions );
+		return implode('|', $extensions);
 	}
 }

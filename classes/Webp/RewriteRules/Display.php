@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Webp\RewriteRules;
@@ -12,7 +13,8 @@ use Imagify\WriteFile\WriteFileInterface;
  *
  * @since 1.9
  */
-class Display implements SubscriberInterface {
+class Display implements SubscriberInterface
+{
 	/**
 	 * Configuration file writer.
 	 *
@@ -33,9 +35,10 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events() {
+	public static function get_subscribed_events()
+	{
 		return [
-			'imagify_settings_on_save'   => [ 'maybe_add_rewrite_rules', 10 ],
+			'imagify_settings_on_save'   => ['maybe_add_rewrite_rules', 10],
 			'imagify_settings_webp_info' => 'maybe_add_webp_info',
 			'imagify_activation'         => 'activate',
 			'imagify_deactivation'       => 'deactivate',
@@ -51,44 +54,45 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public function maybe_add_rewrite_rules( $values ) {
-		$was_enabled = (bool) get_imagify_option( 'display_nextgen' );
-		$is_enabled  = ! empty( $values['display_nextgen'] );
+	public function maybe_add_rewrite_rules($values)
+	{
+		$was_enabled = (bool) get_imagify_option('display_nextgen');
+		$is_enabled  = ! empty($values['display_nextgen']);
 
 		// Which method?
-		$old_value = get_imagify_option( 'display_nextgen_method' );
-		$new_value = ! empty( $values['display_nextgen_method'] ) ? $values['display_nextgen_method'] : '';
+		$old_value = get_imagify_option('display_nextgen_method');
+		$new_value = ! empty($values['display_nextgen_method']) ? $values['display_nextgen_method'] : '';
 
 		// Decide when to add or remove rules.
 		$is_rewrite  = self::OPTION_VALUE === $new_value;
 		$was_rewrite = self::OPTION_VALUE === $old_value;
 
-		if ( ! $this->get_server_conf() ) {
+		if (! $this->get_server_conf()) {
 			return $values;
 		}
 
 		$result = false;
 
-		if ( $is_enabled && $is_rewrite && ( ! $was_enabled || ! $was_rewrite ) ) {
+		if ($is_enabled && $is_rewrite && (! $was_enabled || ! $was_rewrite)) {
 			// Add the rewrite rules.
 			$result = $this->get_server_conf()->add();
-		} elseif ( $was_enabled && $was_rewrite && ( ! $is_enabled || ! $is_rewrite ) ) {
+		} elseif ($was_enabled && $was_rewrite && (! $is_enabled || ! $is_rewrite)) {
 			// Remove the rewrite rules.
 			$result = $this->get_server_conf()->remove();
 		}
 
-		if ( ! is_wp_error( $result ) ) {
+		if (! is_wp_error($result)) {
 			return $values;
 		}
 
 		// Display an error message.
-		if ( is_multisite() && strpos( wp_get_referer(), network_admin_url( '/' ) ) === 0 ) {
-			Notices::get_instance()->add_network_temporary_notice( $result->get_error_message() );
+		if (is_multisite() && strpos(wp_get_referer(), network_admin_url('/')) === 0) {
+			Notices::get_instance()->add_network_temporary_notice($result->get_error_message());
 
 			return $values;
 		}
 
-		Notices::get_instance()->add_site_temporary_notice( $result->get_error_message() );
+		Notices::get_instance()->add_site_temporary_notice($result->get_error_message());
 
 		return $values;
 	}
@@ -98,37 +102,38 @@ class Display implements SubscriberInterface {
 	 *
 	 * @since 1.9
 	 */
-	public function maybe_add_webp_info() {
+	public function maybe_add_webp_info()
+	{
 		global $is_nginx;
 
 		$conf = $this->get_server_conf();
 
-		if ( ! $conf ) {
+		if (! $conf) {
 			return;
 		}
 
 		$writable = $conf->is_file_writable();
 
-		if ( is_wp_error( $writable ) ) {
+		if (is_wp_error($writable)) {
 			$rules = $conf->get_new_contents();
 
-			if ( ! $rules ) {
+			if (! $rules) {
 				// Uh?
 				return;
 			}
 
 			printf(
 				/* translators: %s is a file name. */
-				esc_html__( 'If you choose to use rewrite rules, you will have to add the following lines manually to the %s file:', 'imagify' ),
-				'<code>' . $this->get_file_path( true ) . '</code>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				esc_html__('If you choose to use rewrite rules, you will have to add the following lines manually to the %s file:', 'imagify'),
+				'<code>' . $this->get_file_path(true) . '</code>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 
-			echo '<pre class="code">' . esc_html( $rules ) . '</pre>';
-		} elseif ( $is_nginx ) {
+			echo '<pre class="code">' . esc_html($rules) . '</pre>';
+		} elseif ($is_nginx) {
 			printf(
 				/* translators: %s is a file name. */
-				esc_html__( 'If you choose to use rewrite rules, the file %s will be created and must be included into the server’s configuration file (then restart the server).', 'imagify' ),
-				'<code>' . $this->get_file_path( true ) . '</code>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				esc_html__('If you choose to use rewrite rules, the file %s will be created and must be included into the server’s configuration file (then restart the server).', 'imagify'),
+				'<code>' . $this->get_file_path(true) . '</code>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 		}
 	}
@@ -138,20 +143,21 @@ class Display implements SubscriberInterface {
 	 *
 	 * @since 1.9
 	 */
-	public function activate() {
+	public function activate()
+	{
 		$conf = $this->get_server_conf();
 
-		if ( ! $conf ) {
+		if (! $conf) {
 			return;
 		}
 
-		if ( ! get_imagify_option( 'display_nextgen' ) ) {
+		if (! get_imagify_option('display_nextgen')) {
 			return;
 		}
-		if ( self::OPTION_VALUE !== get_imagify_option( 'display_nextgen_method' ) ) {
+		if (self::OPTION_VALUE !== get_imagify_option('display_nextgen_method')) {
 			return;
 		}
-		if ( is_wp_error( $conf->is_file_writable() ) ) {
+		if (is_wp_error($conf->is_file_writable())) {
 			return;
 		}
 
@@ -163,26 +169,27 @@ class Display implements SubscriberInterface {
 	 *
 	 * @since 1.9
 	 */
-	public function deactivate() {
+	public function deactivate()
+	{
 		$conf = $this->get_server_conf();
 
-		if ( ! $conf ) {
+		if (! $conf) {
 			return;
 		}
-		if ( ! get_imagify_option( 'display_nextgen' ) ) {
+		if (! get_imagify_option('display_nextgen')) {
 			return;
 		}
-		if ( self::OPTION_VALUE !== get_imagify_option( 'display_nextgen_method' ) ) {
+		if (self::OPTION_VALUE !== get_imagify_option('display_nextgen_method')) {
 			return;
 		}
 
 		$file_path  = $conf->get_file_path();
 		$filesystem = \Imagify_Filesystem::get_instance();
 
-		if ( ! $filesystem->exists( $file_path ) ) {
+		if (! $filesystem->exists($file_path)) {
 			return;
 		}
-		if ( ! $filesystem->is_writable( $file_path ) ) {
+		if (! $filesystem->is_writable($file_path)) {
 			return;
 		}
 
@@ -198,15 +205,16 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_file_path( $relative = false ) {
-		if ( ! $this->get_server_conf() ) {
+	public function get_file_path($relative = false)
+	{
+		if (! $this->get_server_conf()) {
 			return false;
 		}
 
 		$file_path = $this->get_server_conf()->get_file_path();
 
-		if ( $relative ) {
-			return \Imagify_Filesystem::get_instance()->make_path_relative( $file_path );
+		if ($relative) {
+			return \Imagify_Filesystem::get_instance()->make_path_relative($file_path);
 		}
 
 		return $file_path;
@@ -219,18 +227,19 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return WriteFileInterface
 	 */
-	protected function get_server_conf() {
+	protected function get_server_conf()
+	{
 		global $is_apache, $is_iis7, $is_nginx;
 
-		if ( isset( $this->server_conf ) ) {
+		if (isset($this->server_conf)) {
 			return $this->server_conf;
 		}
 
-		if ( $is_apache ) {
+		if ($is_apache) {
 			$this->server_conf = new Apache();
-		} elseif ( $is_iis7 ) {
+		} elseif ($is_iis7) {
 			$this->server_conf = new IIS();
-		} elseif ( $is_nginx ) {
+		} elseif ($is_nginx) {
 			$this->server_conf = new Nginx();
 		}
 

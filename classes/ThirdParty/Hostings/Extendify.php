@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace Imagify\ThirdParty\Hostings;
 
@@ -8,13 +9,15 @@ use Imagify\EventManagement\SubscriberInterface;
 /**
  * Extendify compatibility class
  */
-class Extendify implements SubscriberInterface {
+class Extendify implements SubscriberInterface
+{
 	/**
 	 * Returns an array of events that this subscriber wants to listen to.
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events(): array {
+	public static function get_subscribed_events(): array
+	{
 		return [
 			// @filter
 			'imagify_hide_plugin_family' => 'hide_plugin_family',
@@ -28,10 +31,11 @@ class Extendify implements SubscriberInterface {
 	 *
 	 * @return bool
 	 */
-	public function hide_plugin_family( $hide ) {
-		$option = get_option( 'extendify_site_id', false );
+	public function hide_plugin_family($hide)
+	{
+		$option = get_option('extendify_site_id', false);
 
-		if ( false === $option ) {
+		if (false === $option) {
 			return $hide;
 		}
 

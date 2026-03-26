@@ -1,15 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Admin;
 
 use Imagify\EventManagement\SubscriberInterface;
-use Imagify\Dependencies\WPMedia\PluginFamily\Controller\{ PluginFamily, PluginFamilyInterface };
+use Imagify\Dependencies\WPMedia\PluginFamily\Controller\{PluginFamily, PluginFamilyInterface};
 
 /**
  * Process plugin family actions.
  */
-class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterface {
+class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterface
+{
 
 	/**
 	 * PluginFamily instance.
@@ -23,7 +25,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @param PluginFamily $plugin_family PluginFamily instance.
 	 */
-	public function __construct( PluginFamily $plugin_family ) {
+	public function __construct(PluginFamily $plugin_family)
+	{
 		$this->plugin_family = $plugin_family;
 	}
 
@@ -32,7 +35,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events() {
+	public static function get_subscribed_events()
+	{
 		$events = PluginFamily::get_subscribed_events();
 
 		return $events;
@@ -43,7 +47,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return void
 	 */
-	public function install_activate() {
+	public function install_activate()
+	{
 		$this->plugin_family->install_activate();
 	}
 
@@ -52,7 +57,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return void
 	 */
-	public function display_error_notice() {
+	public function display_error_notice()
+	{
 		$this->plugin_family->display_error_notice();
 	}
 
@@ -61,7 +67,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return void
 	 */
-	public function enqueue_assets(): void {
+	public function enqueue_assets(): void
+	{
 		$this->plugin_family->enqueue_assets();
 	}
 
@@ -70,7 +77,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return void
 	 */
-	public function install_imagify(): void {
+	public function install_imagify(): void
+	{
 		$this->plugin_family->install_imagify();
 	}
 
@@ -80,8 +88,9 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 * @param string $page Page ID.
 	 * @return void
 	 */
-	public function enqueue_admin_assets( $page ): void {
-		$this->plugin_family->enqueue_admin_assets( $page );
+	public function enqueue_admin_assets($page): void
+	{
+		$this->plugin_family->enqueue_admin_assets($page);
 	}
 
 	/**
@@ -89,7 +98,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return void
 	 */
-	public function insert_footer_templates(): void {
+	public function insert_footer_templates(): void
+	{
 		$this->plugin_family->insert_footer_templates();
 	}
 
@@ -98,7 +108,8 @@ class PluginFamilySubscriber implements SubscriberInterface, PluginFamilyInterfa
 	 *
 	 * @return void
 	 */
-	public function dismiss_promote_imagify(): void {
+	public function dismiss_promote_imagify(): void
+	{
 		$this->plugin_family->dismiss_promote_imagify();
 	}
 }

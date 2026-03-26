@@ -1,7 +1,8 @@
 <?php
 
-if ( ! class_exists( 'wpdb' ) ) {
-	class wpdb {
+if (! class_exists('wpdb')) {
+	class wpdb
+	{
 		public $posts         = 'posts';
 		public $postmeta      = 'postmeta';
 		public $term_taxonomy = 'terms';
@@ -13,64 +14,76 @@ if ( ! class_exists( 'wpdb' ) ) {
 
 		public $as_table_rows = [];
 
-		public function get_results( $sql ) {
-			if ( $this->is_post( $sql ) ) {
+		public function get_results($sql)
+		{
+			if ($this->is_post($sql)) {
 				return $this->posts_results;
 			}
 
-			if ( $this->is_term( $sql ) ) {
+			if ($this->is_term($sql)) {
 				return $this->terms_results;
 			}
 
 			return [];
 		}
 
-		public function setTerms( $results ) {
+		public function setTerms($results)
+		{
 			$this->term_taxonomy = 'terms';
 			$this->terms_results = $results;
 		}
 
-		public function setPosts( $results ) {
+		public function setPosts($results)
+		{
 			$this->posts         = 'posts';
 			$this->posts_results = $results;
 		}
 
-		private function is_post( $sql ) {
-			return $this->starts_with( $sql, 'SELECT MAX(ID) as ID, post_type' );
+		private function is_post($sql)
+		{
+			return $this->starts_with($sql, 'SELECT MAX(ID) as ID, post_type');
 		}
 
-		private function is_term( $sql ) {
-			return $this->starts_with( $sql, 'SELECT MAX( term_id ) AS ID, taxonomy' );
+		private function is_term($sql)
+		{
+			return $this->starts_with($sql, 'SELECT MAX( term_id ) AS ID, taxonomy');
 		}
 
-		private function starts_with( $string, $starting_string ) {
-			$string = trim( $string );
-			$len    = strlen( $starting_string );
+		private function starts_with($string, $starting_string)
+		{
+			$string = trim($string);
+			$len    = strlen($starting_string);
 
-			return ( substr( $string, 0, $len ) === $starting_string );
+			return (substr($string, 0, $len) === $starting_string);
 		}
 
-		public function query( $query ) {
+		public function query($query)
+		{
 			return true;
 		}
 
-		public function get_col() {
+		public function get_col()
+		{
 			return $this->as_table_rows;
 		}
 
-		public function prepare( $sql ) {
+		public function prepare($sql)
+		{
 			return true;
 		}
 
-		public function setTableRows( $rows ) {
+		public function setTableRows($rows)
+		{
 			$this->as_table_rows = $rows;
 		}
 
-		public function set_var( $value ) {
+		public function set_var($value)
+		{
 			$this->var_value = $value;
 		}
 
-		public function get_var( $query = null ) {
+		public function get_var($query = null)
+		{
 			return $this->var_value;
 		}
 	}

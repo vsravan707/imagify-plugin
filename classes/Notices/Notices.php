@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Notices;
@@ -10,7 +11,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since 1.6.10
  */
-final class Notices {
+final class Notices
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -56,26 +58,11 @@ final class Notices {
 	 * @var array
 	 */
 	protected static $notice_ids = [
-		// This warning is displayed when the API key is empty. Dismissible.
-		'welcome-steps',
-		// This warning is displayed when the API key is wrong. Dismissible.
-		'wrong-api-key',
-		// This warning is displayed if some plugins are active. NOT dismissible.
 		'plugins-to-deactivate',
-		// This notice is displayed when external HTTP requests are blocked via the WP_HTTP_BLOCK_EXTERNAL constant. Dismissible.
-		'http-block-external',
-		// This warning is displayed when the grid view is active on the library. Dismissible.
 		'grid-view',
-		// This warning is displayed if the backup folder is not writable. NOT dismissible.
 		'backup-folder-not-writable',
-		// This notice is displayed to rate the plugin after 100 optimizations & 7 days after the first installation. Dismissible.
-		'rating',
-		// Add a message about WP Rocket on the "Bulk Optimization" screen. Dismissible.
-		'wp-rocket',
 		'bulk-optimization-complete',
 		'bulk-optimization-running',
-		'upsell-banner',
-		'upsell-admin-bar',
 	];
 
 	/**
@@ -87,8 +74,6 @@ final class Notices {
 	protected static $capabilities = [
 		'grid-view'                  => 'optimize',
 		'backup-folder-not-writable' => 'bulk-optimize',
-		'rating'                     => 'bulk-optimize',
-		'wp-rocket'                  => 'bulk-optimize',
 		'bulk-optimization-complete' => 'bulk-optimize',
 		'bulk-optimization-running'  => 'bulk-optimize',
 	];
@@ -126,15 +111,16 @@ final class Notices {
 	 *
 	 * @since 1.6.10
 	 */
-	public function init() {
+	public function init()
+	{
 		// For generic purpose.
-		add_action( 'all_admin_notices', [ $this, 'render_notices' ] );
-		add_action( 'wp_ajax_imagify_dismiss_notice', [ $this, 'admin_post_dismiss_notice' ] );
-		add_action( 'admin_post_imagify_dismiss_notice', [ $this, 'admin_post_dismiss_notice' ] );
+		add_action('all_admin_notices', [$this, 'render_notices']);
+		add_action('wp_ajax_imagify_dismiss_notice', [$this, 'admin_post_dismiss_notice']);
+		add_action('admin_post_imagify_dismiss_notice', [$this, 'admin_post_dismiss_notice']);
 		// For specific notices.
-		add_action( 'imagify_dismiss_notice', [ $this, 'clear_scheduled_rating' ] );
-		add_action( 'admin_post_imagify_deactivate_plugin', [ $this, 'deactivate_plugin' ] );
-		add_action( 'imagify_not_almost_over_quota_anymore', [ $this, 'renew_almost_over_quota_notice' ] );
+		add_action('imagify_dismiss_notice', [$this, 'clear_scheduled_rating']);
+		add_action('admin_post_imagify_deactivate_plugin', [$this, 'deactivate_plugin']);
+		add_action('imagify_not_almost_over_quota_anymore', [$this, 'renew_almost_over_quota_notice']);
 	}
 
 
@@ -147,20 +133,21 @@ final class Notices {
 	 *
 	 * @since 1.6.10
 	 */
-	public function render_notices() {
-		foreach ( $this->get_notice_ids() as $notice_id ) {
+	public function render_notices()
+	{
+		foreach ($this->get_notice_ids() as $notice_id) {
 			// Get the name of the method that will tell if this notice should be displayed.
-			$callback = 'display_' . str_replace( '-', '_', $notice_id );
+			$callback = 'display_' . str_replace('-', '_', $notice_id);
 
-			if ( ! method_exists( $this, $callback ) ) {
+			if (! method_exists($this, $callback)) {
 				continue;
 			}
 
-			$data = call_user_func( [ $this, $callback ] );
+			$data = call_user_func([$this, $callback]);
 
-			if ( $data ) {
+			if ($data) {
 				// The notice must be displayed: render the view.
-				\Imagify_Views::get_instance()->print_template( 'notice-' . $notice_id, $data );
+				\Imagify_Views::get_instance()->print_template('notice-' . $notice_id, $data);
 			}
 		}
 
@@ -174,18 +161,19 @@ final class Notices {
 	 * @since 1.6.10
 	 * @see    _do_admin_post_imagify_dismiss_notice()
 	 */
-	public function admin_post_dismiss_notice() {
-		imagify_check_nonce( self::DISMISS_NONCE_ACTION );
+	public function admin_post_dismiss_notice()
+	{
+		imagify_check_nonce(self::DISMISS_NONCE_ACTION);
 
-		$notice  = ! empty( $_GET['notice'] ) ? sanitize_text_field( wp_unslash( $_GET['notice'] ) ) : '';
+		$notice  = ! empty($_GET['notice']) ? sanitize_text_field(wp_unslash($_GET['notice'])) : '';
 		$notices = $this->get_notice_ids();
-		$notices = array_flip( $notices );
+		$notices = array_flip($notices);
 
-		if ( ! $notice || ! isset( $notices[ $notice ] ) || ! $this->user_can( $notice ) ) {
+		if (! $notice || ! isset($notices[$notice]) || ! $this->user_can($notice)) {
 			imagify_die();
 		}
 
-		self::dismiss_notice( $notice );
+		self::dismiss_notice($notice);
 
 		/**
 		 * Fires when a notice is dismissed.
@@ -193,8 +181,8 @@ final class Notices {
 		 * @since 1.4.2
 		 *
 		 * @param string $notice The notice slug
-		*/
-		do_action( 'imagify_dismiss_notice', $notice );
+		 */
+		do_action('imagify_dismiss_notice', $notice);
 
 		imagify_maybe_redirect();
 		wp_send_json_success();
@@ -208,9 +196,10 @@ final class Notices {
 	 *
 	 * @param string $notice The notice name.
 	 */
-	public function clear_scheduled_rating( $notice ) {
-		if ( 'rating' === $notice ) {
-			set_site_transient( 'do_imagify_rating_cron', 'no' );
+	public function clear_scheduled_rating($notice)
+	{
+		if ('rating' === $notice) {
+			set_site_transient('do_imagify_rating_cron', 'no');
 			\Imagify_Cron_Rating::get_instance()->unschedule_event();
 		}
 	}
@@ -221,22 +210,23 @@ final class Notices {
 	 * @since 1.6.10
 	 * @see _imagify_deactivate_plugin()
 	 */
-	public function deactivate_plugin() {
-		imagify_check_nonce( self::DEACTIVATE_PLUGIN_NONCE_ACTION );
+	public function deactivate_plugin()
+	{
+		imagify_check_nonce(self::DEACTIVATE_PLUGIN_NONCE_ACTION);
 
-		if ( empty( $_GET['plugin'] ) || ! $this->user_can( 'plugins-to-deactivate' ) ) {
+		if (empty($_GET['plugin']) || ! $this->user_can('plugins-to-deactivate')) {
 			imagify_die();
 		}
 
-		$plugin  = sanitize_text_field( wp_unslash( $_GET['plugin'] ) );
+		$plugin  = sanitize_text_field(wp_unslash($_GET['plugin']));
 		$plugins = $this->get_conflicting_plugins();
-		$plugins = array_flip( $plugins );
+		$plugins = array_flip($plugins);
 
-		if ( empty( $plugins[ $plugin ] ) ) {
+		if (empty($plugins[$plugin])) {
 			imagify_die();
 		}
 
-		deactivate_plugins( $plugin );
+		deactivate_plugins($plugin);
 
 		imagify_maybe_redirect();
 		wp_send_json_success();
@@ -247,33 +237,9 @@ final class Notices {
 	 *
 	 * @since 1.7
 	 */
-	public function renew_almost_over_quota_notice() {
-		global $wpdb;
-
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT umeta_id, user_id FROM $wpdb->usermeta WHERE meta_key = %s AND meta_value LIKE %s", self::DISMISS_META_NAME, '%upsell%' ) );
-
-		if ( ! $results ) {
-			return;
-		}
-
-		// Prevent multiple queries to the DB by caching user metas.
-		$not_cached = [];
-
-		foreach ( $results as $result ) {
-			if ( ! wp_cache_get( $result->umeta_id, 'user_meta' ) ) {
-				$not_cached[] = $result->umeta_id;
-			}
-		}
-
-		if ( $not_cached ) {
-			update_meta_cache( 'user', $not_cached );
-		}
-
-		// Renew the notice for all users.
-		foreach ( $results as $result ) {
-			self::renew_notice( 'upsell-banner', $result->user_id );
-			self::renew_notice( 'upsell-admin-bar', $result->user_id );
-		}
+	public function renew_almost_over_quota_notice()
+	{
+		// Upsell notices removed — standalone fork.
 	}
 
 
@@ -288,29 +254,9 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function display_welcome_steps() {
-		static $display;
-
-		if ( isset( $display ) ) {
-			return $display;
-		}
-
-		$display = false;
-
-		if ( ! $this->user_can( 'welcome-steps' ) ) {
-			return $display;
-		}
-
-		if ( imagify_is_screen( 'imagify-settings' ) ) {
-			return $display;
-		}
-
-		if ( self::notice_is_dismissed( 'welcome-steps' ) || get_imagify_option( 'api_key' ) ) {
-			return $display;
-		}
-
-		$display = true;
-		return $display;
+	public function display_welcome_steps()
+	{
+		return false;
 	}
 
 	/**
@@ -320,29 +266,9 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function display_wrong_api_key() {
-		static $display;
-
-		if ( isset( $display ) ) {
-			return $display;
-		}
-
-		$display = false;
-
-		if ( ! $this->user_can( 'wrong-api-key' ) ) {
-			return $display;
-		}
-
-		if ( ! imagify_is_screen( 'bulk' ) ) {
-			return $display;
-		}
-
-		if ( self::notice_is_dismissed( 'wrong-api-key' ) || ! get_imagify_option( 'api_key' ) || \Imagify_Requirements::is_api_key_valid() ) {
-			return $display;
-		}
-
-		$display = true;
-		return $display;
+	public function display_wrong_api_key()
+	{
+		return false;
 	}
 
 	/**
@@ -352,14 +278,15 @@ final class Notices {
 	 *
 	 * @return array|false An array of plugins to deactivate. false if the notice should not be displayed.
 	 */
-	public function display_plugins_to_deactivate() {
+	public function display_plugins_to_deactivate()
+	{
 		static $display;
 
-		if ( isset( $display ) ) {
+		if (isset($display)) {
 			return $display;
 		}
 
-		if ( ! $this->user_can( 'plugins-to-deactivate' ) ) {
+		if (! $this->user_can('plugins-to-deactivate')) {
 			$display = false;
 			return $display;
 		}
@@ -375,24 +302,25 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function display_http_block_external() {
+	public function display_http_block_external()
+	{
 		static $display;
 
-		if ( isset( $display ) ) {
+		if (isset($display)) {
 			return $display;
 		}
 
 		$display = false;
 
-		if ( ! $this->user_can( 'http-block-external' ) ) {
+		if (! $this->user_can('http-block-external')) {
 			return $display;
 		}
 
-		if ( imagify_is_screen( 'imagify-settings' ) ) {
+		if (imagify_is_screen('imagify-settings')) {
 			return $display;
 		}
 
-		if ( self::notice_is_dismissed( 'http-block-external' ) || ! \Imagify_Requirements::is_imagify_blocked() ) {
+		if (self::notice_is_dismissed('http-block-external') || ! \Imagify_Requirements::is_imagify_blocked()) {
 			return $display;
 		}
 
@@ -407,32 +335,33 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function display_grid_view() {
+	public function display_grid_view()
+	{
 		global $wp_version;
 		static $display;
 
-		if ( isset( $display ) ) {
+		if (isset($display)) {
 			return $display;
 		}
 
 		$display = false;
 
-		if ( ! $this->user_can( 'grid-view' ) ) {
+		if (! $this->user_can('grid-view')) {
 			return $display;
 		}
 
-		if ( ! imagify_is_screen( 'library' ) ) {
+		if (! imagify_is_screen('library')) {
 			return $display;
 		}
 
-		$media_library_mode = get_user_option( 'media_library_mode', get_current_user_id() );
+		$media_library_mode = get_user_option('media_library_mode', get_current_user_id());
 
-		if ( 'list' === $media_library_mode || self::notice_is_dismissed( 'grid-view' ) || version_compare( $wp_version, '4.0' ) < 0 ) {
+		if ('list' === $media_library_mode || self::notice_is_dismissed('grid-view') || version_compare($wp_version, '4.0') < 0) {
 			return $display;
 		}
 
 		// Don't display the notice if the API key isn't valid.
-		if ( ! \Imagify_Requirements::is_api_key_valid() ) {
+		if (! \Imagify_Requirements::is_api_key_valid()) {
 			return $display;
 		}
 
@@ -447,29 +376,30 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function display_backup_folder_not_writable() {
+	public function display_backup_folder_not_writable()
+	{
 		static $display;
 
-		if ( isset( $display ) ) {
+		if (isset($display)) {
 			return $display;
 		}
 
 		$display = false;
 
-		if ( ! $this->user_can( 'backup-folder-not-writable' ) ) {
+		if (! $this->user_can('backup-folder-not-writable')) {
 			return $display;
 		}
 
 		// Every places where images can be optimized, automatically or not (+ the settings page).
-		if ( ! imagify_is_screen( 'imagify-settings' ) && ! imagify_is_screen( 'library' ) && ! imagify_is_screen( 'upload' ) && ! imagify_is_screen( 'bulk' ) && ! imagify_is_screen( 'media-modal' ) ) {
+		if (! imagify_is_screen('imagify-settings') && ! imagify_is_screen('library') && ! imagify_is_screen('upload') && ! imagify_is_screen('bulk') && ! imagify_is_screen('media-modal')) {
 			return $display;
 		}
 
-		if ( ! get_imagify_option( 'backup' ) ) {
+		if (! get_imagify_option('backup')) {
 			return $display;
 		}
 
-		if ( \Imagify_Requirements::attachments_backup_dir_is_writable() ) {
+		if (\Imagify_Requirements::attachments_backup_dir_is_writable()) {
 			return $display;
 		}
 
@@ -484,35 +414,9 @@ final class Notices {
 	 *
 	 * @return bool|int
 	 */
-	public function display_rating() {
-		static $display;
-
-		if ( isset( $display ) ) {
-			return $display;
-		}
-
-		$display = false;
-
-		if ( ! $this->user_can( 'rating' ) ) {
-			return $display;
-		}
-
-		if ( ! imagify_is_screen( 'bulk' ) && ! imagify_is_screen( 'library' ) && ! imagify_is_screen( 'upload' ) ) {
-			return $display;
-		}
-
-		if ( self::notice_is_dismissed( 'rating' ) ) {
-			return $display;
-		}
-
-		$user_images_count = (int) get_site_transient( 'imagify_user_images_count' );
-
-		if ( ! $user_images_count || get_site_transient( 'imagify_seen_rating_notice' ) ) {
-			return $display;
-		}
-
-		$display = $user_images_count;
-		return $display;
+	public function display_rating()
+	{
+		return false;
 	}
 
 	/**
@@ -522,31 +426,9 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function display_wp_rocket() {
-		static $display;
-
-		if ( isset( $display ) ) {
-			return $display;
-		}
-
-		$display = false;
-
-		if ( ! $this->user_can( 'wp-rocket' ) ) {
-			return $display;
-		}
-
-		if ( ! imagify_is_screen( 'bulk' ) ) {
-			return $display;
-		}
-
-		$plugins = get_plugins();
-
-		if ( isset( $plugins['wp-rocket/wp-rocket.php'] ) || self::notice_is_dismissed( 'wp-rocket' ) ) {
-			return $display;
-		}
-
-		$display = true;
-		return $display;
+	public function display_wp_rocket()
+	{
+		return false;
 	}
 
 	/**
@@ -556,34 +438,35 @@ final class Notices {
 	 *
 	 * @return array
 	 */
-	public function display_bulk_optimization_complete(): array {
-		if ( ! $this->user_can( 'bulk-optimization-complete' ) ) {
+	public function display_bulk_optimization_complete(): array
+	{
+		if (! $this->user_can('bulk-optimization-complete')) {
 			return [];
 		}
 
-		if ( imagify_is_screen( 'bulk' ) ) {
+		if (imagify_is_screen('bulk')) {
 			return [];
 		}
 
-		if ( self::notice_is_dismissed( 'bulk-optimization-complete' ) ) {
+		if (self::notice_is_dismissed('bulk-optimization-complete')) {
 			return [];
 		}
 
-		if ( false === get_transient( 'imagify_bulk_optimization_complete' ) ) {
+		if (false === get_transient('imagify_bulk_optimization_complete')) {
 			return [];
 		}
 
-		$data = get_transient( 'imagify_bulk_optimization_result' );
+		$data = get_transient('imagify_bulk_optimization_result');
 
-		if ( empty( $data ) ) {
+		if (empty($data)) {
 			return [];
 		}
 
 		$global_gain = $data['original_size'] - $data['optimized_size'];
 
-		$data['original_size']  = imagify_size_format( $data['original_size'], 2 );
-		$data['optimized_size'] = imagify_size_format( $global_gain, 2 );
-		$data['bulk_page_url']  = admin_url( 'upload.php?page=imagify-bulk-optimization' );
+		$data['original_size']  = imagify_size_format($data['original_size'], 2);
+		$data['optimized_size'] = imagify_size_format($global_gain, 2);
+		$data['bulk_page_url']  = admin_url('upload.php?page=imagify-bulk-optimization');
 
 		return $data;
 	}
@@ -595,21 +478,22 @@ final class Notices {
 	 *
 	 * @return array
 	 */
-	public function display_bulk_optimization_running(): array {
-		if ( ! $this->user_can( 'bulk-optimization-running' ) ) {
+	public function display_bulk_optimization_running(): array
+	{
+		if (! $this->user_can('bulk-optimization-running')) {
 			return [];
 		}
 
-		if ( imagify_is_screen( 'bulk' ) ) {
+		if (imagify_is_screen('bulk')) {
 			return [];
 		}
 
-		if ( self::notice_is_dismissed( 'bulk-optimization-running' ) ) {
+		if (self::notice_is_dismissed('bulk-optimization-running')) {
 			return [];
 		}
 
-		$custom_folders = get_transient( 'imagify_custom-folders_optimize_running' );
-		$library_wp     = get_transient( 'imagify_wp_optimize_running' );
+		$custom_folders = get_transient('imagify_custom-folders_optimize_running');
+		$library_wp     = get_transient('imagify_wp_optimize_running');
 
 		if (
 			! $custom_folders
@@ -621,7 +505,7 @@ final class Notices {
 
 		$data = [];
 
-		$data['bulk_page_url'] = admin_url( 'upload.php?page=imagify-bulk-optimization' );
+		$data['bulk_page_url'] = admin_url('upload.php?page=imagify-bulk-optimization');
 
 		return $data;
 	}
@@ -635,24 +519,25 @@ final class Notices {
 	 *
 	 * @since 1.7
 	 */
-	protected function render_temporary_notices() {
-		if ( is_network_admin() ) {
+	protected function render_temporary_notices()
+	{
+		if (is_network_admin()) {
 			$notices = $this->get_network_temporary_notices();
 		} else {
 			$notices = $this->get_site_temporary_notices();
 		}
 
-		if ( ! $notices ) {
+		if (! $notices) {
 			return;
 		}
 
 		$views = \Imagify_Views::get_instance();
 
-		foreach ( $notices as $i => $notice_data ) {
-			$notices[ $i ]['type'] = ! empty( $notice_data['type'] ) ? $notice_data['type'] : 'error';
+		foreach ($notices as $i => $notice_data) {
+			$notices[$i]['type'] = ! empty($notice_data['type']) ? $notice_data['type'] : 'error';
 		}
 
-		$views->print_template( 'notice-temporary', $notices );
+		$views->print_template('notice-temporary', $notices);
 	}
 
 	/**
@@ -662,16 +547,17 @@ final class Notices {
 	 *
 	 * @return array
 	 */
-	protected function get_network_temporary_notices() {
-		$notices = get_site_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME );
+	protected function get_network_temporary_notices()
+	{
+		$notices = get_site_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME);
 
-		if ( false === $notices ) {
+		if (false === $notices) {
 			return [];
 		}
 
-		delete_site_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME );
+		delete_site_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME);
 
-		return $notices && is_array( $notices ) ? $notices : [];
+		return $notices && is_array($notices) ? $notices : [];
 	}
 
 	/**
@@ -681,30 +567,31 @@ final class Notices {
 	 *
 	 * @param array|object|string $notice_data Some data, with the message to display.
 	 */
-	public function add_network_temporary_notice( $notice_data ) {
-		$notices = get_site_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME );
-		$notices = is_array( $notices ) ? $notices : [];
+	public function add_network_temporary_notice($notice_data)
+	{
+		$notices = get_site_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME);
+		$notices = is_array($notices) ? $notices : [];
 
-		if ( is_wp_error( $notice_data ) ) {
+		if (is_wp_error($notice_data)) {
 			$notice_data = $notice_data->get_error_messages();
-			$notice_data = implode( '<br/>', $notice_data );
+			$notice_data = implode('<br/>', $notice_data);
 		}
 
-		if ( is_string( $notice_data ) ) {
+		if (is_string($notice_data)) {
 			$notice_data = [
 				'message' => $notice_data,
 			];
-		} elseif ( is_object( $notice_data ) ) {
+		} elseif (is_object($notice_data)) {
 			$notice_data = (array) $notice_data;
 		}
 
-		if ( ! is_array( $notice_data ) || empty( $notice_data['message'] ) ) {
+		if (! is_array($notice_data) || empty($notice_data['message'])) {
 			return;
 		}
 
 		$notices[] = $notice_data;
 
-		set_site_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME, $notices, 30 );
+		set_site_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME, $notices, 30);
 	}
 
 	/**
@@ -714,16 +601,17 @@ final class Notices {
 	 *
 	 * @return array
 	 */
-	protected function get_site_temporary_notices() {
-		$notices = get_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME );
+	protected function get_site_temporary_notices()
+	{
+		$notices = get_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME);
 
-		if ( false === $notices ) {
+		if (false === $notices) {
 			return [];
 		}
 
-		delete_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME );
+		delete_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME);
 
-		return $notices && is_array( $notices ) ? $notices : [];
+		return $notices && is_array($notices) ? $notices : [];
 	}
 
 	/**
@@ -733,25 +621,26 @@ final class Notices {
 	 *
 	 * @param array|string $notice_data Some data, with the message to display.
 	 */
-	public function add_site_temporary_notice( $notice_data ) {
-		$notices = get_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME );
-		$notices = is_array( $notices ) ? $notices : [];
+	public function add_site_temporary_notice($notice_data)
+	{
+		$notices = get_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME);
+		$notices = is_array($notices) ? $notices : [];
 
-		if ( is_string( $notice_data ) ) {
+		if (is_string($notice_data)) {
 			$notice_data = [
 				'message' => $notice_data,
 			];
-		} elseif ( is_object( $notice_data ) ) {
+		} elseif (is_object($notice_data)) {
 			$notice_data = (array) $notice_data;
 		}
 
-		if ( ! is_array( $notice_data ) || empty( $notice_data['message'] ) ) {
+		if (! is_array($notice_data) || empty($notice_data['message'])) {
 			return;
 		}
 
 		$notices[] = $notice_data;
 
-		set_transient( self::TEMPORARY_NOTICES_TRANSIENT_NAME, $notices, 30 );
+		set_transient(self::TEMPORARY_NOTICES_TRANSIENT_NAME, $notices, 30);
 	}
 
 
@@ -767,21 +656,22 @@ final class Notices {
 	 * @param string $notice  A notice ID.
 	 * @param int    $user_id A user ID.
 	 */
-	public static function renew_notice( $notice, $user_id = 0 ) {
+	public static function renew_notice($notice, $user_id = 0)
+	{
 		$user_id = $user_id ? (int) $user_id : get_current_user_id();
-		$notices = get_user_meta( $user_id, self::DISMISS_META_NAME, true );
-		$notices = $notices && is_array( $notices ) ? array_flip( $notices ) : [];
+		$notices = get_user_meta($user_id, self::DISMISS_META_NAME, true);
+		$notices = $notices && is_array($notices) ? array_flip($notices) : [];
 
-		if ( ! isset( $notices[ $notice ] ) ) {
+		if (! isset($notices[$notice])) {
 			return;
 		}
 
-		unset( $notices[ $notice ] );
-		$notices = array_flip( $notices );
-		$notices = array_filter( $notices );
-		$notices = array_values( $notices );
+		unset($notices[$notice]);
+		$notices = array_flip($notices);
+		$notices = array_filter($notices);
+		$notices = array_values($notices);
 
-		update_user_meta( $user_id, self::DISMISS_META_NAME, $notices );
+		update_user_meta($user_id, self::DISMISS_META_NAME, $notices);
 	}
 
 	/**
@@ -793,21 +683,22 @@ final class Notices {
 	 * @param  string $notice  A notice ID.
 	 * @param  int    $user_id A user ID.
 	 */
-	public static function dismiss_notice( $notice, $user_id = 0 ) {
+	public static function dismiss_notice($notice, $user_id = 0)
+	{
 		$user_id = $user_id ? (int) $user_id : get_current_user_id();
-		$notices = get_user_meta( $user_id, self::DISMISS_META_NAME, true );
-		$notices = $notices && is_array( $notices ) ? array_flip( $notices ) : [];
+		$notices = get_user_meta($user_id, self::DISMISS_META_NAME, true);
+		$notices = $notices && is_array($notices) ? array_flip($notices) : [];
 
-		if ( isset( $notices[ $notice ] ) ) {
+		if (isset($notices[$notice])) {
 			return;
 		}
 
-		$notices   = array_flip( $notices );
+		$notices   = array_flip($notices);
 		$notices[] = $notice;
-		$notices   = array_filter( $notices );
-		$notices   = array_values( $notices );
+		$notices   = array_filter($notices);
+		$notices   = array_values($notices);
 
-		update_user_meta( $user_id, self::DISMISS_META_NAME, $notices );
+		update_user_meta($user_id, self::DISMISS_META_NAME, $notices);
 	}
 
 	/**
@@ -820,12 +711,13 @@ final class Notices {
 	 * @param  int    $user_id A user ID.
 	 * @return bool
 	 */
-	public static function notice_is_dismissed( $notice, $user_id = 0 ) {
+	public static function notice_is_dismissed($notice, $user_id = 0)
+	{
 		$user_id = $user_id ? (int) $user_id : get_current_user_id();
-		$notices = get_user_meta( $user_id, self::DISMISS_META_NAME, true );
-		$notices = $notices && is_array( $notices ) ? array_flip( $notices ) : [];
+		$notices = get_user_meta($user_id, self::DISMISS_META_NAME, true);
+		$notices = $notices && is_array($notices) ? array_flip($notices) : [];
 
-		return isset( $notices[ $notice ] );
+		return isset($notices[$notice]);
 	}
 
 	/**
@@ -835,11 +727,12 @@ final class Notices {
 	 *
 	 * @return bool
 	 */
-	public function has_notices() {
-		foreach ( self::$notice_ids as $notice_id ) {
-			$callback = 'display_' . str_replace( '-', '_', $notice_id );
+	public function has_notices()
+	{
+		foreach (self::$notice_ids as $notice_id) {
+			$callback = 'display_' . str_replace('-', '_', $notice_id);
 
-			if ( method_exists( $this, $callback ) && call_user_func( [ $this, $callback ] ) ) {
+			if (method_exists($this, $callback) && call_user_func([$this, $callback])) {
 				return true;
 			}
 		}
@@ -860,7 +753,8 @@ final class Notices {
 	 *
 	 * @return array The filtered notice ids.
 	 */
-	protected function get_notice_ids() {
+	protected function get_notice_ids()
+	{
 		/**
 		 * Filter the notices Imagify can display.
 		 *
@@ -868,7 +762,7 @@ final class Notices {
 		 *
 		 * @param array $notice_ids An array of notice "IDs".
 		 */
-		return (array) wpm_apply_filters_typed( 'array', 'imagify_notices', self::$notice_ids );
+		return (array) wpm_apply_filters_typed('array', 'imagify_notices', self::$notice_ids);
 	}
 
 	/**
@@ -880,10 +774,11 @@ final class Notices {
 	 * @param  string $notice_id A notice ID.
 	 * @return bool
 	 */
-	protected function user_can( $notice_id ) {
-		$capability = isset( self::$capabilities[ $notice_id ] ) ? self::$capabilities[ $notice_id ] : 'manage';
+	protected function user_can($notice_id)
+	{
+		$capability = isset(self::$capabilities[$notice_id]) ? self::$capabilities[$notice_id] : 'manage';
 
-		return imagify_get_context( 'wp' )->current_user_can( $capability );
+		return imagify_get_context('wp')->current_user_can($capability);
 	}
 
 	/**
@@ -893,16 +788,17 @@ final class Notices {
 	 *
 	 * @return array
 	 */
-	protected function get_conflicting_plugins() {
+	protected function get_conflicting_plugins()
+	{
 		/**
 		 * Filter the recommended plugins to deactivate to prevent conflicts.
 		 *
 		 * @since 1.0
 		 *
 		 * @param array $plugins List of recommended plugins to deactivate.
-		*/
-		$plugins = wpm_apply_filters_typed( 'array', 'imagify_plugins_to_deactivate', self::$conflicting_plugins );
+		 */
+		$plugins = wpm_apply_filters_typed('array', 'imagify_plugins_to_deactivate', self::$conflicting_plugins);
 
-		return array_filter( $plugins, 'is_plugin_active' );
+		return array_filter($plugins, 'is_plugin_active');
 	}
 }

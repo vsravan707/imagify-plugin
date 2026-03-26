@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Get all mime types which could be optimized by Imagify.
@@ -10,10 +10,11 @@ defined( 'ABSPATH' ) || exit;
  * @param  string $type One of 'image', 'not-image'. Any other value will return all mime types.
  * @return array        The mime types.
  */
-function imagify_get_mime_types( $type = null ) {
+function imagify_get_mime_types($type = null)
+{
 	$mimes = [];
 
-	if ( 'not-image' !== $type ) {
+	if ('not-image' !== $type) {
 		$mimes = [
 			'jpg|jpeg|jpe' => 'image/jpeg',
 			'png'          => 'image/png',
@@ -22,7 +23,7 @@ function imagify_get_mime_types( $type = null ) {
 		];
 	}
 
-	if ( 'image' !== $type ) {
+	if ('image' !== $type) {
 		$mimes['pdf'] = 'application/pdf';
 	}
 
@@ -39,22 +40,23 @@ function imagify_get_mime_types( $type = null ) {
  * @param  int $attachment_id The attachment ID.
  * @return bool
  */
-function imagify_is_attachment_mime_type_supported( $attachment_id ) {
-	static $is = [ false ];
+function imagify_is_attachment_mime_type_supported($attachment_id)
+{
+	static $is = [false];
 
-	$attachment_id = absint( $attachment_id );
+	$attachment_id = absint($attachment_id);
 
-	if ( isset( $is[ $attachment_id ] ) ) {
-		return $is[ $attachment_id ];
+	if (isset($is[$attachment_id])) {
+		return $is[$attachment_id];
 	}
 
 	$mime_types = imagify_get_mime_types();
-	$mime_types = array_flip( $mime_types );
-	$mime_type  = (string) get_post_mime_type( $attachment_id );
+	$mime_types = array_flip($mime_types);
+	$mime_type  = (string) get_post_mime_type($attachment_id);
 
-	$is[ $attachment_id ] = isset( $mime_types[ $mime_type ] );
+	$is[$attachment_id] = isset($mime_types[$mime_type]);
 
-	return $is[ $attachment_id ];
+	return $is[$attachment_id];
 }
 
 /**
@@ -65,10 +67,11 @@ function imagify_is_attachment_mime_type_supported( $attachment_id ) {
  *
  * @return array
  */
-function imagify_get_post_statuses() {
+function imagify_get_post_statuses()
+{
 	static $statuses;
 
-	if ( isset( $statuses ) ) {
+	if (isset($statuses)) {
 		return $statuses;
 	}
 
@@ -77,11 +80,11 @@ function imagify_get_post_statuses() {
 		'private' => 'private',
 	];
 
-	$custom_statuses = get_post_stati( [ 'public' => true ] );
-	unset( $custom_statuses['publish'] );
+	$custom_statuses = get_post_stati(['public' => true]);
+	unset($custom_statuses['publish']);
 
-	if ( $custom_statuses ) {
-		$statuses = array_merge( $statuses, $custom_statuses );
+	if ($custom_statuses) {
+		$statuses = array_merge($statuses, $custom_statuses);
 	}
 
 	/**
@@ -92,7 +95,7 @@ function imagify_get_post_statuses() {
 	 *
 	 * @param array $statuses An array of post statuses. Kays and values are set.
 	 */
-	$statuses = apply_filters( 'imagify_post_statuses', $statuses );
+	$statuses = apply_filters('imagify_post_statuses', $statuses);
 
 	return $statuses;
 }
@@ -106,15 +109,16 @@ function imagify_get_post_statuses() {
  *
  * @return bool
  */
-function imagify_has_attachments_without_required_metadata( $reset = false ) {
+function imagify_has_attachments_without_required_metadata($reset = false)
+{
 	global $wpdb;
 	static $has;
 
-	if ( $reset ) {
+	if ($reset) {
 		$has = null;
 	}
 
-	if ( isset( $has ) ) {
+	if (isset($has)) {
 		return $has;
 	}
 
@@ -147,16 +151,17 @@ function imagify_has_attachments_without_required_metadata( $reset = false ) {
  * @param  bool $bypass_error True to return the path even if there is an error. This is used when we want to display this path in a message for example.
  * @return string|bool        Path to the backups directory. False on failure.
  */
-function get_imagify_backup_dir_path( $bypass_error = false ) {
+function get_imagify_backup_dir_path($bypass_error = false)
+{
 	static $backup_dir;
 
-	if ( isset( $backup_dir ) ) {
+	if (isset($backup_dir)) {
 		return $backup_dir;
 	}
 
-	$upload_basedir = get_imagify_upload_basedir( $bypass_error );
+	$upload_basedir = get_imagify_upload_basedir($bypass_error);
 
-	if ( ! $upload_basedir ) {
+	if (! $upload_basedir) {
 		return false;
 	}
 
@@ -168,9 +173,9 @@ function get_imagify_backup_dir_path( $bypass_error = false ) {
 	 * @since 1.0
 	 *
 	 * @param string $backup_dir The backup directory path.
-	*/
-	$backup_dir = apply_filters( 'imagify_backup_directory', $backup_dir );
-	$backup_dir = imagify_get_filesystem()->normalize_dir_path( $backup_dir );
+	 */
+	$backup_dir = apply_filters('imagify_backup_directory', $backup_dir);
+	$backup_dir = imagify_get_filesystem()->normalize_dir_path($backup_dir);
 
 	return $backup_dir;
 }
@@ -183,8 +188,9 @@ function get_imagify_backup_dir_path( $bypass_error = false ) {
  *
  * @return bool
  */
-function imagify_backup_dir_is_writable() {
-	return imagify_get_filesystem()->make_dir( get_imagify_backup_dir_path() );
+function imagify_backup_dir_is_writable()
+{
+	return imagify_get_filesystem()->make_dir(get_imagify_backup_dir_path());
 }
 
 /**
@@ -195,16 +201,17 @@ function imagify_backup_dir_is_writable() {
  * @param  string $file_path The file path.
  * @return string|bool       The backup path. False on failure.
  */
-function get_imagify_attachment_backup_path( $file_path ) {
-	$file_path      = wp_normalize_path( (string) $file_path );
+function get_imagify_attachment_backup_path($file_path)
+{
+	$file_path      = wp_normalize_path((string) $file_path);
 	$upload_basedir = get_imagify_upload_basedir();
 	$backup_dir     = get_imagify_backup_dir_path();
 
-	if ( ! $file_path || ! $upload_basedir ) {
+	if (! $file_path || ! $upload_basedir) {
 		return false;
 	}
 
-	return preg_replace( '@^' . preg_quote( $upload_basedir, '@' ) . '@', $backup_dir, $file_path );
+	return preg_replace('@^' . preg_quote($upload_basedir, '@') . '@', $backup_dir, $file_path);
 }
 
 /**
@@ -215,16 +222,17 @@ function get_imagify_attachment_backup_path( $file_path ) {
  * @param  int $file_path The file path.
  * @return string|false   The file path to where the attached file should be, false otherwise.
  */
-function get_imagify_attached_file( $file_path ) {
-	$file_path      = wp_normalize_path( (string) $file_path );
+function get_imagify_attached_file($file_path)
+{
+	$file_path      = wp_normalize_path((string) $file_path);
 	$upload_basedir = get_imagify_upload_basedir();
 
-	if ( ! $file_path || ! $upload_basedir ) {
+	if (! $file_path || ! $upload_basedir) {
 		return false;
 	}
 
 	// The file path is absolute.
-	if ( strpos( $file_path, '/' ) === 0 || preg_match( '|^.:\\\|', $file_path ) ) {
+	if (strpos($file_path, '/') === 0 || preg_match('|^.:\\\|', $file_path)) {
 		return false;
 	}
 
@@ -240,25 +248,26 @@ function get_imagify_attached_file( $file_path ) {
  * @param  string $file_path A relative or absolute file path.
  * @return string|bool       File URL, otherwise false.
  */
-function get_imagify_attachment_url( $file_path ) {
-	$file_path      = wp_normalize_path( (string) $file_path );
+function get_imagify_attachment_url($file_path)
+{
+	$file_path      = wp_normalize_path((string) $file_path);
 	$upload_basedir = get_imagify_upload_basedir();
 
-	if ( ! $file_path || ! $upload_basedir ) {
+	if (! $file_path || ! $upload_basedir) {
 		return false;
 	}
 
 	$upload_baseurl = get_imagify_upload_baseurl();
 
 	// Check that the upload base exists in the (absolute) file location.
-	if ( 0 === strpos( $file_path, $upload_basedir ) ) {
+	if (0 === strpos($file_path, $upload_basedir)) {
 		// Replace file location with url location.
-		return preg_replace( '@^' . preg_quote( $upload_basedir, '@' ) . '@', $upload_baseurl, $file_path );
+		return preg_replace('@^' . preg_quote($upload_basedir, '@') . '@', $upload_baseurl, $file_path);
 	}
 
-	if ( false !== strpos( '/' . $file_path, '/wp-content/uploads/' ) ) {
+	if (false !== strpos('/' . $file_path, '/wp-content/uploads/')) {
 		// Get the directory name relative to the basedir (back compat for pre-2.7 uploads).
-		return trailingslashit( $upload_baseurl . _wp_get_attachment_relative_path( $file_path ) ) . imagify_get_filesystem()->file_name( $file_path );
+		return trailingslashit($upload_baseurl . _wp_get_attachment_relative_path($file_path)) . imagify_get_filesystem()->file_name($file_path);
 	}
 
 	// It's a newly-uploaded file, therefore $file is relative to the basedir.
@@ -283,44 +292,45 @@ function get_imagify_attachment_url( $file_path ) {
  *     @type string $name   The size name.
  * }
  */
-function get_imagify_thumbnail_sizes() {
+function get_imagify_thumbnail_sizes()
+{
 	// All image size names.
 	$intermediate_image_sizes = get_intermediate_image_sizes();
-	$intermediate_image_sizes = array_flip( $intermediate_image_sizes );
+	$intermediate_image_sizes = array_flip($intermediate_image_sizes);
 	// Additional image size attributes.
 	$additional_image_sizes = wp_get_additional_image_sizes();
 
 	// Create the full array with sizes and crop info.
-	foreach ( $intermediate_image_sizes as $size_name => $s ) {
-		$intermediate_image_sizes[ $size_name ] = [
+	foreach ($intermediate_image_sizes as $size_name => $s) {
+		$intermediate_image_sizes[$size_name] = [
 			'width'  => '',
 			'height' => '',
 			'crop'   => false,
 			'name'   => $size_name,
 		];
 
-		if ( isset( $additional_image_sizes[ $size_name ]['width'] ) ) {
+		if (isset($additional_image_sizes[$size_name]['width'])) {
 			// For theme-added sizes.
-			$intermediate_image_sizes[ $size_name ]['width'] = (int) $additional_image_sizes[ $size_name ]['width'];
+			$intermediate_image_sizes[$size_name]['width'] = (int) $additional_image_sizes[$size_name]['width'];
 		} else {
 			// For default sizes set in options.
-			$intermediate_image_sizes[ $size_name ]['width'] = (int) get_option( "{$size_name}_size_w" );
+			$intermediate_image_sizes[$size_name]['width'] = (int) get_option("{$size_name}_size_w");
 		}
 
-		if ( isset( $additional_image_sizes[ $size_name ]['height'] ) ) {
+		if (isset($additional_image_sizes[$size_name]['height'])) {
 			// For theme-added sizes.
-			$intermediate_image_sizes[ $size_name ]['height'] = (int) $additional_image_sizes[ $size_name ]['height'];
+			$intermediate_image_sizes[$size_name]['height'] = (int) $additional_image_sizes[$size_name]['height'];
 		} else {
 			// For default sizes set in options.
-			$intermediate_image_sizes[ $size_name ]['height'] = (int) get_option( "{$size_name}_size_h" );
+			$intermediate_image_sizes[$size_name]['height'] = (int) get_option("{$size_name}_size_h");
 		}
 
-		if ( isset( $additional_image_sizes[ $size_name ]['crop'] ) ) {
+		if (isset($additional_image_sizes[$size_name]['crop'])) {
 			// For theme-added sizes.
-			$intermediate_image_sizes[ $size_name ]['crop'] = (int) $additional_image_sizes[ $size_name ]['crop'];
+			$intermediate_image_sizes[$size_name]['crop'] = (int) $additional_image_sizes[$size_name]['crop'];
 		} else {
 			// For default sizes set in options.
-			$intermediate_image_sizes[ $size_name ]['crop'] = (int) get_option( "{$size_name}_crop" );
+			$intermediate_image_sizes[$size_name]['crop'] = (int) get_option("{$size_name}_crop");
 		}
 	}
 
@@ -337,8 +347,9 @@ function get_imagify_thumbnail_sizes() {
  * @param  bool $bypass_error True to return the path even if there is an error. This is used when we want to display this path in a message for example.
  * @return string|bool        The path. False on failure.
  */
-function get_imagify_upload_basedir( $bypass_error = false ) {
-	return imagify_get_filesystem()->get_upload_basedir( $bypass_error );
+function get_imagify_upload_basedir($bypass_error = false)
+{
+	return imagify_get_filesystem()->get_upload_basedir($bypass_error);
 }
 
 /**
@@ -349,7 +360,8 @@ function get_imagify_upload_basedir( $bypass_error = false ) {
  *
  * @return string|bool The URL. False on failure.
  */
-function get_imagify_upload_baseurl() {
+function get_imagify_upload_baseurl()
+{
 	return imagify_get_filesystem()->get_upload_baseurl();
 }
 
@@ -361,7 +373,8 @@ function get_imagify_upload_baseurl() {
  *
  * @return int
  */
-function imagify_get_unoptimized_attachment_limit() {
+function imagify_get_unoptimized_attachment_limit()
+{
 	/**
 	 * Filter the unoptimized attachments limit query.
 	 *
@@ -369,7 +382,5 @@ function imagify_get_unoptimized_attachment_limit() {
 	 *
 	 * @param int $limit The limit (-1 for unlimited).
 	 */
-	$limit = (int) apply_filters( 'imagify_unoptimized_attachment_limit', 10000 );
-
-	return -1 === $limit ? PHP_INT_MAX : abs( $limit );
+	return PHP_INT_MAX;
 }

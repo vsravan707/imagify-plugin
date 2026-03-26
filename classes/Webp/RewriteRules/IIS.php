@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Webp\RewriteRules;
@@ -10,7 +11,8 @@ use Imagify\WriteFile\AbstractIISDirConfFile;
  *
  * @since 1.9
  */
-class IIS extends AbstractIISDirConfFile {
+class IIS extends AbstractIISDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delemiter.
@@ -28,16 +30,17 @@ class IIS extends AbstractIISDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		$extensions = $this->get_extensions_pattern();
-		$extensions = str_replace( '|webp', '', $extensions );
-		$home_root  = wp_parse_url( home_url( '/' ) );
+		$extensions = str_replace('|webp', '', $extensions);
+		$home_root  = wp_parse_url(home_url('/'));
 		$home_root  = $home_root['path'];
 
 		return trim(
 			'
 <!-- @parent /configuration/system.webServer/rewrite/rules -->
-<rule name="' . esc_attr( static::TAG_NAME ) . ' 2">
+<rule name="' . esc_attr(static::TAG_NAME) . ' 2">
 	<match url="^(' . $home_root . '.+)\.(' . $extensions . ')$" ignoreCase="true" />
 	<conditions logicalGrouping="MatchAll">
 		<add input="{HTTP_ACCEPT}" pattern="image/webp" ignoreCase="false" />
@@ -50,11 +53,11 @@ class IIS extends AbstractIISDirConfFile {
 </rule>
 
 <!-- @parent /configuration/system.webServer/rewrite/outboundRules -->
-<rule preCondition="IsWebp" name="' . esc_attr( static::TAG_NAME ) . ' 3">
+<rule preCondition="IsWebp" name="' . esc_attr(static::TAG_NAME) . ' 3">
 	<match serverVariable="RESPONSE_Vary" pattern=".*" />
 	<action type="Rewrite" value="Accept"/>
 </rule>
-<preConditions name="' . esc_attr( static::TAG_NAME ) . ' 4">
+<preConditions name="' . esc_attr(static::TAG_NAME) . ' 4">
 	<preCondition name="IsWebp">
 		<add input="{ACCEPTS_WEBP}" pattern="true" ignoreCase="false" />
 	</preCondition>

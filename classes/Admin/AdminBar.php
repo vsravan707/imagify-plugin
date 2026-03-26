@@ -1,5 +1,6 @@
 <?php
-declare( strict_types=1 );
+
+declare(strict_types=1);
 
 namespace Imagify\Admin;
 
@@ -11,7 +12,8 @@ use WP_Admin_Bar;
 /**
  * Admin bar handler
  */
-class AdminBar implements SubscriberInterface {
+class AdminBar implements SubscriberInterface
+{
 	/**
 	 * User instance.
 	 *
@@ -24,7 +26,8 @@ class AdminBar implements SubscriberInterface {
 	 *
 	 * @param User $user User instance.
 	 */
-	public function __construct( User $user ) {
+	public function __construct(User $user)
+	{
 		$this->user = $user;
 	}
 
@@ -33,12 +36,13 @@ class AdminBar implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events(): array {
+	public static function get_subscribed_events(): array
+	{
 		return [
 			// @action
 			'wp_ajax_imagify_get_admin_bar_profile' => 'get_admin_bar_profile_callback',
 			// @action
-			'admin_bar_menu'                        => [ 'add_imagify_admin_bar_menu', IMAGIFY_INT_MAX ],
+			'admin_bar_menu'                        => ['add_imagify_admin_bar_menu', IMAGIFY_INT_MAX],
 		];
 	}
 
@@ -47,12 +51,13 @@ class AdminBar implements SubscriberInterface {
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 	 */
-	public function add_imagify_admin_bar_menu( $wp_admin_bar ) {
-		if ( ! imagify_get_context( 'wp' )->current_user_can( 'manage' ) ) {
+	public function add_imagify_admin_bar_menu($wp_admin_bar)
+	{
+		if (! imagify_get_context('wp')->current_user_can('manage')) {
 			return;
 		}
 
-		if ( ! get_imagify_option( 'admin_bar_menu' ) ) {
+		if (! get_imagify_option('admin_bar_menu')) {
 			return;
 		}
 
@@ -70,19 +75,19 @@ class AdminBar implements SubscriberInterface {
 			[
 				'parent' => 'imagify',
 				'id'     => 'imagify-settings',
-				'title'  => __( 'Settings' ),
+				'title'  => __('Settings'),
 				'href'   => get_imagify_admin_url(),
 			]
 		);
 
 		// Bulk Optimization.
-		if ( ! is_network_admin() ) {
+		if (! is_network_admin()) {
 			$wp_admin_bar->add_menu(
 				[
 					'parent' => 'imagify',
 					'id'     => 'imagify-bulk-optimization',
-					'title'  => __( 'Bulk Optimization', 'imagify' ),
-					'href'   => get_imagify_admin_url( 'bulk-optimization' ),
+					'title'  => __('Bulk Optimization', 'imagify'),
+					'href'   => get_imagify_admin_url('bulk-optimization'),
 				]
 			);
 		}
@@ -92,8 +97,8 @@ class AdminBar implements SubscriberInterface {
 			[
 				'parent' => 'imagify',
 				'id'     => 'imagify-documentation',
-				'title'  => __( 'Documentation', 'imagify' ),
-				'href'   => imagify_get_external_url( 'documentation' ),
+				'title'  => __('Documentation', 'imagify'),
+				'href'   => imagify_get_external_url('documentation'),
 				'meta'   => [
 					'target' => '_blank',
 				],
@@ -106,8 +111,8 @@ class AdminBar implements SubscriberInterface {
 				'parent' => 'imagify',
 				'id'     => 'imagify-rate-it',
 				/* translators: %s is WordPress.org. */
-				'title'  => sprintf( __( 'Rate Imagify on %s', 'imagify' ), 'WordPress.org' ),
-				'href'   => imagify_get_external_url( 'rate' ),
+				'title'  => sprintf(__('Rate Imagify on %s', 'imagify'), 'WordPress.org'),
+				'href'   => imagify_get_external_url('rate'),
 				'meta'   => [
 					'target' => '_blank',
 				],
@@ -116,9 +121,9 @@ class AdminBar implements SubscriberInterface {
 
 		// Quota & Profile informations.
 		if (
-			( defined( 'IMAGIFY_HIDDEN_ACCOUNT' ) && IMAGIFY_HIDDEN_ACCOUNT )
+			(defined('IMAGIFY_HIDDEN_ACCOUNT') && IMAGIFY_HIDDEN_ACCOUNT)
 			||
-			! get_imagify_option( 'api_key' )
+			! get_imagify_option('api_key')
 		) {
 			return;
 		}
@@ -135,7 +140,7 @@ class AdminBar implements SubscriberInterface {
 			[
 				'parent' => 'imagify',
 				'id'     => 'imagify-profile',
-				'title'  => wp_nonce_field( 'imagify-get-admin-bar-profile', 'imagifygetadminbarprofilenonce', false, false ) . '<div id="wp-admin-bar-imagify-profile-loading" class="hide-if-no-js">' . __( 'Loading...', 'imagify' ) . '</div><div id="wp-admin-bar-imagify-profile-content" class="hide-if-no-js"></div>',
+				'title'  => wp_nonce_field('imagify-get-admin-bar-profile', 'imagifygetadminbarprofilenonce', false, false) . '<div id="wp-admin-bar-imagify-profile-loading" class="hide-if-no-js">' . __('Loading...', 'imagify') . '</div><div id="wp-admin-bar-imagify-profile-content" class="hide-if-no-js"></div>',
 			]
 		);
 	}
@@ -145,10 +150,11 @@ class AdminBar implements SubscriberInterface {
 	 *
 	 * @return void
 	 */
-	public function get_admin_bar_profile_callback() {
-		imagify_check_nonce( 'imagify-get-admin-bar-profile', 'imagifygetadminbarprofilenonce' );
+	public function get_admin_bar_profile_callback()
+	{
+		imagify_check_nonce('imagify-get-admin-bar-profile', 'imagifygetadminbarprofilenonce');
 
-		if ( ! imagify_get_context( 'wp' )->current_user_can( 'manage' ) ) {
+		if (! imagify_get_context('wp')->current_user_can('manage')) {
 			imagify_die();
 		}
 
@@ -158,23 +164,23 @@ class AdminBar implements SubscriberInterface {
 		$button_text      = '';
 		$upgrade_link     = '';
 
-		if ( $this->user->is_free() ) {
-			$text         = esc_html__( 'Upgrade your plan now for more!', 'imagify' ) . '<br>' .
-			esc_html__( 'From $5.99/month only, keep going with image optimization!', 'imagify' );
-			$button_text  = esc_html__( 'Upgrade My Plan', 'imagify' );
+		if ($this->user->is_free()) {
+			$text         = esc_html__('Upgrade your plan now for more!', 'imagify') . '<br>' .
+				esc_html__('From $5.99/month only, keep going with image optimization!', 'imagify');
+			$button_text  = esc_html__('Upgrade My Plan', 'imagify');
 			$upgrade_link = IMAGIFY_APP_DOMAIN . '/subscription/?utm_source=plugin&utm_medium=notification';
-		} elseif ( $this->user->is_growth() ) {
-			$text = esc_html__( 'Switch to Infinite plan for unlimited optimization:', 'imagify' ) . '<br>';
+		} elseif ($this->user->is_growth()) {
+			$text = esc_html__('Switch to Infinite plan for unlimited optimization:', 'imagify') . '<br>';
 
-			if ( $this->user->is_monthly ) {
-				$text        .= esc_html__( 'For $11.99/month, optimize as many images as you like!', 'imagify' );
+			if ($this->user->is_monthly) {
+				$text        .= esc_html__('For $11.99/month, optimize as many images as you like!', 'imagify');
 				$upgrade_link = IMAGIFY_APP_DOMAIN . '/subscription/plan_switch/?label=infinite&payment_plan=1&utm_source=plugin&utm_medium=notification ';
 			} else {
-				$text        .= esc_html__( 'For $9.99/month, optimize as many images as you like!', 'imagify' );
+				$text        .= esc_html__('For $9.99/month, optimize as many images as you like!', 'imagify');
 				$upgrade_link = IMAGIFY_APP_DOMAIN . '/subscription/plan_switch/?label=infinite&payment_plan=2&utm_source=plugin&utm_medium=notification ';
 			}
 
-			$button_text = esc_html__( 'Switch To Infinite Plan', 'imagify' );
+			$button_text = esc_html__('Switch To Infinite Plan', 'imagify');
 		}
 
 		$data = [
@@ -191,15 +197,15 @@ class AdminBar implements SubscriberInterface {
 		];
 
 		$template = [
-			'admin_bar_status'  => $views->get_template( 'admin/admin-bar-status', $data ),
+			'admin_bar_status'  => $views->get_template('admin/admin-bar-status', $data),
 			'admin_bar_pricing' => $views->get_template(
 				'admin/admin-bar-pricing',
 				[
-					'upgrade_pricing' => $this->user->is_free() && ( $this->user->get_percent_unconsumed_quota() > 20 ),
+					'upgrade_pricing' => $this->user->is_free() && ($this->user->get_percent_unconsumed_quota() > 20),
 				]
 			),
 		];
 
-		wp_send_json_success( $template );
+		wp_send_json_success($template);
 	}
 }

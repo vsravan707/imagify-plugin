@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\WriteFile;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Interface to add and remove contents to a file.
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.9
  * @author Grégory Viguier
  */
-interface WriteFileInterface {
+interface WriteFileInterface
+{
 
 	/**
 	 * Add new contents to the file.

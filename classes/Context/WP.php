@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Context;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -9,7 +10,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.9
  * @author Grégory Viguier
  */
-final class WP extends AbstractContext {
+final class WP extends AbstractContext
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -46,7 +48,8 @@ final class WP extends AbstractContext {
 	 *     @type string $name   The size name.
 	 * }
 	 */
-	public function get_thumbnail_sizes() {
+	public function get_thumbnail_sizes()
+	{
 		$this->thumbnail_sizes = get_imagify_thumbnail_sizes();
 
 		return $this->thumbnail_sizes;
@@ -61,9 +64,10 @@ final class WP extends AbstractContext {
 	 *
 	 * @return int
 	 */
-	public function get_resizing_threshold() {
-		if ( get_imagify_option( 'resize_larger' ) ) {
-			$this->resizing_threshold = max( 0, get_imagify_option( 'resize_larger_w' ) );
+	public function get_resizing_threshold()
+	{
+		if (get_imagify_option('resize_larger')) {
+			$this->resizing_threshold = max(0, get_imagify_option('resize_larger_w'));
 		}
 
 		return $this->resizing_threshold;
@@ -77,8 +81,9 @@ final class WP extends AbstractContext {
 	 *
 	 * @return bool
 	 */
-	public function can_backup() {
-		$this->can_backup = get_imagify_option( 'backup' );
+	public function can_backup()
+	{
+		$this->can_backup = get_imagify_option('backup');
 
 		return $this->can_backup;
 	}
@@ -92,10 +97,11 @@ final class WP extends AbstractContext {
 	 * @param  string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 	 * @return string
 	 */
-	public function get_capacity( $describer ) {
+	public function get_capacity($describer)
+	{
 		static $edit_attachment_cap;
 
-		switch ( $describer ) {
+		switch ($describer) {
 			case 'manage':
 				$capacity = imagify_is_active_for_network() ? 'manage_network_options' : 'manage_options';
 				break;
@@ -107,8 +113,8 @@ final class WP extends AbstractContext {
 			case 'optimize':
 			case 'restore':
 				// This is a generic capacity: don't use it unless you have no other choices!
-				if ( ! isset( $edit_attachment_cap ) ) {
-					$edit_attachment_cap = get_post_type_object( 'attachment' );
+				if (! isset($edit_attachment_cap)) {
+					$edit_attachment_cap = get_post_type_object('attachment');
 					$edit_attachment_cap = $edit_attachment_cap ? $edit_attachment_cap->cap->edit_posts : 'edit_posts';
 				}
 
@@ -129,6 +135,6 @@ final class WP extends AbstractContext {
 				$capacity = $describer;
 		}
 
-		return $this->filter_capacity( $capacity, $describer );
+		return $this->filter_capacity($capacity, $describer);
 	}
 }

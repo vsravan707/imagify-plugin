@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\Stats;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Interface to use to get and cache a stat.
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.9
  * @author Grégory Viguier
  */
-interface StatInterface {
+interface StatInterface
+{
 
 	/**
 	 * Get the stat value.

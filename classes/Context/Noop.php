@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Context;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -9,7 +10,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.9
  * @author Grégory Viguier
  */
-final class Noop implements ContextInterface {
+final class Noop implements ContextInterface
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -20,7 +22,8 @@ final class Noop implements ContextInterface {
 	 *
 	 * @return string
 	 */
-	public function get_name() {
+	public function get_name()
+	{
 		return 'noop';
 	}
 
@@ -32,7 +35,8 @@ final class Noop implements ContextInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_network_wide() {
+	public function is_network_wide()
+	{
 		return false;
 	}
 
@@ -48,7 +52,8 @@ final class Noop implements ContextInterface {
 	 *                - 'image' to allow only images.
 	 *                - 'not-image' to allow only pdf files.
 	 */
-	public function get_allowed_mime_types() {
+	public function get_allowed_mime_types()
+	{
 		return 'all';
 	}
 
@@ -68,7 +73,8 @@ final class Noop implements ContextInterface {
 	 *     @type string $name   The size name.
 	 * }
 	 */
-	public function get_thumbnail_sizes() {
+	public function get_thumbnail_sizes()
+	{
 		return [];
 	}
 
@@ -81,7 +87,8 @@ final class Noop implements ContextInterface {
 	 *
 	 * @return int
 	 */
-	public function get_resizing_threshold() {
+	public function get_resizing_threshold()
+	{
 		return 0;
 	}
 
@@ -93,7 +100,8 @@ final class Noop implements ContextInterface {
 	 *
 	 * @return bool
 	 */
-	public function can_resize() {
+	public function can_resize()
+	{
 		return false;
 	}
 
@@ -105,7 +113,8 @@ final class Noop implements ContextInterface {
 	 *
 	 * @return bool
 	 */
-	public function can_backup() {
+	public function can_backup()
+	{
 		return false;
 	}
 
@@ -119,7 +128,8 @@ final class Noop implements ContextInterface {
 	 * @param  int    $media_id  A media ID.
 	 * @return bool
 	 */
-	public function current_user_can( $describer, $media_id = null ) {
+	public function current_user_can($describer, $media_id = null)
+	{
 		return false;
 	}
 
@@ -134,7 +144,8 @@ final class Noop implements ContextInterface {
 	 * @param  int    $media_id  A media ID.
 	 * @return bool
 	 */
-	public function user_can( $user_id, $describer, $media_id = null ) {
+	public function user_can($user_id, $describer, $media_id = null)
+	{
 		return false;
 	}
 
@@ -147,7 +158,8 @@ final class Noop implements ContextInterface {
 	 * @param  string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 	 * @return string
 	 */
-	public function get_capacity( $describer ) {
+	public function get_capacity($describer)
+	{
 		return 'noop';
 	}
 }

@@ -2,9 +2,9 @@
 
 use Imagify\User\User;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
-if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_site_option( 'ngg_options' ) ) :
+if (class_exists('C_NextGEN_Bootstrap') && class_exists('Mixin') && get_site_option('ngg_options')) :
 
 	/**
 	 * Create the Imagify table needed for NGG compatibility.
@@ -14,8 +14,9 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @author Jonathan Buttigieg
 	 * @deprecated
 	 */
-	function _imagify_create_ngg_table() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', '\\Imagify\\ThirdParty\\NGG\\DB::get_instance()->maybe_upgrade_table()' );
+	function _imagify_create_ngg_table()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', '\\Imagify\\ThirdParty\\NGG\\DB::get_instance()->maybe_upgrade_table()');
 
 		\Imagify\ThirdParty\NGG\DB::get_instance()->maybe_upgrade_table();
 	}
@@ -28,19 +29,20 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @author Jonathan Buttigieg
 	 * @deprecated
 	 */
-	function _imagify_ngg_update_bulk_stats() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'imagify_ngg_bulk_page_data()' );
+	function _imagify_ngg_update_bulk_stats()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'imagify_ngg_bulk_page_data()');
 
-		if ( empty( $_GET['page'] ) || imagify_get_ngg_bulk_screen_slug() !== $_GET['page'] ) { // WPCS: CSRF ok.
+		if (empty($_GET['page']) || imagify_get_ngg_bulk_screen_slug() !== $_GET['page']) { // WPCS: CSRF ok.
 			return;
 		}
 
-		add_filter( 'imagify_count_attachments'             , 'imagify_ngg_count_attachments' );
-		add_filter( 'imagify_count_optimized_attachments'   , 'imagify_ngg_count_optimized_attachments' );
-		add_filter( 'imagify_count_error_attachments'       , 'imagify_ngg_count_error_attachments' );
-		add_filter( 'imagify_count_unoptimized_attachments' , 'imagify_ngg_count_unoptimized_attachments' );
-		add_filter( 'imagify_percent_optimized_attachments' , 'imagify_ngg_percent_optimized_attachments' );
-		add_filter( 'imagify_count_saving_data'             , 'imagify_ngg_count_saving_data', 8 );
+		add_filter('imagify_count_attachments', 'imagify_ngg_count_attachments');
+		add_filter('imagify_count_optimized_attachments', 'imagify_ngg_count_optimized_attachments');
+		add_filter('imagify_count_error_attachments', 'imagify_ngg_count_error_attachments');
+		add_filter('imagify_count_unoptimized_attachments', 'imagify_ngg_count_unoptimized_attachments');
+		add_filter('imagify_percent_optimized_attachments', 'imagify_ngg_percent_optimized_attachments');
+		add_filter('imagify_count_saving_data', 'imagify_ngg_count_saving_data', 8);
 	}
 
 	/**
@@ -54,29 +56,30 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @param  array $data      The $_POST data sent.
 	 * @return array
 	 */
-	function _imagify_ngg_heartbeat_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7.1' );
+	function _imagify_ngg_heartbeat_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7.1');
 
-		if ( ! isset( $data['imagify_heartbeat'] ) || 'update_ngg_bulk_data' !== $data['imagify_heartbeat'] ) {
+		if (! isset($data['imagify_heartbeat']) || 'update_ngg_bulk_data' !== $data['imagify_heartbeat']) {
 			return $response;
 		}
 
-		add_filter( 'imagify_count_saving_data', 'imagify_ngg_count_saving_data', 8 );
+		add_filter('imagify_count_saving_data', 'imagify_ngg_count_saving_data', 8);
 		$saving_data = imagify_count_saving_data();
 		$user        = new User();
 
 		$response['imagify_bulk_data'] = array(
 			// User account.
-			'unconsumed_quota'              => is_wp_error( $user ) ? 0 : $user->get_percent_unconsumed_quota(),
+			'unconsumed_quota'              => is_wp_error($user) ? 0 : $user->get_percent_unconsumed_quota(),
 			// Global chart.
 			'optimized_attachments_percent' => imagify_ngg_percent_optimized_attachments(),
 			'unoptimized_attachments'       => imagify_ngg_count_unoptimized_attachments(),
 			'optimized_attachments'         => imagify_ngg_count_optimized_attachments(),
 			'errors_attachments'            => imagify_ngg_count_error_attachments(),
 			// Stats block.
-			'already_optimized_attachments' => number_format_i18n( $saving_data['count'] ),
-			'original_human'                => imagify_size_format( $saving_data['original_size'], 1 ),
-			'optimized_human'               => imagify_size_format( $saving_data['optimized_size'], 1 ),
+			'already_optimized_attachments' => number_format_i18n($saving_data['count']),
+			'original_human'                => imagify_size_format($saving_data['original_size'], 1),
+			'optimized_human'               => imagify_size_format($saving_data['optimized_size'], 1),
 			'optimized_percent'             => $saving_data['percent'],
 		);
 
@@ -98,33 +101,34 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @param  int    $post_id   A post ID (a gallery ID for NGG).
 	 * @return bool
 	 */
-	function imagify_ngg_current_user_can( $user_can, $capacity, $describer, $post_id ) {
+	function imagify_ngg_current_user_can($user_can, $capacity, $describer, $post_id)
+	{
 		static $user_can_per_gallery = array();
 
-		_deprecated_function( __FUNCTION__ . '()', '1.9' );
+		_deprecated_function(__FUNCTION__ . '()', '1.9');
 
-		if ( ! $user_can || ! $post_id || 'NextGEN Manage gallery' !== $capacity ) {
+		if (! $user_can || ! $post_id || 'NextGEN Manage gallery' !== $capacity) {
 			return $user_can;
 		}
 
-		$image = nggdb::find_image( $post_id );
+		$image = nggdb::find_image($post_id);
 
-		if ( isset( $user_can_per_gallery[ $image->galleryid ] ) ) {
-			return $user_can_per_gallery[ $image->galleryid ];
+		if (isset($user_can_per_gallery[$image->galleryid])) {
+			return $user_can_per_gallery[$image->galleryid];
 		}
 
 		$gallery_mapper = C_Gallery_Mapper::get_instance();
-		$gallery        = $gallery_mapper->find( $image->galleryid, false );
+		$gallery        = $gallery_mapper->find($image->galleryid, false);
 
-		if ( get_current_user_id() === $gallery->author || current_user_can( 'NextGEN Manage others gallery' ) ) {
+		if (get_current_user_id() === $gallery->author || current_user_can('NextGEN Manage others gallery')) {
 			// The user created this gallery or can edit others galleries.
-			$user_can_per_gallery[ $image->galleryid ] = true;
-			return $user_can_per_gallery[ $image->galleryid ];
+			$user_can_per_gallery[$image->galleryid] = true;
+			return $user_can_per_gallery[$image->galleryid];
 		}
 
 		// The user can't edit this gallery.
-		$user_can_per_gallery[ $image->galleryid ] = false;
-		return $user_can_per_gallery[ $image->galleryid ];
+		$user_can_per_gallery[$image->galleryid] = false;
+		return $user_can_per_gallery[$image->galleryid];
 	}
 
 	/**
@@ -141,8 +145,9 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @param string $describer Capacity describer. See imagify_get_capacity() for possible values. Can also be a "real" user capacity.
 	 * @return string
 	 */
-	function imagify_get_ngg_capacity( $capacity = 'edit_post', $describer = 'manual-optimize' ) {
-		if ( 'manual-optimize' === $describer ) {
+	function imagify_get_ngg_capacity($capacity = 'edit_post', $describer = 'manual-optimize')
+	{
+		if ('manual-optimize' === $describer) {
 			return 'NextGEN Manage gallery';
 		}
 
@@ -157,8 +162,9 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @author Grégory Viguier
 	 * @deprecated
 	 */
-	function imagify_ngg_dispatch_dynamic_thumbnail_background_process() {
-		_deprecated_function( __FUNCTION__ . '()', '1.9' );
+	function imagify_ngg_dispatch_dynamic_thumbnail_background_process()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9');
 
 		Imagify_NGG_Dynamic_Thumbnails_Background_Process::get_instance()->save()->dispatch();
 	}
@@ -171,11 +177,12 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @author Grégory Viguier
 	 * @deprecated
 	 */
-	function _do_admin_post_imagify_ngg_user_capacity() {
-		_deprecated_function( __FUNCTION__ . '()', '1.9' );
+	function _do_admin_post_imagify_ngg_user_capacity()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9');
 
-		if ( ! empty( $_GET['context'] ) && 'NGG' === $_GET['context'] ) { // WPCS: CSRF ok.
-			add_filter( 'imagify_capacity', 'imagify_get_ngg_capacity', 10, 2 );
+		if (! empty($_GET['context']) && 'NGG' === $_GET['context']) { // WPCS: CSRF ok.
+			add_filter('imagify_capacity', 'imagify_get_ngg_capacity', 10, 2);
 		}
 	}
 
@@ -187,8 +194,9 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @author Jonathan Buttigieg
 	 * @deprecated
 	 */
-	function _do_wp_ajax_imagify_ngg_get_unoptimized_attachment_ids() {
-		_deprecated_function( __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\NGG\\AdminAjaxPost::get_instance()->get_media_ids()' );
+	function _do_wp_ajax_imagify_ngg_get_unoptimized_attachment_ids()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\NGG\\AdminAjaxPost::get_instance()->get_media_ids()');
 
 		\Imagify\ThirdParty\NGG\AdminAjaxPost::get_instance()->get_media_ids();
 	}
@@ -205,10 +213,11 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 	 * @param  string $context A context.
 	 * @return array
 	 */
-	function imagify_ngg_get_folder_type_data( $data, $context ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9' );
+	function imagify_ngg_get_folder_type_data($data, $context)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9');
 
-		if ( 'ngg' !== $context ) {
+		if ('ngg' !== $context) {
 			return $data;
 		}
 
@@ -220,13 +229,13 @@ if ( class_exists( 'C_NextGEN_Bootstrap' ) && class_exists( 'Mixin' ) && get_sit
 			'errors'           => imagify_ngg_count_error_attachments(),
 			'optimized'        => $total_saving_data['optimized_size'],
 			'original'         => $total_saving_data['original_size'],
-			'errors_url'       => admin_url( 'admin.php?page=nggallery-manage-gallery' ),
+			'errors_url'       => admin_url('admin.php?page=nggallery-manage-gallery'),
 		];
 	}
 
 endif;
 
-if ( function_exists( 'wr2x_delete_attachment' ) ) :
+if (function_exists('wr2x_delete_attachment')) :
 
 	/**
 	 * Remove all retina versions if they exist.
@@ -237,10 +246,11 @@ if ( function_exists( 'wr2x_delete_attachment' ) ) :
 	 *
 	 * @param int $attachment_id An attachment ID.
 	 */
-	function _imagify_wr2x_delete_attachment_on_restore( $attachment_id ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.8' );
+	function _imagify_wr2x_delete_attachment_on_restore($attachment_id)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.8');
 
-		wr2x_delete_attachment( $attachment_id );
+		wr2x_delete_attachment($attachment_id);
 	}
 
 	/**
@@ -252,11 +262,12 @@ if ( function_exists( 'wr2x_delete_attachment' ) ) :
 	 *
 	 * @param int $attachment_id An attachment ID.
 	 */
-	function _imagify_wr2x_generate_images_on_restore( $attachment_id ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.8' );
+	function _imagify_wr2x_generate_images_on_restore($attachment_id)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.8');
 
-		wr2x_delete_attachment( $attachment_id );
-		wr2x_generate_images( wp_get_attachment_metadata( $attachment_id ) );
+		wr2x_delete_attachment($attachment_id);
+		wr2x_generate_images(wp_get_attachment_metadata($attachment_id));
 	}
 
 	/**
@@ -275,8 +286,9 @@ if ( function_exists( 'wr2x_delete_attachment' ) ) :
 	 * @param  bool   $optimization_level The optimization level.
 	 * @return array  $data               The new optimization data.
 	 */
-	function _imagify_optimize_wr2x( $data, $response, $id, $path, $url, $size_key, $optimization_level ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.8', 'Imagify_WP_Retina_2x::optimize_retina_version()' );
+	function _imagify_optimize_wr2x($data, $response, $id, $path, $url, $size_key, $optimization_level)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.8', 'Imagify_WP_Retina_2x::optimize_retina_version()');
 
 		/**
 		 * Allow to optimize the retina version generated by WP Retina x2.
@@ -285,26 +297,26 @@ if ( function_exists( 'wr2x_delete_attachment' ) ) :
 		 *
 		 * @param bool $do_retina True will force the optimization.
 		 */
-		$do_retina   = apply_filters( 'do_imagify_optimize_retina', true );
-		$retina_path = wr2x_get_retina( $path );
+		$do_retina   = apply_filters('do_imagify_optimize_retina', true);
+		$retina_path = wr2x_get_retina($path);
 
-		if ( empty( $retina_path ) || ! $do_retina ) {
+		if (empty($retina_path) || ! $do_retina) {
 			return $data;
 		}
 
-		$response = do_imagify( $retina_path, array(
+		$response = do_imagify($retina_path, array(
 			'backup'             => false,
 			'optimization_level' => $optimization_level,
 			'context'            => 'wp-retina',
-		) );
-		$attachment = get_imagify_attachment( 'wp', $id, 'imagify_fill_thumbnail_data' );
+		));
+		$attachment = get_imagify_attachment('wp', $id, 'imagify_fill_thumbnail_data');
 
-		return $attachment->fill_data( $data, $response, $size_key . '@2x' );
+		return $attachment->fill_data($data, $response, $size_key . '@2x');
 	}
 
 endif;
 
-if ( defined( 'WP_ROCKET_VERSION' ) ) :
+if (defined('WP_ROCKET_VERSION')) :
 
 	/**
 	 * Don't load Imagify CSS & JS files on WP Rocket options screen to avoid conflict with older version of SweetAlert.
@@ -317,18 +329,19 @@ if ( defined( 'WP_ROCKET_VERSION' ) ) :
 	 * @author Grégory Viguier
 	 * @deprecated
 	 */
-	function imagify_dequeue_sweetalert_wprocket() {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\ThirdParty\\WPRocket\\Main::dequeue_sweetalert()' );
+	function imagify_dequeue_sweetalert_wprocket()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\ThirdParty\\WPRocket\\Main::dequeue_sweetalert()');
 
-		if ( ! defined( 'WP_ROCKET_PLUGIN_SLUG' ) ) {
+		if (! defined('WP_ROCKET_PLUGIN_SLUG')) {
 			return;
 		}
 
-		if ( ! imagify_is_screen( 'settings_page_' . WP_ROCKET_PLUGIN_SLUG ) && ! imagify_is_screen( 'settings_page_' . WP_ROCKET_PLUGIN_SLUG . '-network' ) ) {
+		if (! imagify_is_screen('settings_page_' . WP_ROCKET_PLUGIN_SLUG) && ! imagify_is_screen('settings_page_' . WP_ROCKET_PLUGIN_SLUG . '-network')) {
 			return;
 		}
 
-		Imagify_Assets::get_instance()->dequeue_script( array( 'sweetalert-core', 'sweetalert', 'notices' ) );
+		Imagify_Assets::get_instance()->dequeue_script(array('sweetalert-core', 'sweetalert', 'notices'));
 	}
 
 endif;

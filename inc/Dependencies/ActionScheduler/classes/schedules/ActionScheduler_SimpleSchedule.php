@@ -3,7 +3,8 @@
 /**
  * Class ActionScheduler_SimpleSchedule
  */
-class ActionScheduler_SimpleSchedule extends ActionScheduler_Abstract_Schedule {
+class ActionScheduler_SimpleSchedule extends ActionScheduler_Abstract_Schedule
+{
 
 	/**
 	 * Deprecated property @see $this->__wakeup() for details.
@@ -20,7 +21,8 @@ class ActionScheduler_SimpleSchedule extends ActionScheduler_Abstract_Schedule {
 	 *
 	 * @return DateTime|null
 	 */
-	public function calculate_next( DateTime $after ) {
+	public function calculate_next(DateTime $after)
+	{
 		return null;
 	}
 
@@ -29,7 +31,8 @@ class ActionScheduler_SimpleSchedule extends ActionScheduler_Abstract_Schedule {
 	 *
 	 * @return bool
 	 */
-	public function is_recurring() {
+	public function is_recurring()
+	{
 		return false;
 	}
 
@@ -46,7 +49,8 @@ class ActionScheduler_SimpleSchedule extends ActionScheduler_Abstract_Schedule {
 	 *
 	 * @return array
 	 */
-	public function __sleep() {
+	public function __sleep()
+	{
 
 		$sleep_params = parent::__sleep();
 
@@ -70,11 +74,12 @@ class ActionScheduler_SimpleSchedule extends ActionScheduler_Abstract_Schedule {
 	 * compatibility with schedules serialized and stored prior to 3.0, we need to correctly
 	 * map the old property names with matching visibility.
 	 */
-	public function __wakeup() {
+	public function __wakeup()
+	{
 
-		if ( is_null( $this->scheduled_timestamp ) && ! is_null( $this->timestamp ) ) {
+		if (is_null($this->scheduled_timestamp) && ! is_null($this->timestamp)) {
 			$this->scheduled_timestamp = $this->timestamp;
-			unset( $this->timestamp );
+			unset($this->timestamp);
 		}
 		parent::__wakeup();
 	}

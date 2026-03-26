@@ -5,7 +5,8 @@
  *
  * @since 1.7
  */
-abstract class Imagify_Abstract_Options {
+abstract class Imagify_Abstract_Options
+{
 	/**
 	 * Class version.
 	 *
@@ -79,10 +80,11 @@ abstract class Imagify_Abstract_Options {
 	 * @author Grégory Viguier
 	 * @access protected
 	 */
-	protected function __construct() {
-		$this->hook_identifier = rtrim( strtolower( str_replace( 'Imagify_', '', get_class( $this ) ) ), 's' );
+	protected function __construct()
+	{
+		$this->hook_identifier = rtrim(strtolower(str_replace('Imagify_', '', get_class($this))), 's');
 
-		if ( ! is_string( $this->autoload ) ) {
+		if (! is_string($this->autoload)) {
 			$this->autoload = $this->autoload ? 'yes' : 'no';
 		}
 
@@ -101,8 +103,9 @@ abstract class Imagify_Abstract_Options {
 	 * @author Grégory Viguier
 	 * @access public
 	 */
-	public function init() {
-		add_filter( 'sanitize_option_' . $this->get_option_name(), [ $this, 'sanitize_and_validate_on_update' ], 50 );
+	public function init()
+	{
+		add_filter('sanitize_option_' . $this->get_option_name(), [$this, 'sanitize_and_validate_on_update'], 50);
 	}
 
 
@@ -120,14 +123,15 @@ abstract class Imagify_Abstract_Options {
 	 * @param  string $key The option name.
 	 * @return mixed       The option value.
 	 */
-	public function get( $key ) {
+	public function get($key)
+	{
 		$default_values = $this->get_default_values();
 
-		if ( ! isset( $default_values[ $key ] ) ) {
+		if (! isset($default_values[$key])) {
 			return null;
 		}
 
-		$default = $default_values[ $key ];
+		$default = $default_values[$key];
 
 		/**
 		 * Pre-filter any Imagify option before read.
@@ -137,9 +141,9 @@ abstract class Imagify_Abstract_Options {
 		 * @param mixed $value   Value to return instead of the option value. Default null to skip it.
 		 * @param mixed $default The default value.
 		 */
-		$value = apply_filters( 'pre_get_imagify_' . $this->get_hook_identifier() . '_' . $key, null, $default );
+		$value = apply_filters('pre_get_imagify_' . $this->get_hook_identifier() . '_' . $key, null, $default);
 
-		if ( isset( $value ) ) {
+		if (isset($value)) {
 			return $value;
 		}
 
@@ -147,7 +151,7 @@ abstract class Imagify_Abstract_Options {
 		$values = $this->get_all();
 
 		// Sanitize and validate the value.
-		$value = $this->sanitize_and_validate( $key, $values[ $key ], $default );
+		$value = $this->sanitize_and_validate($key, $values[$key], $default);
 
 		/**
 		 * Filter any Imagify option after read.
@@ -156,8 +160,8 @@ abstract class Imagify_Abstract_Options {
 		 *
 		 * @param mixed $value   Value of the option.
 		 * @param mixed $default The default value. Default false.
-		*/
-		return apply_filters( 'get_imagify_' . $this->get_hook_identifier() . '_' . $key, $value, $default );
+		 */
+		return apply_filters('get_imagify_' . $this->get_hook_identifier() . '_' . $key, $value, $default);
 	}
 
 	/**
@@ -169,14 +173,15 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return array The options.
 	 */
-	public function get_all() {
+	public function get_all()
+	{
 		$values = $this->get_raw();
 
-		if ( ! $values ) {
+		if (! $values) {
 			return $this->get_reset_values();
 		}
 
-		return imagify_merge_intersect( $values, $this->get_default_values() );
+		return imagify_merge_intersect($values, $this->get_default_values());
 	}
 
 	/**
@@ -188,22 +193,23 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @param array $values An array of option name / option value pairs.
 	 */
-	public function set( $values ) {
+	public function set($values)
+	{
 		$args = func_get_args();
 
-		if ( isset( $args[1] ) && is_string( $args[0] ) ) {
-			$values = [ $args[0] => $args[1] ];
+		if (isset($args[1]) && is_string($args[0])) {
+			$values = [$args[0] => $args[1]];
 		}
 
-		if ( ! is_array( $values ) ) {
+		if (! is_array($values)) {
 			// PABKAC.
 			return;
 		}
 
-		$values = array_merge( $this->get_all(), $values );
-		$values = array_intersect_key( $values, $this->get_default_values() );
+		$values = array_merge($this->get_all(), $values);
+		$values = array_intersect_key($values, $this->get_default_values());
 
-		$this->set_raw( $values );
+		$this->set_raw($values);
 	}
 
 	/**
@@ -215,20 +221,21 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @param array|string $keys An array of option names or a single option name.
 	 */
-	public function delete( $keys ) {
+	public function delete($keys)
+	{
 		$values = $this->get_raw();
 
-		if ( ! $values ) {
-			if ( false !== $values ) {
+		if (! $values) {
+			if (false !== $values) {
 				$this->delete_raw();
 			}
 			return;
 		}
 
-		$keys   = array_flip( (array) $keys );
-		$values = array_diff_key( $values, $keys );
+		$keys   = array_flip((array) $keys);
+		$values = array_diff_key($values, $keys);
 
-		$this->set_raw( $values );
+		$this->set_raw($values);
 	}
 
 	/**
@@ -241,8 +248,9 @@ abstract class Imagify_Abstract_Options {
 	 * @param  string $key The option name.
 	 * @return bool
 	 */
-	public function has( $key ) {
-		return null !== $this->get( $key );
+	public function has($key)
+	{
+		return null !== $this->get($key);
 	}
 
 
@@ -259,7 +267,8 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return string
 	 */
-	public function get_option_name() {
+	public function get_option_name()
+	{
 		return IMAGIFY_SLUG . '_' . $this->identifier;
 	}
 
@@ -272,7 +281,8 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return string
 	 */
-	public function get_hook_identifier() {
+	public function get_hook_identifier()
+	{
 		return $this->hook_identifier;
 	}
 
@@ -285,7 +295,8 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return bool
 	 */
-	public function is_autoloaded() {
+	public function is_autoloaded()
+	{
 		return 'yes' === $this->autoload;
 	}
 
@@ -298,7 +309,8 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return bool
 	 */
-	public function is_network_option() {
+	public function is_network_option()
+	{
 		return (bool) $this->network_option;
 	}
 
@@ -311,10 +323,11 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return array|bool The options. False if not set yet. An empty array if invalid.
 	 */
-	public function get_raw() {
-		$values = $this->is_network_option() ? get_site_option( $this->get_option_name() ) : get_option( $this->get_option_name() );
+	public function get_raw()
+	{
+		$values = $this->is_network_option() ? get_site_option($this->get_option_name()) : get_option($this->get_option_name());
 
-		if ( false !== $values && ! is_array( $values ) ) {
+		if (false !== $values && ! is_array($values)) {
 			return [];
 		}
 
@@ -330,21 +343,20 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @param array $values An array of option name / option value pairs.
 	 */
-	public function set_raw( $values ) {
-		if ( ! $values ) {
+	public function set_raw($values)
+	{
+		if (! $values) {
 			// The option is empty: delete it.
 			$this->delete_raw();
-
-		} elseif ( $this->is_network_option() ) {
+		} elseif ($this->is_network_option()) {
 			// Network option.
-			update_site_option( $this->get_option_name(), $values );
-
-		} elseif ( false === get_option( $this->get_option_name() ) ) {
+			update_site_option($this->get_option_name(), $values);
+		} elseif (false === get_option($this->get_option_name())) {
 			// Compat' with WP < 4.2 + autoload: the option doesn't exist in the database.
-			add_option( $this->get_option_name(), $values, '', $this->autoload );
+			add_option($this->get_option_name(), $values, '', $this->autoload);
 		} else {
 			// Update the current value.
-			update_option( $this->get_option_name(), $values, $this->autoload );
+			update_option($this->get_option_name(), $values, $this->autoload);
 		}
 	}
 
@@ -355,8 +367,9 @@ abstract class Imagify_Abstract_Options {
 	 * @author Grégory Viguier
 	 * @access public
 	 */
-	public function delete_raw() {
-		$this->is_network_option() ? delete_site_option( $this->get_option_name() ) : delete_option( $this->get_option_name() );
+	public function delete_raw()
+	{
+		$this->is_network_option() ? delete_site_option($this->get_option_name()) : delete_option($this->get_option_name());
 	}
 
 
@@ -373,11 +386,12 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return array
 	 */
-	public function get_default_values() {
+	public function get_default_values()
+	{
 		$default_values = $this->default_values;
 
-		if ( ! empty( $default_values['cached'] ) ) {
-			unset( $default_values['cached'] );
+		if (! empty($default_values['cached'])) {
+			unset($default_values['cached']);
 			return $default_values;
 		}
 
@@ -390,16 +404,16 @@ abstract class Imagify_Abstract_Options {
 		 * @param array $new_values     New default option values.
 		 * @param array $default_values Plugin default option values.
 		 */
-		$new_values = apply_filters( 'imagify_default_' . $this->get_hook_identifier() . '_values', [], $default_values );
-		$new_values = is_array( $new_values ) ? $new_values : [];
+		$new_values = apply_filters('imagify_default_' . $this->get_hook_identifier() . '_values', [], $default_values);
+		$new_values = is_array($new_values) ? $new_values : [];
 
-		if ( $new_values ) {
+		if ($new_values) {
 			// Don't allow new values to overwrite the plugin values.
-			$new_values = array_diff_key( $new_values, $default_values );
+			$new_values = array_diff_key($new_values, $default_values);
 		}
 
-		if ( $new_values ) {
-			$default_values       = array_merge( $default_values, $new_values );
+		if ($new_values) {
+			$default_values       = array_merge($default_values, $new_values);
 			$this->default_values = $default_values;
 		}
 
@@ -417,16 +431,17 @@ abstract class Imagify_Abstract_Options {
 	 *
 	 * @return array
 	 */
-	public function get_reset_values() {
+	public function get_reset_values()
+	{
 		$reset_values = $this->reset_values;
 
-		if ( ! empty( $reset_values['cached'] ) ) {
-			unset( $reset_values['cached'] );
+		if (! empty($reset_values['cached'])) {
+			unset($reset_values['cached']);
 			return $reset_values;
 		}
 
 		$default_values = $this->get_default_values();
-		$reset_values   = array_merge( $default_values, $reset_values );
+		$reset_values   = array_merge($default_values, $reset_values);
 
 		/**
 		 * Allow to filter the "reset" option values.
@@ -436,10 +451,10 @@ abstract class Imagify_Abstract_Options {
 		 *
 		 * @param array $reset_values Plugin reset option values.
 		 */
-		$new_values = apply_filters( 'imagify_reset_' . $this->get_hook_identifier() . '_values', $reset_values );
+		$new_values = apply_filters('imagify_reset_' . $this->get_hook_identifier() . '_values', $reset_values);
 
-		if ( $new_values && is_array( $new_values ) ) {
-			$reset_values = array_merge( $reset_values, $new_values );
+		if ($new_values && is_array($new_values)) {
+			$reset_values = array_merge($reset_values, $new_values);
 		}
 
 		$this->reset_values           = $reset_values;
@@ -465,25 +480,26 @@ abstract class Imagify_Abstract_Options {
 	 * @param  mixed  $default_value The default value.
 	 * @return mixed
 	 */
-	public function sanitize_and_validate( $key, $value, $default_value = null ) {
-		if ( ! isset( $default_value ) ) {
+	public function sanitize_and_validate($key, $value, $default_value = null)
+	{
+		if (! isset($default_value)) {
 			$default_values = $this->get_default_values();
-			$default_value  = $default_values[ $key ];
+			$default_value  = $default_values[$key];
 		}
 
 		// Cast the value.
-		$value = self::cast( $value, $default_value );
+		$value = self::cast($value, $default_value);
 
-		if ( $value === $default_value ) {
+		if ($value === $default_value) {
 			return $value;
 		}
 
 		// Version.
-		if ( 'version' === $key ) {
-			return sanitize_text_field( $value );
+		if ('version' === $key) {
+			return sanitize_text_field($value);
 		}
 
-		return $this->sanitize_and_validate_value( $key, $value, $default_value );
+		return $this->sanitize_and_validate_value($key, $value, $default_value);
 	}
 
 	/**
@@ -498,7 +514,7 @@ abstract class Imagify_Abstract_Options {
 	 * @param  mixed  $default_value The default value.
 	 * @return mixed
 	 */
-	abstract public function sanitize_and_validate_value( $key, $value, $default_value );
+	abstract public function sanitize_and_validate_value($key, $value, $default_value);
 
 	/**
 	 * Sanitize and validate Imagify's options before storing them.
@@ -510,26 +526,27 @@ abstract class Imagify_Abstract_Options {
 	 * @param  string $values The option value.
 	 * @return array
 	 */
-	public function sanitize_and_validate_on_update( $values ) {
-		$values         = is_array( $values ) ? $values : [];
+	public function sanitize_and_validate_on_update($values)
+	{
+		$values         = is_array($values) ? $values : [];
 		$default_values = $this->get_default_values();
 
-		if ( $values ) {
-			foreach ( $default_values as $key => $default ) {
-				if ( isset( $values[ $key ] ) ) {
-					$values[ $key ] = $this->sanitize_and_validate( $key, $values[ $key ], $default );
+		if ($values) {
+			foreach ($default_values as $key => $default) {
+				if (isset($values[$key])) {
+					$values[$key] = $this->sanitize_and_validate($key, $values[$key], $default);
 				}
 			}
 		}
 
-		$values = array_intersect_key( $values, $default_values );
+		$values = array_intersect_key($values, $default_values);
 
 		// Version.
-		if ( empty( $values['version'] ) ) {
+		if (empty($values['version'])) {
 			$values['version'] = IMAGIFY_VERSION;
 		}
 
-		return $this->validate_values_on_update( $values );
+		return $this->validate_values_on_update($values);
 	}
 
 	/**
@@ -542,7 +559,8 @@ abstract class Imagify_Abstract_Options {
 	 * @param  string $values The option value.
 	 * @return array
 	 */
-	public function validate_values_on_update( $values ) {
+	public function validate_values_on_update($values)
+	{
 		return $values;
 	}
 
@@ -562,21 +580,22 @@ abstract class Imagify_Abstract_Options {
 	 * @param  mixed $default_value The default value.
 	 * @return mixed
 	 */
-	public static function cast( $value, $default_value ) {
-		if ( is_array( $default_value ) ) {
-			return is_array( $value ) ? $value : [];
+	public static function cast($value, $default_value)
+	{
+		if (is_array($default_value)) {
+			return is_array($value) ? $value : [];
 		}
 
-		if ( is_int( $default_value ) ) {
+		if (is_int($default_value)) {
 			return (int) $value;
 		}
 
-		if ( is_bool( $default_value ) ) {
+		if (is_bool($default_value)) {
 			return (bool) $value;
 		}
 
-		if ( is_float( $default_value ) ) {
-			return round( (float) $value, 3 );
+		if (is_float($default_value)) {
+			return round((float) $value, 3);
 		}
 
 		return $value;
@@ -592,7 +611,8 @@ abstract class Imagify_Abstract_Options {
 	 * @param  float $value The value.
 	 * @return float|int
 	 */
-	public static function maybe_cast_float_as_int( $value ) {
-		return ( $value / (int) $value ) === (float) 1 ? (int) $value : $value;
+	public static function maybe_cast_float_as_int($value)
+	{
+		return ($value / (int) $value) === (float) 1 ? (int) $value : $value;
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\User;
@@ -8,7 +9,8 @@ use Imagify\Dependencies\League\Container\ServiceProvider\AbstractServiceProvide
 /**
  * Service provider for Picture display
  */
-class ServiceProvider extends AbstractServiceProvider {
+class ServiceProvider extends AbstractServiceProvider
+{
 	/**
 	 * Services provided by this provider
 	 *
@@ -25,8 +27,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return bool
 	 */
-	public function provides( string $id ): bool {
-		return in_array( $id, $this->provides, true );
+	public function provides(string $id): bool
+	{
+		return in_array($id, $this->provides, true);
 	}
 
 	/**
@@ -34,8 +37,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register(): void {
-		$this->getContainer()->add( User::class );
+	public function register(): void
+	{
+		$this->getContainer()->add(User::class);
 	}
 
 	/**
@@ -43,7 +47,8 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function get_subscribers() {
+	public function get_subscribers()
+	{
 		return [];
 	}
 }

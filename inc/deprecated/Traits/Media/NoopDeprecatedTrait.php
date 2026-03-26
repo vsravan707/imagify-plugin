@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\Deprecated\Traits\Media;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Trait containing deprecated methods of the class \Imagify\Media\Noop.
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since
  * @author Grégory Viguier
  */
-trait NoopDeprecatedTrait {
+trait NoopDeprecatedTrait
+{
 
 	/**
 	 * Get the original media's URL.
@@ -22,8 +24,9 @@ trait NoopDeprecatedTrait {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_original_url() {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '', '( new \Imagify\Media\Noop( $id ) )->get_fullsize_url()' );
+	public function get_original_url()
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '', '( new \Imagify\Media\Noop( $id ) )->get_fullsize_url()');
 
 		return false;
 	}

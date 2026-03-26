@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Bulk;
 
 /**
@@ -6,7 +7,8 @@ namespace Imagify\Bulk;
  *
  * @since 1.9
  */
-class Noop extends AbstractBulk {
+class Noop extends AbstractBulk
+{
 	/**
 	 * Get all unoptimized media ids.
 	 *
@@ -15,7 +17,8 @@ class Noop extends AbstractBulk {
 	 * @param  int $optimization_level The optimization level.
 	 * @return array                   A list of unoptimized media. Array keys are media IDs prefixed with an underscore character, array values are the main file’s URL.
 	 */
-	public function get_unoptimized_media_ids( $optimization_level ) {
+	public function get_unoptimized_media_ids($optimization_level)
+	{
 		return [];
 	}
 
@@ -34,7 +37,8 @@ class Noop extends AbstractBulk {
 	 *     }
 	 * }
 	 */
-	public function get_optimized_media_ids_without_format( $format ) {
+	public function get_optimized_media_ids_without_format($format)
+	{
 		return [
 			'ids'    => [],
 			'errors' => [
@@ -58,15 +62,16 @@ class Noop extends AbstractBulk {
 	 *     @type string $original-size   Original filesize.
 	 * }
 	 */
-	public function get_context_data() {
+	public function get_context_data()
+	{
 		$data = [
 			'count-optimized' => 0,
 			'count-errors'    => 0,
 			'optimized-size'  => 0,
 			'original-size'   => 0,
-			'errors_url'      => get_imagify_admin_url( 'folder-errors', 'noop' ),
+			'errors_url'      => get_imagify_admin_url('folder-errors', 'noop'),
 		];
 
-		return $this->format_context_data( $data );
+		return $this->format_context_data($data);
 	}
 }

@@ -8,7 +8,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.7
  * @author Grégory Viguier
  */
-class Imagify_Files_DB extends Imagify_Abstract_DB {
+class Imagify_Files_DB extends Imagify_Abstract_DB
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -63,7 +64,8 @@ class Imagify_Files_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return array
 	 */
-	public function get_columns() {
+	public function get_columns()
+	{
 		return [
 			'file_id'            => '%d',
 			'folder_id'          => '%d',
@@ -93,7 +95,8 @@ class Imagify_Files_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return array
 	 */
-	public function get_column_defaults() {
+	public function get_column_defaults()
+	{
 		return [
 			'file_id'            => 0,
 			'folder_id'          => 0,
@@ -125,7 +128,8 @@ class Imagify_Files_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return string
 	 */
-	protected function get_table_schema() {
+	protected function get_table_schema()
+	{
 		return "
 			file_id bigint(20) unsigned NOT NULL auto_increment,
 			folder_id bigint(20) unsigned NOT NULL default 0,

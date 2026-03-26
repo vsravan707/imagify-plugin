@@ -3,7 +3,8 @@
 /**
  * Class ActionScheduler_ActionClaim
  */
-class ActionScheduler_ActionClaim {
+class ActionScheduler_ActionClaim
+{
 	/**
 	 * Claim ID.
 	 *
@@ -24,7 +25,8 @@ class ActionScheduler_ActionClaim {
 	 * @param string $id Claim ID.
 	 * @param int[]  $action_ids Action IDs.
 	 */
-	public function __construct( $id, array $action_ids ) {
+	public function __construct($id, array $action_ids)
+	{
 		$this->id         = $id;
 		$this->action_ids = $action_ids;
 	}
@@ -32,14 +34,16 @@ class ActionScheduler_ActionClaim {
 	/**
 	 * Get claim ID.
 	 */
-	public function get_id() {
+	public function get_id()
+	{
 		return $this->id;
 	}
 
 	/**
 	 * Get IDs of claimed actions.
 	 */
-	public function get_actions() {
+	public function get_actions()
+	{
 		return $this->action_ids;
 	}
 }

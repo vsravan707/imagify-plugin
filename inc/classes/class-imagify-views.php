@@ -9,7 +9,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since 1.7
  */
-class Imagify_Views {
+class Imagify_Views
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -85,7 +86,8 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	protected function __construct() {
+	protected function __construct()
+	{
 		$this->slug_settings = IMAGIFY_SLUG;
 		$this->slug_bulk     = IMAGIFY_SLUG . '-bulk-optimization';
 		$this->slug_files    = IMAGIFY_SLUG . '-files';
@@ -97,21 +99,22 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function init() {
+	public function init()
+	{
 		// Menu items.
-		add_action( 'admin_menu', [ $this, 'add_site_menus' ] );
+		add_action('admin_menu', [$this, 'add_site_menus']);
 
-		if ( imagify_is_active_for_network() ) {
-			add_action( 'network_admin_menu', [ $this, 'add_network_menus' ] );
+		if (imagify_is_active_for_network()) {
+			add_action('network_admin_menu', [$this, 'add_network_menus']);
 		}
 
 		// Save the "per page" option value from the files list screen.
-		add_filter( 'set-screen-option', [ 'Imagify_Files_List_Table', 'save_screen_options' ], 10, 3 );
+		add_filter('set-screen-option', ['Imagify_Files_List_Table', 'save_screen_options'], 10, 3);
 
 		// JS templates in footer.
-		add_action( 'admin_print_footer_scripts', [ $this, 'print_js_templates' ] );
-		add_action( 'admin_footer', [ $this, 'print_modal_payment' ] );
-		add_action( 'wp_before_admin_bar_render', [ $this, 'maybe_print_modal_payment' ] );
+		add_action('admin_print_footer_scripts', [$this, 'print_js_templates']);
+		add_action('admin_footer', [$this, 'print_modal_payment']);
+		add_action('wp_before_admin_bar_render', [$this, 'maybe_print_modal_payment']);
 	}
 
 
@@ -124,32 +127,33 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function add_site_menus() {
-		$wp_context = imagify_get_context( 'wp' );
+	public function add_site_menus()
+	{
+		$wp_context = imagify_get_context('wp');
 
 		// Sub-menu item: bulk optimization.
-		add_media_page( __( 'Bulk Optimization', 'imagify' ), __( 'Bulk Optimization', 'imagify' ), $wp_context->get_capacity( 'bulk-optimize' ), $this->get_bulk_page_slug(), [ $this, 'display_bulk_page' ] );
+		add_media_page(__('Bulk Optimization', 'imagify'), __('Bulk Optimization', 'imagify'), $wp_context->get_capacity('bulk-optimize'), $this->get_bulk_page_slug(), [$this, 'display_bulk_page']);
 
-		if ( imagify_is_active_for_network() ) {
+		if (imagify_is_active_for_network()) {
 			return;
 		}
 
 		/**
 		 * Plugin is not network activated.
 		 */
-		if ( imagify_can_optimize_custom_folders() ) {
+		if (imagify_can_optimize_custom_folders()) {
 			// Sub-menu item: custom folders list.
-			$cf_context = imagify_get_context( 'custom-folders' );
-			$screen_id  = add_media_page( __( 'Other Media optimized by Imagify', 'imagify' ), __( 'Other Media', 'imagify' ), $cf_context->get_capacity( 'optimize' ), $this->get_files_page_slug(), [ $this, 'display_files_list' ] );
+			$cf_context = imagify_get_context('custom-folders');
+			$screen_id  = add_media_page(__('Other Media optimized by Imagify', 'imagify'), __('Other Media', 'imagify'), $cf_context->get_capacity('optimize'), $this->get_files_page_slug(), [$this, 'display_files_list']);
 
-			if ( $screen_id ) {
+			if ($screen_id) {
 				// Load the data for this page.
-				add_action( 'load-' . $screen_id, [ $this, 'load_files_list' ] );
+				add_action('load-' . $screen_id, [$this, 'load_files_list']);
 			}
 		}
 
 		// Sub-menu item: settings.
-		add_options_page( 'Imagify', 'Imagify', $wp_context->get_capacity( 'manage' ), $this->get_settings_page_slug(), [ $this, 'display_settings_page' ] );
+		add_options_page('Imagify', 'Imagify', $wp_context->get_capacity('manage'), $this->get_settings_page_slug(), [$this, 'display_settings_page']);
 	}
 
 	/**
@@ -157,36 +161,37 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function add_network_menus() {
+	public function add_network_menus()
+	{
 		global $submenu;
 
-		$wp_context = imagify_get_context( 'wp' );
+		$wp_context = imagify_get_context('wp');
 
-		if ( ! imagify_can_optimize_custom_folders() ) {
+		if (! imagify_can_optimize_custom_folders()) {
 			// Main item: settings (edge case).
-			add_menu_page( 'Imagify', 'Imagify', $wp_context->get_capacity( 'manage' ), $this->get_settings_page_slug(), [ $this, 'display_settings_page' ] );
+			add_menu_page('Imagify', 'Imagify', $wp_context->get_capacity('manage'), $this->get_settings_page_slug(), [$this, 'display_settings_page']);
 			return;
 		}
 
-		$cf_context = imagify_get_context( 'custom-folders' );
+		$cf_context = imagify_get_context('custom-folders');
 
 		// Main item: bulk optimization (custom folders).
-		add_menu_page( __( 'Bulk Optimization', 'imagify' ), 'Imagify', $cf_context->current_user_can( 'bulk-optimize' ), $this->get_bulk_page_slug(), [ $this, 'display_bulk_page' ] );
+		add_menu_page(__('Bulk Optimization', 'imagify'), 'Imagify', $cf_context->current_user_can('bulk-optimize'), $this->get_bulk_page_slug(), [$this, 'display_bulk_page']);
 
 		// Sub-menu item: custom folders list.
-		$screen_id = add_submenu_page( $this->get_bulk_page_slug(), __( 'Other Media optimized by Imagify', 'imagify' ), __( 'Other Media', 'imagify' ), $cf_context->current_user_can( 'bulk-optimize' ), $this->get_files_page_slug(), [ $this, 'display_files_list' ] );
+		$screen_id = add_submenu_page($this->get_bulk_page_slug(), __('Other Media optimized by Imagify', 'imagify'), __('Other Media', 'imagify'), $cf_context->current_user_can('bulk-optimize'), $this->get_files_page_slug(), [$this, 'display_files_list']);
 
 		// Sub-menu item: settings.
-		add_submenu_page( $this->get_bulk_page_slug(), 'Imagify', __( 'Settings', 'imagify' ), $wp_context->get_capacity( 'manage' ), $this->get_settings_page_slug(), [ $this, 'display_settings_page' ] );
+		add_submenu_page($this->get_bulk_page_slug(), 'Imagify', __('Settings', 'imagify'), $wp_context->get_capacity('manage'), $this->get_settings_page_slug(), [$this, 'display_settings_page']);
 
 		// Change the sub-menu label.
-		if ( ! empty( $submenu[ $this->get_bulk_page_slug() ] ) ) {
-			$submenu[ $this->get_bulk_page_slug() ][0][0] = __( 'Bulk Optimization', 'imagify' ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		if (! empty($submenu[$this->get_bulk_page_slug()])) {
+			$submenu[$this->get_bulk_page_slug()][0][0] = __('Bulk Optimization', 'imagify'); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
-		if ( $screen_id ) {
+		if ($screen_id) {
 			// On the "Other Media optimized by Imagify" page, load the data.
-			add_action( 'load-' . $screen_id, [ $this, 'load_files_list' ] );
+			add_action('load-' . $screen_id, [$this, 'load_files_list']);
 		}
 	}
 
@@ -199,16 +204,17 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function display_settings_page() {
+	public function display_settings_page()
+	{
 		$plugin_family = new PluginFamily();
-		$plugins_array = $plugin_family->get_filtered_plugins( 'imagify/imagify' );
+		$plugins_array = $plugin_family->get_filtered_plugins('imagify/imagify');
 
 		$data = [
-			'hide_plugin_family' => wpm_apply_filters_typed( 'boolean', 'imagify_hide_plugin_family', false ),
+			'hide_plugin_family' => wpm_apply_filters_typed('boolean', 'imagify_hide_plugin_family', false),
 			'plugin_family'      => $plugins_array['uncategorized'],
 		];
 
-		$this->print_template( 'page-settings', $data );
+		$this->print_template('page-settings', $data);
 	}
 
 	/**
@@ -216,19 +222,20 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function display_bulk_page() {
+	public function display_bulk_page()
+	{
 		$types = [];
 		$data  = [
 			// Limits.
 			'unoptimized_attachment_limit' => 0,
 			// What to optimize.
 			'icon'                         => 'images-alt2',
-			'title'                        => __( 'Optimize your media files', 'imagify' ),
+			'title'                        => __('Optimize your media files', 'imagify'),
 			'groups'                       => [],
 		];
 
-		if ( imagify_is_screen( 'bulk' ) ) {
-			if ( ! is_network_admin() ) {
+		if (imagify_is_screen('bulk')) {
+			if (! is_network_admin()) {
 				/**
 				 * Library: in each site.
 				 */
@@ -239,7 +246,7 @@ class Imagify_Views {
 				imagify_can_optimize_custom_folders()
 				&&
 				(
-					( imagify_is_active_for_network() && is_network_admin() )
+					(imagify_is_active_for_network() && is_network_admin())
 					||
 					! imagify_is_active_for_network()
 				)
@@ -259,10 +266,10 @@ class Imagify_Views {
 		 *
 		 * @param array $types The folder types displayed on the page. If a folder type is "library", the context should be suffixed after a pipe character. They are passed as array keys.
 		 */
-		$types = apply_filters( 'imagify_bulk_page_types', $types );
-		$types = array_filter( (array) $types );
+		$types = apply_filters('imagify_bulk_page_types', $types);
+		$types = array_filter((array) $types);
 
-		if ( isset( $types['library|wp'] ) ) {
+		if (isset($types['library|wp'])) {
 			// Limits.
 			$data['unoptimized_attachment_limit'] += imagify_get_unoptimized_attachment_limit();
 			// Group.
@@ -273,23 +280,23 @@ class Imagify_Views {
 				 */
 				'group_id' => 'library',
 				'context'  => 'wp',
-				'title'    => __( 'Media Library', 'imagify' ),
+				'title'    => __('Media Library', 'imagify'),
 				/* translators: 1 is the opening of a link, 2 is the closing of this link. */
-				'footer'   => sprintf( __( 'You can also re-optimize your media files from your %1$sMedia Library%2$s screen.', 'imagify' ), '<a href="' . esc_url( admin_url( 'upload.php' ) ) . '">', '</a>' ),
+				'footer'   => sprintf(__('You can also re-optimize your media files from your %1$sMedia Library%2$s screen.', 'imagify'), '<a href="' . esc_url(admin_url('upload.php')) . '">', '</a>'),
 			];
 		}
 
-		if ( isset( $types['custom-folders|custom-folders'] ) ) {
-			if ( ! Imagify_Folders_DB::get_instance()->has_items() ) {
+		if (isset($types['custom-folders|custom-folders'])) {
+			if (! Imagify_Folders_DB::get_instance()->has_items()) {
 				$data['no-custom-folders'] = true;
-			} elseif ( Imagify_Folders_DB::get_instance()->has_active_folders() ) {
+			} elseif (Imagify_Folders_DB::get_instance()->has_active_folders()) {
 				// Group.
 				$data['groups']['custom-folders'] = [
 					'group_id' => 'custom-folders',
 					'context'  => 'custom-folders',
-					'title'    => __( 'Custom folders', 'imagify' ),
+					'title'    => __('Custom folders', 'imagify'),
 					/* translators: 1 is the opening of a link, 2 is the closing of this link. */
-					'footer'   => sprintf( __( 'You can re-optimize your media files more finely directly in the %1$smedia management%2$s.', 'imagify' ), '<a href="' . esc_url( get_imagify_admin_url( 'files-list' ) ) . '">', '</a>' ),
+					'footer'   => sprintf(__('You can re-optimize your media files more finely directly in the %1$smedia management%2$s.', 'imagify'), '<a href="' . esc_url(get_imagify_admin_url('files-list')) . '">', '</a>'),
 				];
 			}
 		}
@@ -315,9 +322,9 @@ class Imagify_Views {
 		 * @param array $data  The data to use.
 		 * @param array $types The folder types displayed on the page. They are passed as array keys.
 		 */
-		$data = apply_filters( 'imagify_bulk_page_data', $data, $types );
+		$data = apply_filters('imagify_bulk_page_data', $data, $types);
 
-		$this->print_template( 'page-bulk', $data );
+		$this->print_template('page-bulk', $data);
 	}
 
 	/**
@@ -325,8 +332,9 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function display_files_list() {
-		$this->print_template( 'page-files-list' );
+	public function display_files_list()
+	{
+		$this->print_template('page-files-list');
 	}
 
 	/**
@@ -334,7 +342,8 @@ class Imagify_Views {
 	 *
 	 * @since 1.7
 	 */
-	public function load_files_list() {
+	public function load_files_list()
+	{
 		// Instantiate the list.
 		$this->list_table = new Imagify_Files_List_Table(
 			[
@@ -358,7 +367,8 @@ class Imagify_Views {
 	 *
 	 * @return string
 	 */
-	public function get_settings_page_slug() {
+	public function get_settings_page_slug()
+	{
 		return $this->slug_settings;
 	}
 
@@ -369,7 +379,8 @@ class Imagify_Views {
 	 *
 	 * @return string
 	 */
-	public function get_bulk_page_slug() {
+	public function get_bulk_page_slug()
+	{
 		return $this->slug_bulk;
 	}
 
@@ -380,7 +391,8 @@ class Imagify_Views {
 	 *
 	 * @return string
 	 */
-	public function get_files_page_slug() {
+	public function get_files_page_slug()
+	{
 		return $this->slug_files;
 	}
 
@@ -396,20 +408,21 @@ class Imagify_Views {
 	 *
 	 * @return bool
 	 */
-	public function is_settings_page() {
+	public function is_settings_page()
+	{
 		global $pagenow;
 
-		if ( ! isset( $_GET['page'] ) ) {
+		if (! isset($_GET['page'])) {
 			return false;
 		}
 
-		$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		$page = sanitize_text_field(wp_unslash($_GET['page'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 
-		if ( $this->get_settings_page_slug() !== $page ) {
+		if ($this->get_settings_page_slug() !== $page) {
 			return false;
 		}
 
-		if ( imagify_is_active_for_network() ) {
+		if (imagify_is_active_for_network()) {
 			return 'admin.php' === $pagenow;
 		}
 
@@ -423,14 +436,15 @@ class Imagify_Views {
 	 *
 	 * @return bool
 	 */
-	public function is_bulk_page() {
+	public function is_bulk_page()
+	{
 		global $pagenow;
 
-		if ( ! isset( $_GET['page'] ) ) {
+		if (! isset($_GET['page'])) {
 			return false;
 		}
 
-		$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		$page = sanitize_text_field(wp_unslash($_GET['page'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 
 		return 'upload.php' === $pagenow && $this->get_bulk_page_slug() === $page;
 	}
@@ -442,14 +456,15 @@ class Imagify_Views {
 	 *
 	 * @return bool
 	 */
-	public function is_files_page() {
+	public function is_files_page()
+	{
 		global $pagenow;
 
-		if ( ! isset( $_GET['page'] ) ) {
+		if (! isset($_GET['page'])) {
 			return false;
 		}
 
-		$page = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		$page = sanitize_text_field(wp_unslash($_GET['page'])); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 
 		return 'upload.php' === $pagenow && $this->get_files_page_slug() === $page;
 	}
@@ -461,10 +476,11 @@ class Imagify_Views {
 	 *
 	 * @return bool
 	 */
-	public function is_wp_library_page() {
+	public function is_wp_library_page()
+	{
 		global $pagenow;
 
-		return 'upload.php' === $pagenow && ! isset( $_GET['page'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return 'upload.php' === $pagenow && ! isset($_GET['page']); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	}
 
 	/**
@@ -474,7 +490,8 @@ class Imagify_Views {
 	 *
 	 * @return bool
 	 */
-	public function is_media_page() {
+	public function is_media_page()
+	{
 		global $pagenow, $typenow;
 
 		return 'post.php' === $pagenow && 'attachment' === $typenow;
@@ -492,10 +509,11 @@ class Imagify_Views {
 	 *
 	 * @return int
 	 */
-	public function get_quota_percent() {
+	public function get_quota_percent()
+	{
 		static $quota;
 
-		if ( isset( $quota ) ) {
+		if (isset($quota)) {
 			return $quota;
 		}
 
@@ -512,19 +530,20 @@ class Imagify_Views {
 	 *
 	 * @return string
 	 */
-	public function get_quota_class() {
+	public function get_quota_class()
+	{
 		static $class;
 
-		if ( isset( $class ) ) {
+		if (isset($class)) {
 			return $class;
 		}
 
 		$quota = $this->get_quota_percent();
 		$class = 'imagify-bar-';
 
-		if ( $quota <= 20 ) {
+		if ($quota <= 20) {
 			$class .= 'negative';
-		} elseif ( $quota <= 50 ) {
+		} elseif ($quota <= 50) {
 			$class .= 'neutral';
 		} else {
 			$class .= 'positive';
@@ -540,18 +559,19 @@ class Imagify_Views {
 	 *
 	 * @return string
 	 */
-	public function get_quota_icon() {
+	public function get_quota_icon()
+	{
 		static $icon;
 
-		if ( isset( $icon ) ) {
+		if (isset($icon)) {
 			return $icon;
 		}
 
 		$quota = $this->get_quota_percent();
 
-		if ( $quota <= 20 ) {
+		if ($quota <= 20) {
 			$icon = '<img src="' . IMAGIFY_ASSETS_IMG_URL . 'stormy.svg" width="40" height="63" alt="" />';
-		} elseif ( $quota <= 50 ) {
+		} elseif ($quota <= 50) {
 			$icon = '<img src="' . IMAGIFY_ASSETS_IMG_URL . 'cloudy-sun.svg" width="63" height="64" alt="" />';
 		} else {
 			$icon = '<img src="' . IMAGIFY_ASSETS_IMG_URL . 'sun.svg" width="63" height="64" alt="" />';
@@ -574,11 +594,12 @@ class Imagify_Views {
 	 * @param  mixed  $data     Some data to pass to the template.
 	 * @return string|bool      The page contents. False if the template doesn't exist.
 	 */
-	public function get_template( $template, $data = [] ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-		$path = str_replace( '_', '-', $template );
+	public function get_template($template, $data = [])
+	{ // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		$path = str_replace('_', '-', $template);
 		$path = IMAGIFY_PATH . 'views/' . $template . '.php';
 
-		if ( ! $this->filesystem->exists( $path ) ) {
+		if (! $this->filesystem->exists($path)) {
 			return false;
 		}
 
@@ -586,7 +607,7 @@ class Imagify_Views {
 		include $path;
 		$contents = ob_get_clean();
 
-		return trim( (string) $contents );
+		return trim((string) $contents);
 	}
 
 	/**
@@ -597,8 +618,9 @@ class Imagify_Views {
 	 * @param string $template The template name.
 	 * @param mixed  $data     Some data to pass to the template.
 	 */
-	public function print_template( $template, $data = [] ) {
-		echo $this->get_template( $template, $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	public function print_template($template, $data = [])
+	{
+		echo $this->get_template($template, $data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -608,24 +630,25 @@ class Imagify_Views {
 	 *
 	 * @param string $template The template name.
 	 */
-	public function print_js_template_in_footer( $template ) {
-		if ( isset( $this->templates_in_footer[ $template ] ) ) {
+	public function print_js_template_in_footer($template)
+	{
+		if (isset($this->templates_in_footer[$template])) {
 			return;
 		}
 
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		if (defined('DOING_AJAX') && DOING_AJAX) {
 			return;
 		}
 
-		switch ( $template ) {
+		switch ($template) {
 			case 'button/processing':
-				$data = [ 'label' => '{{ data.label }}' ];
+				$data = ['label' => '{{ data.label }}'];
 				break;
 			default:
 				$data = [];
 		}
 
-		$this->templates_in_footer[ $template ] = $data;
+		$this->templates_in_footer[$template] = $data;
 	}
 
 	/**
@@ -633,16 +656,17 @@ class Imagify_Views {
 	 *
 	 * @since 1.9
 	 */
-	public function print_js_templates() {
-		if ( ! $this->templates_in_footer ) {
+	public function print_js_templates()
+	{
+		if (! $this->templates_in_footer) {
 			return;
 		}
 
-		foreach ( $this->templates_in_footer as $template => $data ) {
-			$template_id = str_replace( [ '/', '_' ], '-', $template );
+		foreach ($this->templates_in_footer as $template => $data) {
+			$template_id = str_replace(['/', '_'], '-', $template);
 
-			echo '<script type="text/html" id="tmpl-imagify-' . esc_attr( $template_id ) . '">';
-				$this->print_template( $template, $data );
+			echo '<script type="text/html" id="tmpl-imagify-' . esc_attr($template_id) . '">';
+			$this->print_template($template, $data);
 			echo '</script>';
 		}
 	}
@@ -652,21 +676,19 @@ class Imagify_Views {
 	 *
 	 * @return bool
 	 */
-	private function get_user_info(): bool {
-		$user             = new User();
-		$unconsumed_quota = $user->get_percent_unconsumed_quota();
-
-		return ( ! $user->is_infinite() && $unconsumed_quota <= 20 )
-			|| ( $user->is_free() && $unconsumed_quota > 20 );
+	private function get_user_info(): bool
+	{
+		return false;
 	}
 
 	/**
 	 * Start print the payment modal process.
 	 */
-	public function maybe_print_modal_payment() {
-		if ( $this->get_user_info() ) {
+	public function maybe_print_modal_payment()
+	{
+		if ($this->get_user_info()) {
 			global $wp_admin_bar;
-			$this->admin_menu_is_present = $wp_admin_bar && $wp_admin_bar->get_node( 'imagify' );
+			$this->admin_menu_is_present = $wp_admin_bar && $wp_admin_bar->get_node('imagify');
 
 			return;
 		}
@@ -679,15 +701,9 @@ class Imagify_Views {
 	 *
 	 * @return void
 	 */
-	public function print_modal_payment() {
-		if ( is_admin_bar_showing() && $this->admin_menu_is_present ) {
-			$this->print_template(
-				'modal-payment',
-				[
-					'attachments_number' => $this->get_attachments_number_modal(),
-				]
-			);
-		}
+	public function print_modal_payment()
+	{
+		// Payment modal removed — standalone fork.
 	}
 
 	/**
@@ -695,16 +711,17 @@ class Imagify_Views {
 	 *
 	 * @return int
 	 */
-	private function get_attachments_number_modal() {
-		$transient = get_transient( 'imagify_attachments_number_modal' );
+	private function get_attachments_number_modal()
+	{
+		$transient = get_transient('imagify_attachments_number_modal');
 
-		if ( false !== $transient ) {
+		if (false !== $transient) {
 			return $transient;
 		}
 
 		$attachments_number = imagify_count_attachments() + Imagify_Files_Stats::count_all_files();
 
-		set_transient( 'imagify_attachments_number_modal', $attachments_number, 1 * DAY_IN_SECONDS );
+		set_transient('imagify_attachments_number_modal', $attachments_number, 1 * DAY_IN_SECONDS);
 
 		return $attachments_number;
 	}
@@ -721,19 +738,20 @@ class Imagify_Views {
 	 * @param  array $attributes A list of attribute pairs.
 	 * @return string            HTML attributes.
 	 */
-	public function build_attributes( $attributes ) {
-		if ( ! $attributes || ! is_array( $attributes ) ) {
+	public function build_attributes($attributes)
+	{
+		if (! $attributes || ! is_array($attributes)) {
 			return '';
 		}
 
 		$out = '';
 
-		foreach ( $attributes as $attribute => $value ) {
-			if ( '' === $value ) {
+		foreach ($attributes as $attribute => $value) {
+			if ('' === $value) {
 				continue;
 			}
 
-			$out .= ' ' . $attribute . '="' . esc_attr( $value ) . '"';
+			$out .= ' ' . $attribute . '="' . esc_attr($value) . '"';
 		}
 
 		return $out;

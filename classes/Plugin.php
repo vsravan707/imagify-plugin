@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify;
@@ -15,7 +16,8 @@ use Imagify_Filesystem;
 /**
  * Main plugin class.
  */
-class Plugin {
+class Plugin
+{
 	/**
 	 * Container instance.
 	 *
@@ -49,11 +51,12 @@ class Plugin {
 	 *     @type string $plugin_path Absolute path to the plugin (with trailing slash).
 	 * }
 	 */
-	public function __construct( Container $container, $plugin_args ) {
+	public function __construct(Container $container, $plugin_args)
+	{
 		$this->container   = $container;
 		$this->plugin_path = $plugin_args['plugin_path'];
 
-		add_filter( 'imagify_container', [ $this, 'get_container' ] );
+		add_filter('imagify_container', [$this, 'get_container']);
 	}
 
 	/**
@@ -61,7 +64,8 @@ class Plugin {
 	 *
 	 * @return Container
 	 */
-	public function get_container() {
+	public function get_container()
+	{
 		return $this->container;
 	}
 
@@ -70,7 +74,8 @@ class Plugin {
 	 *
 	 * @return boolean
 	 */
-	private function is_loaded(): bool {
+	private function is_loaded(): bool
+	{
 		return $this->loaded;
 	}
 
@@ -81,8 +86,9 @@ class Plugin {
 	 *
 	 * @since 1.9
 	 */
-	public function init( $providers ) {
-		if ( $this->is_loaded() ) {
+	public function init($providers)
+	{
+		if ($this->is_loaded()) {
 			return;
 		}
 
@@ -102,7 +108,7 @@ class Plugin {
 
 		$this->include_files();
 
-		class_alias( '\\Imagify\\Traits\\InstanceGetterTrait', '\\Imagify\\Traits\\FakeSingletonTrait' );
+		class_alias('\\Imagify\\Traits\\InstanceGetterTrait', '\\Imagify\\Traits\\FakeSingletonTrait');
 
 		\Imagify_Auto_Optimization::get_instance()->init();
 		\Imagify_Options::get_instance()->init();
@@ -116,7 +122,7 @@ class Plugin {
 		\Imagify\Job\MediaOptimization::get_instance()->init();
 		Bulk::get_instance()->init();
 
-		if ( is_admin() ) {
+		if (is_admin()) {
 			Notices::get_instance()->init();
 			\Imagify_Admin_Ajax_Post::get_instance()->init();
 			\Imagify_Settings::get_instance()->init();
@@ -125,21 +131,21 @@ class Plugin {
 			\Imagify\Imagifybeat\Actions::get_instance()->init();
 		}
 
-		if ( ! wp_doing_ajax() ) {
+		if (! wp_doing_ajax()) {
 			\Imagify_Assets::get_instance()->init();
 		}
 
-		add_action( 'init', [ $this, 'maybe_activate' ] );
+		add_action('init', [$this, 'maybe_activate']);
 
-		imagify_add_command( new BulkOptimizeCommand() );
-		imagify_add_command( new GenerateMissingNextgenCommand() );
+		imagify_add_command(new BulkOptimizeCommand());
+		imagify_add_command(new GenerateMissingNextgenCommand());
 
-		foreach ( $providers as $service_provider ) {
+		foreach ($providers as $service_provider) {
 			$provider_instance = new $service_provider();
-			$this->container->addServiceProvider( $provider_instance );
+			$this->container->addServiceProvider($provider_instance);
 
 			// Load each service provider's subscribers if found.
-			$this->load_subscribers( $provider_instance );
+			$this->load_subscribers($provider_instance);
 		}
 
 		/**
@@ -150,7 +156,7 @@ class Plugin {
 		 *
 		 * @param \Imagify_Plugin $plugin Instance of this class.
 		 */
-		do_action( 'imagify_loaded', $this );
+		do_action('imagify_loaded', $this);
 
 		$this->loaded = true;
 	}
@@ -160,10 +166,11 @@ class Plugin {
 	 *
 	 * @since 1.9
 	 */
-	public function include_files() {
+	public function include_files()
+	{
 		$instance_getter_path = $this->plugin_path . 'classes/Traits/InstanceGetterTrait.php';
 
-		if ( file_exists( $instance_getter_path . '.suspected' ) && ! file_exists( $instance_getter_path ) ) {
+		if (file_exists($instance_getter_path . '.suspected') && ! file_exists($instance_getter_path)) {
 			// Trolling greedy antiviruses.
 			require_once $instance_getter_path . '.suspected';
 		}
@@ -189,7 +196,7 @@ class Plugin {
 		require_once $inc_path . 'common/partners.php';
 		require_once $inc_path . '3rd-party/3rd-party.php';
 
-		if ( ! is_admin() ) {
+		if (! is_admin()) {
 			return;
 		}
 
@@ -206,21 +213,22 @@ class Plugin {
 	 * @since 1.9
 	 * @see   imagify_set_activation()
 	 */
-	public function maybe_activate() {
-		if ( imagify_is_active_for_network() ) {
-			$user_id = get_site_transient( 'imagify_activation' );
+	public function maybe_activate()
+	{
+		if (imagify_is_active_for_network()) {
+			$user_id = get_site_transient('imagify_activation');
 		} else {
-			$user_id = get_transient( 'imagify_activation' );
+			$user_id = get_transient('imagify_activation');
 		}
 
-		if ( ! is_numeric( $user_id ) ) {
+		if (! is_numeric($user_id)) {
 			return;
 		}
 
-		if ( imagify_is_active_for_network() ) {
-			delete_site_transient( 'imagify_activation' );
+		if (imagify_is_active_for_network()) {
+			delete_site_transient('imagify_activation');
 		} else {
-			delete_transient( 'imagify_activation' );
+			delete_transient('imagify_activation');
 		}
 
 		/**
@@ -230,7 +238,7 @@ class Plugin {
 		 *
 		 * @param int $user_id ID of the user activating the plugin.
 		 */
-		do_action( 'imagify_activation', (int) $user_id );
+		do_action('imagify_activation', (int) $user_id);
 	}
 
 	/**
@@ -240,16 +248,17 @@ class Plugin {
 	 *
 	 * @return void
 	 */
-	private function load_subscribers( ServiceProviderInterface $service_provider ) {
-		if ( empty( $service_provider->get_subscribers() ) ) {
+	private function load_subscribers(ServiceProviderInterface $service_provider)
+	{
+		if (empty($service_provider->get_subscribers())) {
 			return;
 		}
 
-		foreach ( $service_provider->get_subscribers() as $subscriber ) {
-			$subscriber_object = $this->container->get( $subscriber );
+		foreach ($service_provider->get_subscribers() as $subscriber) {
+			$subscriber_object = $this->container->get($subscriber);
 
-			if ( $subscriber_object instanceof SubscriberInterface ) {
-				$this->container->get( 'event_manager' )->add_subscriber( $subscriber_object );
+			if ($subscriber_object instanceof SubscriberInterface) {
+				$this->container->get('event_manager')->add_subscriber($subscriber_object);
 			}
 		}
 	}

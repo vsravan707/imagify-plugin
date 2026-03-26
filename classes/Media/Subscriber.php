@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Media;
@@ -9,7 +10,8 @@ use Imagify\Media\Upload\Upload;
 /**
  * Media Subscriber
  */
-class Subscriber implements SubscriberInterface {
+class Subscriber implements SubscriberInterface
+{
 
 	/**
 	 * Upload instance.
@@ -22,7 +24,8 @@ class Subscriber implements SubscriberInterface {
 	 *
 	 * @param Upload $upload Upload Instance.
 	 */
-	public function __construct( Upload $upload ) {
+	public function __construct(Upload $upload)
+	{
 		$this->upload = $upload;
 	}
 
@@ -31,7 +34,8 @@ class Subscriber implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events(): array {
+	public static function get_subscribed_events(): array
+	{
 		return [
 			// @action
 			'restrict_manage_posts' => 'imagify_attachments_filter_dropdown',
@@ -43,8 +47,9 @@ class Subscriber implements SubscriberInterface {
 	 *
 	 * @return void
 	 */
-	public function imagify_attachments_filter_dropdown() {
-		if ( ! \Imagify_Views::get_instance()->is_wp_library_page() ) {
+	public function imagify_attachments_filter_dropdown()
+	{
+		if (! \Imagify_Views::get_instance()->is_wp_library_page()) {
 			return;
 		}
 		$this->upload->add_imagify_filter_to_attachments_dropdown();

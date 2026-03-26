@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Trigger a hook that should happen before a media is deleted.
@@ -9,7 +9,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  *
  * @param ProcessInterface $process An optimization process.
  */
-function imagify_trigger_delete_media_hook( $process ) {
+function imagify_trigger_delete_media_hook($process)
+{
 	/**
 	 * Triggered bifore a media is deleted.
 	 *
@@ -18,5 +19,5 @@ function imagify_trigger_delete_media_hook( $process ) {
 	 *
 	 * @param ProcessInterface $process An optimization process.
 	 */
-	do_action( 'imagify_delete_media', $process );
+	do_action('imagify_delete_media', $process);
 }

@@ -19,7 +19,8 @@
 window.imagify = window.imagify || {};
 
 /* eslint-disable no-use-before-define */
-(function($, d, w, undefined) { // eslint-disable-line no-unused-vars, no-shadow, no-shadow-restricted-names
+(function ($, d, w, undefined) {
+	// eslint-disable-line no-unused-vars, no-shadow, no-shadow-restricted-names
 
 	/**
 	 * Constructs the Imagifybeat API.
@@ -29,9 +30,9 @@ window.imagify = window.imagify || {};
 	 *
 	 * @return {Imagifybeat} An instance of the Imagifybeat class.
 	 */
-	var Imagifybeat = function() {
-		var $document = $( d ),
-			settings  = {
+	var Imagifybeat = function () {
+		var $document = $(d),
+			settings = {
 				// Suspend/resume.
 				suspend: false,
 
@@ -40,10 +41,10 @@ window.imagify = window.imagify || {};
 
 				// Current screen id, defaults to the JS global 'pagenow' when present
 				// (in the admin) or 'front'.
-				screenId: '',
+				screenId: "",
 
 				// XHR request URL, defaults to the JS global 'ajaxurl' when present.
-				url: '',
+				url: "",
 
 				// Timestamp, start of the last connection request.
 				lastTick: 0,
@@ -92,7 +93,7 @@ window.imagify = window.imagify || {};
 
 				// Timer that keeps track of how long needs to be waited before connecting to
 				// the server again.
-				beatTimer: 0
+				beatTimer: 0,
 			};
 
 		/**
@@ -106,20 +107,20 @@ window.imagify = window.imagify || {};
 		function initialize() {
 			var options, hidden, visibilityState, visibilitychange;
 
-			if ( typeof w.pagenow === 'string' ) {
+			if (typeof w.pagenow === "string") {
 				settings.screenId = w.pagenow;
 			}
 
-			if ( typeof w.ajaxurl === 'string' ) {
+			if (typeof w.ajaxurl === "string") {
 				settings.url = w.ajaxurl;
 			}
 
 			// Pull in options passed from PHP.
-			if ( typeof w.imagifybeatSettings === 'object' ) {
+			if (typeof w.imagifybeatSettings === "object") {
 				options = w.imagifybeatSettings;
 
 				// The XHR URL can be passed as option when w.ajaxurl is not set.
-				if ( ! settings.url && options.ajaxurl ) {
+				if (!settings.url && options.ajaxurl) {
 					settings.url = options.ajaxurl;
 				}
 
@@ -128,12 +129,12 @@ window.imagify = window.imagify || {};
 				 * It can be set in the initial options or changed later through JS and/or
 				 * through PHP.
 				 */
-				if ( options.interval ) {
+				if (options.interval) {
 					settings.mainInterval = options.interval;
 
-					if ( settings.mainInterval < 15 ) {
+					if (settings.mainInterval < 15) {
 						settings.mainInterval = 15;
-					} else if ( settings.mainInterval > 120 ) {
+					} else if (settings.mainInterval > 120) {
 						settings.mainInterval = 120;
 					}
 				}
@@ -146,28 +147,38 @@ window.imagify = window.imagify || {};
 				 * will limit or disable some of the functionality (like post locks). Once set
 				 * at initialization, minimalInterval cannot be changed/overridden.
 				 */
-				if ( options.minimalInterval ) {
-					options.minimalInterval  = parseInt( options.minimalInterval, 10 );
-					settings.minimalInterval = options.minimalInterval > 0 && options.minimalInterval <= 600 ? options.minimalInterval * 1000 : 0;
+				if (options.minimalInterval) {
+					options.minimalInterval = parseInt(
+						options.minimalInterval,
+						10,
+					);
+					settings.minimalInterval =
+						options.minimalInterval > 0 &&
+						options.minimalInterval <= 600
+							? options.minimalInterval * 1000
+							: 0;
 				}
 
-				if ( settings.minimalInterval && settings.mainInterval < settings.minimalInterval ) {
+				if (
+					settings.minimalInterval &&
+					settings.mainInterval < settings.minimalInterval
+				) {
 					settings.mainInterval = settings.minimalInterval;
 				}
 
 				// 'screenId' can be added from settings on the front end where the JS global
 				// 'pagenow' is not set.
-				if ( ! settings.screenId ) {
-					settings.screenId = options.screenId || 'front';
+				if (!settings.screenId) {
+					settings.screenId = options.screenId || "front";
 				}
 
-				if ( 'disable' === options.suspension ) {
+				if ("disable" === options.suspension) {
 					disableSuspend();
 				}
 			}
 
 			// Convert to milliseconds.
-			settings.mainInterval     = settings.mainInterval * 1000;
+			settings.mainInterval = settings.mainInterval * 1000;
 			settings.originalInterval = settings.mainInterval;
 
 			/*
@@ -176,61 +187,66 @@ window.imagify = window.imagify || {};
 			 * interval will be increased to 120 seconds after 5 minutes of mouse and keyboard
 			 * inactivity.
 			 */
-			if ( typeof document.hidden !== 'undefined' ) {
-				hidden           = 'hidden';
-				visibilitychange = 'visibilitychange';
-				visibilityState  = 'visibilityState';
-			} else if ( typeof document.msHidden !== 'undefined' ) { // IE10
-				hidden           = 'msHidden';
-				visibilitychange = 'msvisibilitychange';
-				visibilityState  = 'msVisibilityState';
-			} else if ( typeof document.webkitHidden !== 'undefined' ) { // Android
-				hidden           = 'webkitHidden';
-				visibilitychange = 'webkitvisibilitychange';
-				visibilityState  = 'webkitVisibilityState';
+			if (typeof document.hidden !== "undefined") {
+				hidden = "hidden";
+				visibilitychange = "visibilitychange";
+				visibilityState = "visibilityState";
+			} else if (typeof document.msHidden !== "undefined") {
+				// IE10
+				hidden = "msHidden";
+				visibilitychange = "msvisibilitychange";
+				visibilityState = "msVisibilityState";
+			} else if (typeof document.webkitHidden !== "undefined") {
+				// Android
+				hidden = "webkitHidden";
+				visibilitychange = "webkitvisibilitychange";
+				visibilityState = "webkitVisibilityState";
 			}
 
-			if ( hidden ) {
-				if ( document[ hidden ] ) {
+			if (hidden) {
+				if (document[hidden]) {
 					settings.hasFocus = false;
 				}
 
-				$document.on( visibilitychange + '.imagifybeat', function() {
-					if ( 'hidden' === document[ visibilityState ] ) {
+				$document.on(visibilitychange + ".imagifybeat", function () {
+					if ("hidden" === document[visibilityState]) {
 						blurred();
-						w.clearInterval( settings.checkFocusTimer );
+						w.clearInterval(settings.checkFocusTimer);
 					} else {
 						focused();
-						if ( document.hasFocus ) {
-							settings.checkFocusTimer = w.setInterval( checkFocus, 10000 );
+						if (document.hasFocus) {
+							settings.checkFocusTimer = w.setInterval(
+								checkFocus,
+								10000,
+							);
 						}
 					}
 				});
 			}
 
 			// Use document.hasFocus() if available.
-			if ( document.hasFocus ) {
-				settings.checkFocusTimer = w.setInterval( checkFocus, 10000 );
+			if (document.hasFocus) {
+				settings.checkFocusTimer = w.setInterval(checkFocus, 10000);
 			}
 
-			$( w ).on( 'unload.imagifybeat', function() {
+			$(w).on("unload.imagifybeat", function () {
 				// Don't connect anymore.
 				settings.suspend = true;
 
 				// Abort the last request if not completed.
-				if ( settings.xhr && 4 !== settings.xhr.readyState ) {
+				if (settings.xhr && 4 !== settings.xhr.readyState) {
 					settings.xhr.abort();
 				}
-			} );
+			});
 
 			// Check for user activity every 30 seconds.
-			w.setInterval( checkUserActivity, 30000 );
+			w.setInterval(checkUserActivity, 30000);
 
 			// Start one tick after DOM ready.
-			$document.ready( function() {
+			$document.ready(function () {
 				settings.lastTick = time();
 				scheduleNextTick();
-			} );
+			});
 		}
 
 		/**
@@ -242,7 +258,7 @@ window.imagify = window.imagify || {};
 		 * @return {int} Returns the current time.
 		 */
 		function time() {
-			return (new Date()).getTime();
+			return new Date().getTime();
 		}
 
 		/**
@@ -253,25 +269,28 @@ window.imagify = window.imagify || {};
 		 *
 		 * @return {bool} Returns whether or not the iframe is from the same origin.
 		 */
-		function isLocalFrame( frame ) {
-			var origin, src = frame.src; // eslint-disable-line no-shadow
+		function isLocalFrame(frame) {
+			var origin,
+				src = frame.src; // eslint-disable-line no-shadow
 
 			/*
 			 * Need to compare strings as WebKit doesn't throw JS errors when iframes have different origin. It throws uncatchable exceptions.
 			 */
-			if ( src && /^https?:\/\//.test( src ) ) {
-				origin = w.location.origin ? w.location.origin : w.location.protocol + '//' + w.location.host;
+			if (src && /^https?:\/\//.test(src)) {
+				origin = w.location.origin
+					? w.location.origin
+					: w.location.protocol + "//" + w.location.host;
 
-				if ( src.indexOf( origin ) !== 0 ) {
+				if (src.indexOf(origin) !== 0) {
 					return false;
 				}
 			}
 
 			try {
-				if ( frame.contentWindow.document ) {
+				if (frame.contentWindow.document) {
 					return true;
 				}
-			} catch ( e ) {} // eslint-disable-line no-empty
+			} catch (e) {} // eslint-disable-line no-empty
 
 			return false;
 		}
@@ -285,9 +304,9 @@ window.imagify = window.imagify || {};
 		 * @return {void}
 		 */
 		function checkFocus() {
-			if ( settings.hasFocus && ! document.hasFocus() ) {
+			if (settings.hasFocus && !document.hasFocus()) {
 				blurred();
-			} else if ( ! settings.hasFocus && document.hasFocus() ) {
+			} else if (!settings.hasFocus && document.hasFocus()) {
 				focused();
 			}
 		}
@@ -302,42 +321,49 @@ window.imagify = window.imagify || {};
 		 * @param  {int}    httpStatus The HTTP status code passed from jqXHR (200, 404, 500, etc.).
 		 * @return {void}
 		 */
-		function setErrorState( error, httpStatus ) {
+		function setErrorState(error, httpStatus) {
 			var trigger;
 
-			if ( error ) {
-				switch ( error ) {
-					case 'abort':
+			if (error) {
+				switch (error) {
+					case "abort":
 						// Do nothing.
 						break;
-					case 'timeout':
+					case "timeout":
 						// No response for 30 sec.
 						trigger = true;
 						break;
-					case 'error':
-						if ( 503 === httpStatus && settings.hasConnected ) {
+					case "error":
+						if (503 === httpStatus && settings.hasConnected) {
 							trigger = true;
 							break;
 						}
-						/* falls through */
-					case 'parsererror':
-					case 'empty':
-					case 'unknown':
+					/* falls through */
+					case "parsererror":
+					case "empty":
+					case "unknown":
 						settings.errorcount++;
 
-						if ( settings.errorcount > 2 && settings.hasConnected ) {
+						if (settings.errorcount > 2 && settings.hasConnected) {
 							trigger = true;
 						}
 
 						break;
 				}
 
-				if ( trigger && ! hasConnectionError() ) {
+				if (trigger && !hasConnectionError()) {
 					settings.connectionError = true;
-					$document.trigger( 'imagifybeat-connection-lost', [ error, httpStatus ] );
+					$document.trigger("imagifybeat-connection-lost", [
+						error,
+						httpStatus,
+					]);
 
-					if ( w.wp.hooks ) {
-						w.wp.hooks.doAction( 'imagifybeat.connection-lost', error, httpStatus );
+					if (w.wp.hooks) {
+						w.wp.hooks.doAction(
+							"imagifybeat.connection-lost",
+							error,
+							httpStatus,
+						);
 					}
 				}
 			}
@@ -355,13 +381,13 @@ window.imagify = window.imagify || {};
 			// Has connected successfully.
 			settings.hasConnected = true;
 
-			if ( hasConnectionError() ) {
+			if (hasConnectionError()) {
 				settings.errorcount = 0;
 				settings.connectionError = false;
-				$document.trigger( 'imagifybeat-connection-restored' );
+				$document.trigger("imagifybeat-connection-restored");
 
-				if ( w.wp.hooks ) {
-					w.wp.hooks.doAction( 'imagifybeat.connection-restored' );
+				if (w.wp.hooks) {
+					w.wp.hooks.doAction("imagifybeat.connection-restored");
 				}
 			}
 		}
@@ -379,93 +405,123 @@ window.imagify = window.imagify || {};
 
 			// If the connection to the server is slower than the interval,
 			// imagifybeat connects as soon as the previous connection's response is received.
-			if ( settings.connecting || settings.suspend ) {
+			if (settings.connecting || settings.suspend) {
 				return;
 			}
 
 			settings.lastTick = time();
 
-			imagifybeatData = $.extend( {}, settings.queue );
+			imagifybeatData = $.extend({}, settings.queue);
 			// Clear the data queue. Anything added after this point will be sent on the next tick.
 			settings.queue = {};
 
-			$document.trigger( 'imagifybeat-send', [ imagifybeatData ] );
+			$document.trigger("imagifybeat-send", [imagifybeatData]);
 
-			if ( w.wp.hooks ) {
-				w.wp.hooks.doAction( 'imagifybeat.send', imagifybeatData );
+			if (w.wp.hooks) {
+				w.wp.hooks.doAction("imagifybeat.send", imagifybeatData);
 			}
 
 			ajaxData = {
-				data:      imagifybeatData,
-				interval:  settings.tempInterval ? settings.tempInterval / 1000 : settings.mainInterval / 1000,
-				_nonce:    typeof w.imagifybeatSettings === 'object' ? w.imagifybeatSettings.nonce : '',
-				action:    'imagifybeat',
+				data: imagifybeatData,
+				interval: settings.tempInterval
+					? settings.tempInterval / 1000
+					: settings.mainInterval / 1000,
+				_nonce:
+					typeof w.imagifybeatSettings === "object"
+						? w.imagifybeatSettings.nonce
+						: "",
+				action: "imagifybeat",
 				screen_id: settings.screenId,
-				has_focus: settings.hasFocus
+				has_focus: settings.hasFocus,
 			};
 
-			if ( 'customize' === settings.screenId  ) {
-				ajaxData.wp_customize = 'on';
+			if ("customize" === settings.screenId) {
+				ajaxData.wp_customize = "on";
 			}
 
 			settings.connecting = true;
-			settings.xhr        = $.ajax( {
-				url:      settings.url,
-				type:     'post',
-				timeout:  60000, // Throw an error if not completed after 60 sec.
-				data:     ajaxData,
-				dataType: 'json'
-			} ).always( function() {
-				settings.connecting = false;
-				scheduleNextTick();
-			} ).done( function( response, textStatus, jqXHR ) {
-				var newInterval;
+			settings.xhr = $.ajax({
+				url: settings.url,
+				type: "post",
+				timeout: 60000, // Throw an error if not completed after 60 sec.
+				data: ajaxData,
+				dataType: "json",
+			})
+				.always(function () {
+					settings.connecting = false;
+					scheduleNextTick();
+				})
+				.done(function (response, textStatus, jqXHR) {
+					var newInterval;
 
-				if ( ! response ) {
-					setErrorState( 'empty' );
-					return;
-				}
-
-				clearErrorState();
-
-				if ( response.nonces_expired ) {
-					$document.trigger( 'imagifybeat-nonces-expired' );
-
-					if ( w.wp.hooks ) {
-						w.wp.hooks.doAction( 'imagifybeat.nonces-expired' );
+					if (!response) {
+						setErrorState("empty");
+						return;
 					}
-				}
 
-				// Change the interval from PHP
-				if ( response.imagifybeat_interval ) {
-					newInterval = response.imagifybeat_interval;
-					delete response.imagifybeat_interval;
-				}
+					clearErrorState();
 
-				// Update the imagifybeat nonce if set.
-				if ( response.imagifybeat_nonce && typeof w.imagifybeatSettings === 'object' ) {
-					w.imagifybeatSettings.nonce = response.imagifybeat_nonce;
-					delete response.imagifybeat_nonce;
-				}
+					if (response.nonces_expired) {
+						$document.trigger("imagifybeat-nonces-expired");
 
-				$document.trigger( 'imagifybeat-tick', [ response, textStatus, jqXHR ] );
+						if (w.wp.hooks) {
+							w.wp.hooks.doAction("imagifybeat.nonces-expired");
+						}
+					}
 
-				if ( w.wp.hooks ) {
-					w.wp.hooks.doAction( 'imagifybeat.tick', response, textStatus, jqXHR );
-				}
+					// Change the interval from PHP
+					if (response.imagifybeat_interval) {
+						newInterval = response.imagifybeat_interval;
+						delete response.imagifybeat_interval;
+					}
 
-				// Do this last. Can trigger the next XHR if connection time > 5 sec. and newInterval == 'fast'.
-				if ( newInterval ) {
-					interval( newInterval );
-				}
-			} ).fail( function( jqXHR, textStatus, error ) {
-				setErrorState( textStatus || 'unknown', jqXHR.status );
-				$document.trigger( 'imagifybeat-error', [ jqXHR, textStatus, error ] );
+					// Update the imagifybeat nonce if set.
+					if (
+						response.imagifybeat_nonce &&
+						typeof w.imagifybeatSettings === "object"
+					) {
+						w.imagifybeatSettings.nonce =
+							response.imagifybeat_nonce;
+						delete response.imagifybeat_nonce;
+					}
 
-				if ( w.wp.hooks ) {
-					w.wp.hooks.doAction( 'imagifybeat.error', jqXHR, textStatus, error );
-				}
-			} );
+					$document.trigger("imagifybeat-tick", [
+						response,
+						textStatus,
+						jqXHR,
+					]);
+
+					if (w.wp.hooks) {
+						w.wp.hooks.doAction(
+							"imagifybeat.tick",
+							response,
+							textStatus,
+							jqXHR,
+						);
+					}
+
+					// Do this last. Can trigger the next XHR if connection time > 5 sec. and newInterval == 'fast'.
+					if (newInterval) {
+						interval(newInterval);
+					}
+				})
+				.fail(function (jqXHR, textStatus, error) {
+					setErrorState(textStatus || "unknown", jqXHR.status);
+					$document.trigger("imagifybeat-error", [
+						jqXHR,
+						textStatus,
+						error,
+					]);
+
+					if (w.wp.hooks) {
+						w.wp.hooks.doAction(
+							"imagifybeat.error",
+							jqXHR,
+							textStatus,
+							error,
+						);
+					}
+				});
 		}
 
 		/**
@@ -479,38 +535,35 @@ window.imagify = window.imagify || {};
 		 * @return {void}
 		 */
 		function scheduleNextTick() {
-			var delta  = time() - settings.lastTick,
+			var delta = time() - settings.lastTick,
 				interv = settings.mainInterval;
 
-			if ( settings.suspend ) {
+			if (settings.suspend) {
 				return;
 			}
 
-			if ( ! settings.hasFocus && settings.suspendEnabled ) {
+			if (!settings.hasFocus && settings.suspendEnabled) {
 				// When no user activity or the window lost focus, increase polling interval to 120 seconds, but only if suspend is enabled.
 				interv = 120000; // 120 sec.
-			} else if ( settings.countdown > 0 && settings.tempInterval ) {
+			} else if (settings.countdown > 0 && settings.tempInterval) {
 				interv = settings.tempInterval;
 				settings.countdown--;
 
-				if ( settings.countdown < 1 ) {
+				if (settings.countdown < 1) {
 					settings.tempInterval = 0;
 				}
 			}
 
-			if ( settings.minimalInterval && interv < settings.minimalInterval ) {
+			if (settings.minimalInterval && interv < settings.minimalInterval) {
 				interv = settings.minimalInterval;
 			}
 
-			w.clearTimeout( settings.beatTimer );
+			w.clearTimeout(settings.beatTimer);
 
-			if ( delta < interv ) {
-				settings.beatTimer = w.setTimeout(
-					function() {
-						connect();
-					},
-					interv - delta
-				);
+			if (delta < interv) {
+				settings.beatTimer = w.setTimeout(function () {
+					connect();
+				}, interv - delta);
 			} else {
 				connect();
 			}
@@ -542,7 +595,7 @@ window.imagify = window.imagify || {};
 			// Resume if suspended
 			settings.suspend = false;
 
-			if ( ! settings.hasFocus ) {
+			if (!settings.hasFocus) {
 				settings.hasFocus = true;
 				scheduleNextTick();
 			}
@@ -558,13 +611,13 @@ window.imagify = window.imagify || {};
 		 */
 		function userIsActive() {
 			settings.userActivityEvents = false;
-			$document.off( '.imagifybeat-active' );
+			$document.off(".imagifybeat-active");
 
-			$( 'iframe' ).each( function( i, frame ) {
-				if ( isLocalFrame( frame ) ) {
-					$( frame.contentWindow ).off( '.imagifybeat-active' );
+			$("iframe").each(function (i, frame) {
+				if (isLocalFrame(frame)) {
+					$(frame.contentWindow).off(".imagifybeat-active");
 				}
-			} );
+			});
 
 			focused();
 		}
@@ -582,30 +635,38 @@ window.imagify = window.imagify || {};
 		 * @return {void}
 		 */
 		function checkUserActivity() {
-			var lastActive = settings.userActivity ? time() - settings.userActivity : 0;
+			var lastActive = settings.userActivity
+				? time() - settings.userActivity
+				: 0;
 
 			// Set hasFocus to false when no mouse or keyboard activity for 5 min.
-			if ( lastActive > 300000 && settings.hasFocus ) {
+			if (lastActive > 300000 && settings.hasFocus) {
 				blurred();
 			}
 
 			// Suspend after 10 min. of inactivity.
-			if ( settings.suspendEnabled && lastActive > 600000 ) {
+			if (settings.suspendEnabled && lastActive > 600000) {
 				settings.suspend = true;
 			}
 
-			if ( ! settings.userActivityEvents ) {
-				$document.on( 'mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active', function() {
-					userIsActive();
-				} );
+			if (!settings.userActivityEvents) {
+				$document.on(
+					"mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active",
+					function () {
+						userIsActive();
+					},
+				);
 
-				$( 'iframe' ).each( function( i, frame ) {
-					if ( isLocalFrame( frame ) ) {
-						$( frame.contentWindow ).on( 'mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active', function() {
-							userIsActive();
-						} );
+				$("iframe").each(function (i, frame) {
+					if (isLocalFrame(frame)) {
+						$(frame.contentWindow).on(
+							"mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active",
+							function () {
+								userIsActive();
+							},
+						);
 					}
-				} );
+				});
 
 				settings.userActivityEvents = true;
 			}
@@ -698,13 +759,15 @@ window.imagify = window.imagify || {};
 		 * @param  {string}     ticks Tells how many ticks before the interval reverts back. Used with speed = 'fast' or 5.
 		 * @return {int}              Current interval in seconds.
 		 */
-		function interval( speed, ticks ) {
+		function interval(speed, ticks) {
 			var newInterval,
-				oldInterval = settings.tempInterval ? settings.tempInterval : settings.mainInterval;
+				oldInterval = settings.tempInterval
+					? settings.tempInterval
+					: settings.mainInterval;
 
-			if ( speed ) {
-				switch ( speed ) {
-					case 'fast':
+			if (speed) {
+				switch (speed) {
+					case "fast":
 					case 5:
 						newInterval = 5000;
 						break;
@@ -720,7 +783,7 @@ window.imagify = window.imagify || {};
 					case 120:
 						newInterval = 120000;
 						break;
-					case 'long-polling':
+					case "long-polling":
 						// Allow long polling, (experimental)
 						settings.mainInterval = 0;
 						return 0;
@@ -728,18 +791,21 @@ window.imagify = window.imagify || {};
 						newInterval = settings.originalInterval;
 				}
 
-				if ( settings.minimalInterval && newInterval < settings.minimalInterval ) {
+				if (
+					settings.minimalInterval &&
+					newInterval < settings.minimalInterval
+				) {
 					newInterval = settings.minimalInterval;
 				}
 
-				if ( 5000 === newInterval ) {
-					ticks = parseInt( ticks, 10 ) || 30;
+				if (5000 === newInterval) {
+					ticks = parseInt(ticks, 10) || 30;
 					ticks = ticks < 1 || ticks > 30 ? 30 : ticks;
 
-					settings.countdown    = ticks;
+					settings.countdown = ticks;
 					settings.tempInterval = newInterval;
 				} else {
-					settings.countdown    = 0;
+					settings.countdown = 0;
 					settings.tempInterval = 0;
 					settings.mainInterval = newInterval;
 				}
@@ -747,12 +813,14 @@ window.imagify = window.imagify || {};
 				// Change the next connection time if new interval has been set.
 				// Will connect immediately if the time since the last connection
 				// is greater than the new interval.
-				if ( newInterval !== oldInterval ) {
+				if (newInterval !== oldInterval) {
 					scheduleNextTick();
 				}
 			}
 
-			return settings.tempInterval ? settings.tempInterval / 1000 : settings.mainInterval / 1000;
+			return settings.tempInterval
+				? settings.tempInterval / 1000
+				: settings.mainInterval / 1000;
 		}
 
 		/**
@@ -764,7 +832,7 @@ window.imagify = window.imagify || {};
 		 * @return {int} Current interval in seconds.
 		 */
 		function resetInterval() {
-			return interval( settings.originalInterval );
+			return interval(settings.originalInterval);
 		}
 
 		/**
@@ -788,9 +856,9 @@ window.imagify = window.imagify || {};
 		 * @param  {bool}   noOverwrite Whether to overwrite existing data in the queue.
 		 * @return {bool}               True if the data was queued.
 		 */
-		function enqueue( handle, data, noOverwrite ) {
-			if ( handle ) {
-				if ( noOverwrite && this.isQueued( handle ) ) {
+		function enqueue(handle, data, noOverwrite) {
+			if (handle) {
+				if (noOverwrite && this.isQueued(handle)) {
 					return false;
 				}
 
@@ -808,9 +876,12 @@ window.imagify = window.imagify || {};
 		 * @param  {string} handle The handle for the data.
 		 * @return {bool}          True if the data is queued with this handle.
 		 */
-		function isQueued( handle ) {
-			if ( handle ) {
-				return Object.prototype.hasOwnProperty.call( settings.queue, handle );
+		function isQueued(handle) {
+			if (handle) {
+				return Object.prototype.hasOwnProperty.call(
+					settings.queue,
+					handle,
+				);
 			}
 		}
 
@@ -822,8 +893,8 @@ window.imagify = window.imagify || {};
 		 *
 		 * @param {string} handle The handle for the data.
 		 */
-		function dequeue( handle ) {
-			if ( handle ) {
+		function dequeue(handle) {
+			if (handle) {
 				delete settings.queue[handle];
 			}
 		}
@@ -837,9 +908,11 @@ window.imagify = window.imagify || {};
 		 * @param  {string} handle The handle for the data.
 		 * @return {mixed}         The data or undefined.
 		 */
-		function getQueuedItem( handle ) {
-			if ( handle ) {
-				return this.isQueued( handle ) ? settings.queue[ handle ] : undefined;
+		function getQueuedItem(handle) {
+			if (handle) {
+				return this.isQueued(handle)
+					? settings.queue[handle]
+					: undefined;
 			}
 		}
 
@@ -847,17 +920,17 @@ window.imagify = window.imagify || {};
 
 		// Expose public methods.
 		return {
-			hasFocus:           hasFocus,
-			connectNow:         connectNow,
-			disableSuspend:     disableSuspend,
-			enableSuspend:      enableSuspend,
-			interval:           interval,
-			resetInterval:      resetInterval,
+			hasFocus: hasFocus,
+			connectNow: connectNow,
+			disableSuspend: disableSuspend,
+			enableSuspend: enableSuspend,
+			interval: interval,
+			resetInterval: resetInterval,
 			hasConnectionError: hasConnectionError,
-			enqueue:            enqueue,
-			dequeue:            dequeue,
-			isQueued:           isQueued,
-			getQueuedItem:      getQueuedItem
+			enqueue: enqueue,
+			dequeue: dequeue,
+			isQueued: isQueued,
+			getQueuedItem: getQueuedItem,
 		};
 	};
 
@@ -868,5 +941,4 @@ window.imagify = window.imagify || {};
 	 * @type      {Imagifybeat}
 	 */
 	w.imagify.beat = new Imagifybeat();
-
-} )( jQuery, document, window );
+})(jQuery, document, window);

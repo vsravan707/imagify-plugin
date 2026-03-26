@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG\Bulk;
 
 use C_Gallery_Storage;
@@ -10,7 +11,8 @@ use Imagify\ThirdParty\NGG\DB;
  *
  * @since 1.9
  */
-class NGG extends AbstractBulk {
+class NGG extends AbstractBulk
+{
 	/**
 	 * Context "short name".
 	 *
@@ -27,7 +29,8 @@ class NGG extends AbstractBulk {
 	 * @param  int $optimization_level The optimization level.
 	 * @return array                   A list of unoptimized media IDs.
 	 */
-	public function get_unoptimized_media_ids( $optimization_level ) {
+	public function get_unoptimized_media_ids($optimization_level)
+	{
 		global $wpdb;
 
 		$this->set_no_time_limit();
@@ -52,47 +55,47 @@ class NGG extends AbstractBulk {
 			ARRAY_A
 		);
 
-		if ( ! $images ) {
+		if (! $images) {
 			return [];
 		}
 
-		foreach ( $images as $image ) {
-			$id        = absint( $image['id'] );
-			$file_path = $storage->get_image_abspath( $id );
+		foreach ($images as $image) {
+			$id        = absint($image['id']);
+			$file_path = $storage->get_image_abspath($id);
 
-			if ( ! $file_path || ! $this->filesystem->exists( $file_path ) ) {
+			if (! $file_path || ! $this->filesystem->exists($file_path)) {
 				continue;
 			}
 
-			$attachment_data  = maybe_unserialize( $image['data'] );
+			$attachment_data  = maybe_unserialize($image['data']);
 			$attachment_error = '';
 
-			if ( isset( $attachment_data['sizes']['full']['error'] ) ) {
+			if (isset($attachment_data['sizes']['full']['error'])) {
 				$attachment_error = $attachment_data['sizes']['full']['error'];
 			}
 
-			$attachment_error              = trim( $attachment_error );
+			$attachment_error              = trim($attachment_error);
 			$attachment_status             = $image['status'];
 			$attachment_optimization_level = $image['optimization_level'];
-			$attachment_backup_path        = get_imagify_ngg_attachment_backup_path( $file_path );
+			$attachment_backup_path        = get_imagify_ngg_attachment_backup_path($file_path);
 
 			// Don't try to re-optimize if the optimization level is still the same.
-			if ( $optimization_level === $attachment_optimization_level && is_string( $attachment_error ) ) {
+			if ($optimization_level === $attachment_optimization_level && is_string($attachment_error)) {
 				continue;
 			}
 
 			// Don't try to re-optimize if there is no backup file.
-			if ( 'success' === $attachment_status && $optimization_level !== $attachment_optimization_level && ! $this->filesystem->exists( $attachment_backup_path ) ) {
+			if ('success' === $attachment_status && $optimization_level !== $attachment_optimization_level && ! $this->filesystem->exists($attachment_backup_path)) {
 				continue;
 			}
 
 			// Don't try to re-optimize images already compressed.
-			if ( 'already_optimized' === $attachment_status && $attachment_optimization_level >= $optimization_level ) {
+			if ('already_optimized' === $attachment_status && $attachment_optimization_level >= $optimization_level) {
 				continue;
 			}
 
 			// Don't try to re-optimize images with an empty error message.
-			if ( 'error' === $attachment_status && empty( $attachment_error ) ) {
+			if ('error' === $attachment_status && empty($attachment_error)) {
 				continue;
 			}
 
@@ -117,7 +120,8 @@ class NGG extends AbstractBulk {
 	 *     }
 	 * }
 	 */
-	public function get_optimized_media_ids_without_format( $format ) {
+	public function get_optimized_media_ids_without_format($format)
+	{
 		global $wpdb;
 
 		$this->set_no_time_limit();
@@ -125,10 +129,10 @@ class NGG extends AbstractBulk {
 		$storage    = C_Gallery_Storage::get_instance();
 		$ngg_table  = $wpdb->prefix . 'ngg_pictures';
 		$data_table = DB::get_instance()->get_table_name();
-		$suffix     = constant( imagify_get_optimization_process_class_name( 'ngg' ) . '::WEBP_SUFFIX' );
+		$suffix     = constant(imagify_get_optimization_process_class_name('ngg') . '::WEBP_SUFFIX');
 
-		if ( 'avif' === get_imagify_option( 'optimization_format' ) ) {
-			$suffix = constant( imagify_get_optimization_process_class_name( 'ngg' ) . '::AVIF_SUFFIX' );
+		if ('avif' === get_imagify_option('optimization_format')) {
+			$suffix = constant(imagify_get_optimization_process_class_name('ngg') . '::AVIF_SUFFIX');
 		}
 
 		$files = $wpdb->get_col(
@@ -142,12 +146,12 @@ class NGG extends AbstractBulk {
 					( data.status = 'success' OR data.status = 'already_optimized' )
 					AND data.data NOT LIKE %s
 				ORDER BY ngg.pid DESC",
-				'%' . $wpdb->esc_like( $suffix . '";a:4:{s:7:"success";b:1;' ) . '%'
+				'%' . $wpdb->esc_like($suffix . '";a:4:{s:7:"success";b:1;') . '%'
 			)
 		);
 
 		$wpdb->flush();
-		unset( $ngg_table, $data_table, $suffix );
+		unset($ngg_table, $data_table, $suffix);
 
 		$data = [
 			'ids'    => [],
@@ -157,23 +161,23 @@ class NGG extends AbstractBulk {
 			],
 		];
 
-		if ( ! $files ) {
+		if (! $files) {
 			return $data;
 		}
 
-		foreach ( $files as $file_id ) {
-			$file_id   = absint( $file_id );
-			$file_path = $storage->get_image_abspath( $file_id );
+		foreach ($files as $file_id) {
+			$file_id   = absint($file_id);
+			$file_path = $storage->get_image_abspath($file_id);
 
-			if ( ! $file_path ) {
+			if (! $file_path) {
 				// Problem.
 				$data['errors']['no_file_path'][] = $file_id;
 				continue;
 			}
 
-			$backup_path = get_imagify_ngg_attachment_backup_path( $file_path );
+			$backup_path = get_imagify_ngg_attachment_backup_path($file_path);
 
-			if ( ! $this->filesystem->exists( $backup_path ) ) {
+			if (! $this->filesystem->exists($backup_path)) {
 				// No backup, no next-gen.
 				$data['errors']['no_backup'][] = $file_id;
 				continue;
@@ -192,15 +196,16 @@ class NGG extends AbstractBulk {
 	 *
 	 * @return int The number of media.
 	 */
-	public function has_optimized_media_without_nextgen() {
+	public function has_optimized_media_without_nextgen()
+	{
 		global $wpdb;
 
 		$ngg_table  = $wpdb->prefix . 'ngg_pictures';
 		$data_table = DB::get_instance()->get_table_name();
-		$suffix     = constant( imagify_get_optimization_process_class_name( 'ngg' ) . '::WEBP_SUFFIX' );
+		$suffix     = constant(imagify_get_optimization_process_class_name('ngg') . '::WEBP_SUFFIX');
 
-		if ( 'avif' === get_imagify_option( 'optimization_format' ) ) {
-			$suffix = constant( imagify_get_optimization_process_class_name( 'ngg' ) . '::AVIF_SUFFIX' );
+		if ('avif' === get_imagify_option('optimization_format')) {
+			$suffix = constant(imagify_get_optimization_process_class_name('ngg') . '::AVIF_SUFFIX');
 		}
 
 		return (int) $wpdb->get_var(
@@ -213,7 +218,7 @@ class NGG extends AbstractBulk {
 				WHERE
 					( data.status = 'success' OR data.status = 'already_optimized' )
 					AND data.data NOT LIKE %s",
-				'%' . $wpdb->esc_like( $suffix . '";a:4:{s:7:"success";b:1;' ) . '%'
+				'%' . $wpdb->esc_like($suffix . '";a:4:{s:7:"success";b:1;') . '%'
 			)
 		);
 	}
@@ -232,16 +237,17 @@ class NGG extends AbstractBulk {
 	 *     @type string $original-size   Original filesize.
 	 * }
 	 */
-	public function get_context_data() {
+	public function get_context_data()
+	{
 		$total_saving_data = imagify_count_saving_data();
 		$data              = [
 			'count-optimized' => imagify_ngg_count_optimized_attachments(),
 			'count-errors'    => imagify_ngg_count_error_attachments(),
 			'optimized-size'  => $total_saving_data['optimized_size'],
 			'original-size'   => $total_saving_data['original_size'],
-			'errors_url'      => get_imagify_admin_url( 'folder-errors', $this->context ),
+			'errors_url'      => get_imagify_admin_url('folder-errors', $this->context),
 		];
 
-		return $this->format_context_data( $data );
+		return $this->format_context_data($data);
 	}
 }

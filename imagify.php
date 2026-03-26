@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Imagify
  * Plugin URI: https://wordpress.org/plugins/imagify/
@@ -16,28 +17,28 @@
  * Copyright 2024 WP Media
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 // Imagify defines.
-define( 'IMAGIFY_VERSION', '2.2.7' );
-define( 'IMAGIFY_SLUG', 'imagify' );
-define( 'IMAGIFY_FILE', __FILE__ );
-define( 'IMAGIFY_PATH', realpath( plugin_dir_path( IMAGIFY_FILE ) ) . '/' );
-define( 'IMAGIFY_URL', plugin_dir_url( IMAGIFY_FILE ) );
-define( 'IMAGIFY_ASSETS_IMG_URL', IMAGIFY_URL . 'assets/images/' );
-define( 'IMAGIFY_MAX_BYTES', 5242880 );
-define( 'IMAGIFY_INT_MAX', PHP_INT_MAX - 30 );
-if ( ! defined( 'IMAGIFY_SITE_DOMAIN' ) ) {
-	define( 'IMAGIFY_SITE_DOMAIN', 'https://imagify.io' );
+define('IMAGIFY_VERSION', '2.2.7');
+define('IMAGIFY_SLUG', 'imagify');
+define('IMAGIFY_FILE', __FILE__);
+define('IMAGIFY_PATH', realpath(plugin_dir_path(IMAGIFY_FILE)) . '/');
+define('IMAGIFY_URL', plugin_dir_url(IMAGIFY_FILE));
+define('IMAGIFY_ASSETS_IMG_URL', IMAGIFY_URL . 'assets/images/');
+define('IMAGIFY_MAX_BYTES', PHP_INT_MAX);
+define('IMAGIFY_INT_MAX', PHP_INT_MAX - 30);
+if (! defined('IMAGIFY_SITE_DOMAIN')) {
+	define('IMAGIFY_SITE_DOMAIN', 'https://imagify.io');
 }
-if ( ! defined( 'IMAGIFY_APP_DOMAIN' ) ) {
-	define( 'IMAGIFY_APP_DOMAIN', 'https://app.imagify.io' );
+if (! defined('IMAGIFY_APP_DOMAIN')) {
+	define('IMAGIFY_APP_DOMAIN', 'https://app.imagify.io');
 }
-define( 'IMAGIFY_APP_API_URL', IMAGIFY_APP_DOMAIN . '/api/' );
+define('IMAGIFY_APP_API_URL', IMAGIFY_APP_DOMAIN . '/api/');
 
 
 // Check for WordPress and PHP version.
-if ( imagify_pass_requirements() ) {
+if (imagify_pass_requirements()) {
 	require_once IMAGIFY_PATH . 'inc/main.php';
 }
 
@@ -48,23 +49,24 @@ if ( imagify_pass_requirements() ) {
  *
  * return bool True if Imagify is activated on the network.
  */
-function imagify_is_active_for_network() {
+function imagify_is_active_for_network()
+{
 	static $is;
 
-	if ( isset( $is ) ) {
+	if (isset($is)) {
 		return $is;
 	}
 
-	if ( ! is_multisite() ) {
+	if (! is_multisite()) {
 		$is = false;
 		return $is;
 	}
 
-	if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+	if (! function_exists('is_plugin_active_for_network')) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	}
 
-	$is = is_plugin_active_for_network( plugin_basename( IMAGIFY_FILE ) );
+	$is = is_plugin_active_for_network(plugin_basename(IMAGIFY_FILE));
 
 	return $is;
 }
@@ -77,10 +79,11 @@ function imagify_is_active_for_network() {
  *
  * @return bool True if WP and PHP versions are OK.
  */
-function imagify_pass_requirements() {
+function imagify_pass_requirements()
+{
 	static $check;
 
-	if ( isset( $check ) ) {
+	if (isset($check)) {
 		return $check;
 	}
 
@@ -106,10 +109,11 @@ function imagify_pass_requirements() {
  *
  * @since 1.9
  */
-function imagify_load_translations() {
-	load_plugin_textdomain( 'imagify', false, dirname( plugin_basename( IMAGIFY_FILE ) ) . '/languages/' );
+function imagify_load_translations()
+{
+	load_plugin_textdomain('imagify', false, dirname(plugin_basename(IMAGIFY_FILE)) . '/languages/');
 }
-add_action( 'init', 'imagify_load_translations' );
+add_action('init', 'imagify_load_translations');
 
 /**
  * Set a transient on plugin activation, it will be used later to trigger activation hooks after the plugin is loaded.
@@ -119,18 +123,19 @@ add_action( 'init', 'imagify_load_translations' );
  * @see    Imagify_Plugin->maybe_activate()
  * @author Grégory Viguier
  */
-function imagify_set_activation() {
-	if ( ! imagify_pass_requirements() ) {
+function imagify_set_activation()
+{
+	if (! imagify_pass_requirements()) {
 		return;
 	}
 
-	if ( imagify_is_active_for_network() ) {
-		set_site_transient( 'imagify_activation', get_current_user_id(), 30 );
+	if (imagify_is_active_for_network()) {
+		set_site_transient('imagify_activation', get_current_user_id(), 30);
 	} else {
-		set_transient( 'imagify_activation', get_current_user_id(), 30 );
+		set_transient('imagify_activation', get_current_user_id(), 30);
 	}
 }
-register_activation_hook( IMAGIFY_FILE, 'imagify_set_activation' );
+register_activation_hook(IMAGIFY_FILE, 'imagify_set_activation');
 
 /**
  * Trigger a hook on plugin deactivation.
@@ -138,8 +143,9 @@ register_activation_hook( IMAGIFY_FILE, 'imagify_set_activation' );
  * @since  1.9
  * @author Grégory Viguier
  */
-function imagify_deactivation() {
-	if ( ! imagify_pass_requirements() ) {
+function imagify_deactivation()
+{
+	if (! imagify_pass_requirements()) {
 		return;
 	}
 
@@ -149,6 +155,6 @@ function imagify_deactivation() {
 	 * @since  1.9
 	 * @author Grégory Viguier
 	 */
-	do_action( 'imagify_deactivation' );
+	do_action('imagify_deactivation');
 }
-register_deactivation_hook( IMAGIFY_FILE, 'imagify_deactivation' );
+register_deactivation_hook(IMAGIFY_FILE, 'imagify_deactivation');

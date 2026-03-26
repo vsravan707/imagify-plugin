@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Media;
 
 use Imagify\CDN\PushCDNInterface;
@@ -12,7 +13,8 @@ use WP_Error;
  * @since  1.9
  * @author Grégory Viguier
  */
-class Noop implements MediaInterface {
+class Noop implements MediaInterface
+{
 	use NoopDeprecatedTrait;
 
 	/**
@@ -26,7 +28,8 @@ class Noop implements MediaInterface {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
+	public static function constructor_accepts($id)
+	{
 		return false;
 	}
 
@@ -39,7 +42,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return int
 	 */
-	public function get_id() {
+	public function get_id()
+	{
 		return 0;
 	}
 
@@ -52,7 +56,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_valid() {
+	public function is_valid()
+	{
 		return false;
 	}
 
@@ -65,7 +70,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string
 	 */
-	public function get_context() {
+	public function get_context()
+	{
 		return 'noop';
 	}
 
@@ -78,7 +84,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return ContextInterface
 	 */
-	public function get_context_instance() {
+	public function get_context_instance()
+	{
 		return \Imagify\Context\Noop::get_instance();
 	}
 
@@ -91,7 +98,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool|PushCDNInterface A PushCDNInterface instance. False if no CDN is used.
 	 */
-	public function get_cdn() {
+	public function get_cdn()
+	{
 		return false;
 	}
 
@@ -109,7 +117,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_original_path() {
+	public function get_raw_original_path()
+	{
 		return false;
 	}
 
@@ -122,7 +131,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False if it doesn't exist.
 	 */
-	public function get_original_path() {
+	public function get_original_path()
+	{
 		return false;
 	}
 
@@ -140,7 +150,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_fullsize_url() {
+	public function get_fullsize_url()
+	{
 		return false;
 	}
 
@@ -153,7 +164,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_fullsize_path() {
+	public function get_raw_fullsize_path()
+	{
 		return false;
 	}
 
@@ -166,7 +178,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False if it doesn't exist.
 	 */
-	public function get_fullsize_path() {
+	public function get_fullsize_path()
+	{
 		return false;
 	}
 
@@ -184,7 +197,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_backup_url() {
+	public function get_backup_url()
+	{
 		return false;
 	}
 
@@ -197,7 +211,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_backup_path() {
+	public function get_raw_backup_path()
+	{
 		return false;
 	}
 
@@ -210,7 +225,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False if it doesn't exist.
 	 */
-	public function get_backup_path() {
+	public function get_backup_path()
+	{
 		return false;
 	}
 
@@ -223,7 +239,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool True if the media has a backup.
 	 */
-	public function has_backup() {
+	public function has_backup()
+	{
 		return false;
 	}
 
@@ -241,8 +258,9 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool|WP_Error True on success. A \WP_Error instance on failure.
 	 */
-	public function generate_thumbnails() {
-		return new \WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function generate_thumbnails()
+	{
+		return new \WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 
@@ -259,7 +277,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_supported() {
+	public function is_supported()
+	{
 		return false;
 	}
 
@@ -272,7 +291,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool Returns false in case it's an image but not in a supported format (bmp for example).
 	 */
-	public function is_image() {
+	public function is_image()
+	{
 		return false;
 	}
 
@@ -285,7 +305,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_pdf() {
+	public function is_pdf()
+	{
 		return false;
 	}
 
@@ -298,7 +319,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string|null
 	 */
-	public function get_extension() {
+	public function get_extension()
+	{
 		return '';
 	}
 
@@ -311,7 +333,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return string
 	 */
-	public function get_mime_type() {
+	public function get_mime_type()
+	{
 		return '';
 	}
 
@@ -325,8 +348,9 @@ class Noop implements MediaInterface {
 	 *
 	 * @return array
 	 */
-	public function get_allowed_mime_types() {
-		return imagify_get_mime_types( 'all' );
+	public function get_allowed_mime_types()
+	{
+		return imagify_get_mime_types('all');
 	}
 
 	/**
@@ -338,7 +362,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function has_required_media_data() {
+	public function has_required_media_data()
+	{
 		return false;
 	}
 
@@ -358,7 +383,8 @@ class Noop implements MediaInterface {
 	 *     @type string $mime-type The file mime type.
 	 * }
 	 */
-	public function get_media_files() {
+	public function get_media_files()
+	{
 		return [];
 	}
 
@@ -371,7 +397,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return array
 	 */
-	public function get_dimensions() {
+	public function get_dimensions()
+	{
 		return [
 			'width'  => 0,
 			'height' => 0,
@@ -387,7 +414,8 @@ class Noop implements MediaInterface {
 	 *
 	 * @return bool True on success. False on failure.
 	 */
-	public function update_dimensions() {
+	public function update_dimensions()
+	{
 		return false;
 	}
 }

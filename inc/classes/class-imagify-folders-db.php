@@ -8,7 +8,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.7
  * @author Grégory Viguier
  */
-class Imagify_Folders_DB extends Imagify_Abstract_DB {
+class Imagify_Folders_DB extends Imagify_Abstract_DB
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -63,7 +64,8 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return array
 	 */
-	public function get_columns() {
+	public function get_columns()
+	{
 		return [
 			'folder_id' => '%d',
 			'path'      => '%s',
@@ -80,7 +82,8 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return array
 	 */
-	public function get_column_defaults() {
+	public function get_column_defaults()
+	{
 		return [
 			'folder_id' => 0,
 			'path'      => '',
@@ -97,7 +100,8 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return string
 	 */
-	protected function get_table_schema() {
+	protected function get_table_schema()
+	{
 		return "
 			folder_id bigint(20) unsigned NOT NULL auto_increment,
 			path varchar(191) NOT NULL default '',
@@ -116,12 +120,13 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 *
 	 * @return bool
 	 */
-	public function has_active_folders() {
+	public function has_active_folders()
+	{
 		global $wpdb;
 
-		$column = esc_sql( $this->get_primary_key() );
+		$column = esc_sql($this->get_primary_key());
 
-		return (bool) $wpdb->get_var( "SELECT $column FROM $this->table_name WHERE active = 1 LIMIT 1;" ); // WPCS: unprepared SQL ok.
+		return (bool) $wpdb->get_var("SELECT $column FROM $this->table_name WHERE active = 1 LIMIT 1;"); // WPCS: unprepared SQL ok.
 	}
 
 	/**
@@ -134,14 +139,15 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 * @param  string $column_select A column name.
 	 * @return array
 	 */
-	public function get_active_folders_column( $column_select ) {
+	public function get_active_folders_column($column_select)
+	{
 		global $wpdb;
 
-		$column = esc_sql( $column_select );
+		$column = esc_sql($column_select);
 
-		$result = $wpdb->get_col( "SELECT $column FROM $this->table_name WHERE active = 1;" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_col("SELECT $column FROM $this->table_name WHERE active = 1;"); // WPCS: unprepared SQL ok.
 
-		return $this->cast_col( $result, $column_select );
+		return $this->cast_col($result, $column_select);
 	}
 
 	/**
@@ -156,16 +162,17 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 * @param  array  $column_values An array of values.
 	 * @return array
 	 */
-	public function get_active_folders_column_in( $column_select, $column_where, $column_values ) {
+	public function get_active_folders_column_in($column_select, $column_where, $column_values)
+	{
 		global $wpdb;
 
-		$column        = esc_sql( $column_select );
-		$column_where  = esc_sql( $column_where );
-		$column_values = Imagify_DB::prepare_values_list( $column_values );
+		$column        = esc_sql($column_select);
+		$column_where  = esc_sql($column_where);
+		$column_values = Imagify_DB::prepare_values_list($column_values);
 
-		$result = $wpdb->get_col( "SELECT $column FROM $this->table_name WHERE $column_where IN ( $column_values ) AND active = 1;" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_col("SELECT $column FROM $this->table_name WHERE $column_where IN ( $column_values ) AND active = 1;"); // WPCS: unprepared SQL ok.
 
-		return $this->cast_col( $result, $column_select );
+		return $this->cast_col($result, $column_select);
 	}
 
 	/**
@@ -180,16 +187,17 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 * @param  array  $column_values An array of values.
 	 * @return array
 	 */
-	public function get_active_folders_column_not_in( $column_select, $column_where, $column_values ) {
+	public function get_active_folders_column_not_in($column_select, $column_where, $column_values)
+	{
 		global $wpdb;
 
-		$column        = esc_sql( $column_select );
-		$column_where  = esc_sql( $column_where );
-		$column_values = Imagify_DB::prepare_values_list( $column_values );
+		$column        = esc_sql($column_select);
+		$column_where  = esc_sql($column_where);
+		$column_values = Imagify_DB::prepare_values_list($column_values);
 
-		$result = $wpdb->get_col( "SELECT $column FROM $this->table_name WHERE $column_where NOT IN ( $column_values ) AND active = 1;" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_col("SELECT $column FROM $this->table_name WHERE $column_where NOT IN ( $column_values ) AND active = 1;"); // WPCS: unprepared SQL ok.
 
-		return $this->cast_col( $result, $column_select );
+		return $this->cast_col($result, $column_select);
 	}
 
 	/**
@@ -202,13 +210,14 @@ class Imagify_Folders_DB extends Imagify_Abstract_DB {
 	 * @param  string $column_select A column name.
 	 * @return array
 	 */
-	public function get_inactive_folders_column( $column_select ) {
+	public function get_inactive_folders_column($column_select)
+	{
 		global $wpdb;
 
-		$column = esc_sql( $column_select );
+		$column = esc_sql($column_select);
 
-		$result = $wpdb->get_col( "SELECT $column FROM $this->table_name WHERE active != 1;" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_col("SELECT $column FROM $this->table_name WHERE active != 1;"); // WPCS: unprepared SQL ok.
 
-		return $this->cast_col( $result, $column_select );
+		return $this->cast_col($result, $column_select);
 	}
 }

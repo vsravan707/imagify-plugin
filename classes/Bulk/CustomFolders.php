@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Bulk;
 
 use Imagify_Custom_Folders;
@@ -13,7 +14,8 @@ use Imagify_Files_Stats;
  *
  * @since 1.9
  */
-class CustomFolders extends AbstractBulk {
+class CustomFolders extends AbstractBulk
+{
 	/**
 	 * Context "short name".
 	 *
@@ -31,7 +33,8 @@ class CustomFolders extends AbstractBulk {
 	 *
 	 * @return array A list of unoptimized media IDs.
 	 */
-	public function get_unoptimized_media_ids( $optimization_level ) {
+	public function get_unoptimized_media_ids($optimization_level)
+	{
 		$this->set_no_time_limit();
 
 		/**
@@ -43,7 +46,7 @@ class CustomFolders extends AbstractBulk {
 			]
 		);
 
-		if ( ! $folders ) {
+		if (! $folders) {
 			return [];
 		}
 
@@ -55,7 +58,7 @@ class CustomFolders extends AbstractBulk {
 		 * @param array $folders            An array of folders data.
 		 * @param int   $optimization_level The optimization level that will be used for the optimization.
 		 */
-		do_action( 'imagify_bulk_optimize_files_before_get_files', $folders, $optimization_level );
+		do_action('imagify_bulk_optimize_files_before_get_files', $folders, $optimization_level);
 
 		/**
 		 * Get the files from DB, and from the folders.
@@ -67,12 +70,12 @@ class CustomFolders extends AbstractBulk {
 			]
 		);
 
-		if ( ! $files ) {
+		if (! $files) {
 			return [];
 		}
 
-		foreach ( $files as $k => $file ) {
-			$files[ $k ] = $file['file_id'];
+		foreach ($files as $k => $file) {
+			$files[$k] = $file['file_id'];
 		}
 
 		return $files;
@@ -93,29 +96,30 @@ class CustomFolders extends AbstractBulk {
 	 *     }
 	 * }
 	 */
-	public function get_optimized_media_ids_without_format( $format ) {
+	public function get_optimized_media_ids_without_format($format)
+	{
 		global $wpdb;
 
 		$this->set_no_time_limit();
 
 		$files_table   = Imagify_Files_DB::get_instance()->get_table_name();
 		$folders_table = Imagify_Folders_DB::get_instance()->get_table_name();
-		$mime_types    = Imagify_DB::get_mime_types( 'image' );
+		$mime_types    = Imagify_DB::get_mime_types('image');
 		// Remove single quotes and explode string into array.
-		$mime_types_array = explode( ',', str_replace( "'", '', $mime_types ) );
+		$mime_types_array = explode(',', str_replace("'", '', $mime_types));
 
 		// Iterate over array and check if string contains input.
-		foreach ( $mime_types_array as $item ) {
-			if ( strpos( $item, $format ) !== false ) {
+		foreach ($mime_types_array as $item) {
+			if (strpos($item, $format) !== false) {
 				$mime = $item;
 				break;
 			}
 		}
-		if ( ! isset( $mime ) && empty( $mime ) ) {
+		if (! isset($mime) && empty($mime)) {
 			$mime = 'image/webp';
 		}
-		$mime_types     = str_replace( ",'" . $mime . "'", '', $mime_types );
-		$nextgen_suffix = constant( imagify_get_optimization_process_class_name( 'custom-folders' ) . '::' . strtoupper( $format ) . '_SUFFIX' );
+		$mime_types     = str_replace(",'" . $mime . "'", '', $mime_types);
+		$nextgen_suffix = constant(imagify_get_optimization_process_class_name('custom-folders') . '::' . strtoupper($format) . '_SUFFIX');
 		$files          = $wpdb->get_results(
 			$wpdb->prepare( // WPCS: unprepared SQL ok.
 				"
@@ -128,12 +132,12 @@ class CustomFolders extends AbstractBulk {
 				AND ( fi.status = 'success' OR fi.status = 'already_optimized' )
 				AND ( fi.data NOT LIKE %s OR fi.data IS NULL )
 			ORDER BY fi.file_id DESC",
-				'%' . $wpdb->esc_like( $nextgen_suffix . '";a:4:{s:7:"success";b:1;' ) . '%'
+				'%' . $wpdb->esc_like($nextgen_suffix . '";a:4:{s:7:"success";b:1;') . '%'
 			)
 		);
 
 		$wpdb->flush();
-		unset( $mime_types, $files_table, $folders_table, $nextgen_suffix, $mime );
+		unset($mime_types, $files_table, $folders_table, $nextgen_suffix, $mime);
 
 		$data = [
 			'ids'    => [],
@@ -143,23 +147,23 @@ class CustomFolders extends AbstractBulk {
 			],
 		];
 
-		if ( ! $files ) {
+		if (! $files) {
 			return $data;
 		}
 
-		foreach ( $files as $file ) {
-			$file_id = absint( $file->file_id );
+		foreach ($files as $file) {
+			$file_id = absint($file->file_id);
 
-			if ( empty( $file->path ) ) {
+			if (empty($file->path)) {
 				// Problem.
 				$data['errors']['no_file_path'][] = $file_id;
 				continue;
 			}
 
-			$file_path   = Imagify_Files_Scan::remove_placeholder( $file->path );
-			$backup_path = Imagify_Custom_Folders::get_file_backup_path( $file_path );
+			$file_path   = Imagify_Files_Scan::remove_placeholder($file->path);
+			$backup_path = Imagify_Custom_Folders::get_file_backup_path($file_path);
 
-			if ( ! $this->filesystem->exists( $backup_path ) ) {
+			if (! $this->filesystem->exists($backup_path)) {
 				// No backup, no WebP.
 				$data['errors']['no_backup'][] = $file_id;
 				continue;
@@ -185,15 +189,16 @@ class CustomFolders extends AbstractBulk {
 	 *     @type string $original-size   Original filesize.
 	 * }
 	 */
-	public function get_context_data() {
+	public function get_context_data()
+	{
 		$data = [
 			'count-optimized' => Imagify_Files_Stats::count_optimized_files(),
 			'count-errors'    => Imagify_Files_Stats::count_error_files(),
 			'optimized-size'  => Imagify_Files_Stats::get_optimized_size(),
 			'original-size'   => Imagify_Files_Stats::get_original_size(),
-			'errors_url'      => get_imagify_admin_url( 'folder-errors', $this->context ),
+			'errors_url'      => get_imagify_admin_url('folder-errors', $this->context),
 		];
 
-		return $this->format_context_data( $data );
+		return $this->format_context_data($data);
 	}
 }

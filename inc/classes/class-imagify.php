@@ -1,10 +1,12 @@
 <?php
+
 use Imagify\Traits\InstanceGetterTrait;
 
 /**
  * Imagify.io API for WordPress.
  */
-class Imagify {
+class Imagify
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -63,13 +65,14 @@ class Imagify {
 	/**
 	 * The constructor.
 	 */
-	protected function __construct() {
-		if ( ! class_exists( 'Imagify_Filesystem' ) ) {
+	protected function __construct()
+	{
+		if (! class_exists('Imagify_Filesystem')) {
 			// Dirty patch used when updating from 1.7.
 			include_once IMAGIFY_PATH . 'inc/classes/class-imagify-filesystem.php';
 		}
 
-		$this->api_key    = get_imagify_option( 'api_key' );
+		$this->api_key    = get_imagify_option('api_key');
 		$this->secure_key = $this->generate_secure_key();
 		$this->filesystem = Imagify_Filesystem::get_instance();
 
@@ -85,27 +88,28 @@ class Imagify {
 	 *
 	 * @return object
 	 */
-	public function get_user() {
-		if ( empty( $this->api_key ) ) {
-			return new WP_Error( 'api_key_missing', __( 'API key required.', 'imagify' ) );
+	public function get_user()
+	{
+		if (empty($this->api_key)) {
+			return new WP_Error('api_key_missing', __('API key required.', 'imagify'));
 		}
 
 		global $wp_current_filter;
 
-		if ( isset( static::$user ) ) {
+		if (isset(static::$user)) {
 			return static::$user;
 		}
 
-		if ( in_array( 'upgrader_post_install', (array) $wp_current_filter, true ) ) {
+		if (in_array('upgrader_post_install', (array) $wp_current_filter, true)) {
 			// Dirty patch used when updating from 1.7.
 			static::$user = new WP_Error();
 			return static::$user;
 		}
 
 		$this->headers = $this->all_headers;
-		static::$user  = $this->http_call( 'users/me/', [ 'timeout' => 10 ] );
+		static::$user  = $this->http_call('users/me/', ['timeout' => 10]);
 
-		if ( is_wp_error( static::$user ) ) {
+		if (is_wp_error(static::$user)) {
 			return static::$user;
 		}
 
@@ -117,8 +121,8 @@ class Imagify {
 			'consumed_current_month_quota' => 0,
 		];
 
-		foreach ( $maybe_missing as $name => $value ) {
-			if ( ! isset( static::$user->$name ) ) {
+		foreach ($maybe_missing as $name => $value) {
+			if (! isset(static::$user->$name)) {
 				static::$user->$name = $value;
 			}
 		}
@@ -134,7 +138,8 @@ class Imagify {
 	 * @param  array $data All user data.
 	 * @return object
 	 */
-	public function create_user( $data ) {
+	public function create_user($data)
+	{
 		$this->headers = [];
 
 		$data = array_merge(
@@ -145,8 +150,8 @@ class Imagify {
 			]
 		);
 
-		if ( ! $data['partner'] ) {
-			unset( $data['partner'] );
+		if (! $data['partner']) {
+			unset($data['partner']);
 		}
 
 		$response = $this->http_call(
@@ -157,7 +162,7 @@ class Imagify {
 			]
 		);
 
-		if ( ! is_wp_error( $response ) && isset( $data['partner'] ) ) {
+		if (! is_wp_error($response) && isset($data['partner'])) {
 			imagify_delete_partner();
 		}
 
@@ -172,7 +177,8 @@ class Imagify {
 	 * @param  string $data All user data.
 	 * @return object
 	 */
-	public function update_user( $data ) {
+	public function update_user($data)
+	{
 		$this->headers = $this->all_headers;
 
 		return $this->http_call(
@@ -193,11 +199,12 @@ class Imagify {
 	 * @param  string $data The license key.
 	 * @return object
 	 */
-	public function get_status( $data ) {
+	public function get_status($data)
+	{
 		static $status = [];
 
-		if ( isset( $status[ $data ] ) ) {
-			return $status[ $data ];
+		if (isset($status[$data])) {
+			return $status[$data];
 		}
 
 		$this->headers = [
@@ -207,13 +214,13 @@ class Imagify {
 		$uri     = 'status/';
 		$partner = imagify_get_partner();
 
-		if ( $partner ) {
+		if ($partner) {
 			$uri .= '?partner=' . $partner;
 		}
 
-		$status[ $data ] = $this->http_call( $uri, [ 'timeout' => 10 ] );
+		$status[$data] = $this->http_call($uri, ['timeout' => 10]);
 
-		return $status[ $data ];
+		return $status[$data];
 	}
 
 	/**
@@ -223,15 +230,16 @@ class Imagify {
 	 *
 	 * @return object
 	 */
-	public function get_api_version() {
+	public function get_api_version()
+	{
 		static $api_version;
 
-		if ( ! isset( $api_version ) ) {
+		if (! isset($api_version)) {
 			$this->headers = [
 				'Authorization' => $this->all_headers['Authorization'],
 			];
 
-			$api_version = $this->http_call( 'version/', [ 'timeout' => 5 ] );
+			$api_version = $this->http_call('version/', ['timeout' => 5]);
 		}
 
 		return $api_version;
@@ -244,10 +252,11 @@ class Imagify {
 	 *
 	 * @return object
 	 */
-	public function get_public_info() {
+	public function get_public_info()
+	{
 		$this->headers = $this->all_headers;
 
-		return $this->http_call( 'public-info' );
+		return $this->http_call('public-info');
 	}
 
 	/**
@@ -259,7 +268,8 @@ class Imagify {
 	 * @param  string $data All options.
 	 * @return object
 	 */
-	public function upload_image( $data ) {
+	public function upload_image($data)
+	{
 		$this->headers = [
 			'Authorization' => $this->all_headers['Authorization'],
 		];
@@ -281,14 +291,15 @@ class Imagify {
 	 * @param  string $data All options. Details here: --.
 	 * @return object
 	 */
-	public function fetch_image( $data ) {
+	public function fetch_image($data)
+	{
 		$this->headers = $this->all_headers;
 
 		return $this->http_call(
 			'fetch/',
 			[
 				'method'    => 'POST',
-				'post_data' => wp_json_encode( $data ),
+				'post_data' => wp_json_encode($data),
 			]
 		);
 	}
@@ -300,10 +311,11 @@ class Imagify {
 	 *
 	 * @return object
 	 */
-	public function get_plans_prices() {
+	public function get_plans_prices()
+	{
 		$this->headers = $this->all_headers;
 
-		return $this->http_call( 'pricing/plan/' );
+		return $this->http_call('pricing/plan/');
 	}
 
 	/**
@@ -313,10 +325,11 @@ class Imagify {
 	 *
 	 * @return object
 	 */
-	public function get_all_prices() {
+	public function get_all_prices()
+	{
 		$this->headers = $this->all_headers;
 
-		return $this->http_call( 'pricing/all/' );
+		return $this->http_call('pricing/all/');
 	}
 
 	/**
@@ -327,10 +340,11 @@ class Imagify {
 	 * @param  string $coupon A coupon code.
 	 * @return object
 	 */
-	public function check_coupon_code( $coupon ) {
+	public function check_coupon_code($coupon)
+	{
 		$this->headers = $this->all_headers;
 
-		return $this->http_call( 'coupons/' . $coupon . '/' );
+		return $this->http_call('coupons/' . $coupon . '/');
 	}
 
 	/**
@@ -340,10 +354,11 @@ class Imagify {
 	 *
 	 * @return object
 	 */
-	public function check_discount() {
+	public function check_discount()
+	{
 		$this->headers = $this->all_headers;
 
-		return $this->http_call( 'pricing/discount/' );
+		return $this->http_call('pricing/discount/');
 	}
 
 	/**
@@ -356,7 +371,8 @@ class Imagify {
 	 * @param  array  $args The request args.
 	 * @return object
 	 */
-	private function http_call( $url, $args = [] ) {
+	private function http_call($url, $args = [])
+	{
 		$args = array_merge(
 			[
 				'method'    => 'GET',
@@ -366,7 +382,7 @@ class Imagify {
 			$args
 		);
 
-		$endpoint = trim( $url, '/' );
+		$endpoint = trim($url, '/');
 		/**
 		 * Filter the timeout value for any request to the API.
 		 *
@@ -376,52 +392,52 @@ class Imagify {
 		 * @param int    $timeout  Timeout value in seconds.
 		 * @param string $endpoint The targetted endpoint. It's basically URI without heading nor trailing slash.
 		 */
-		$args['timeout'] = apply_filters( 'imagify_api_http_request_timeout', $args['timeout'], $endpoint );
+		$args['timeout'] = apply_filters('imagify_api_http_request_timeout', $args['timeout'], $endpoint);
 
 		// We need to send an image: we must use cURL directly.
-		if ( isset( $args['post_data']['image'] ) ) {
-			return $this->curl_http_call( $url, $args );
+		if (isset($args['post_data']['image'])) {
+			return $this->curl_http_call($url, $args);
 		}
 
 		$args = array_merge(
 			[
 				'headers'   => [],
 				'body'      => $args['post_data'],
-				'sslverify' => apply_filters( 'https_ssl_verify', false ),
+				'sslverify' => apply_filters('https_ssl_verify', false),
 			],
 			$args
 		);
 
-		unset( $args['post_data'] );
+		unset($args['post_data']);
 
-		if ( $this->headers ) {
-			foreach ( $this->headers as $name => $value ) {
-				$value = explode( ':', $value, 2 );
-				$value = end( $value );
+		if ($this->headers) {
+			foreach ($this->headers as $name => $value) {
+				$value = explode(':', $value, 2);
+				$value = end($value);
 
-				$args['headers'][ $name ] = trim( $value );
+				$args['headers'][$name] = trim($value);
 			}
 		}
 
-		if ( ! empty( $args['headers']['Authorization'] ) ) {
+		if (! empty($args['headers']['Authorization'])) {
 			// Make sure our API has not overwritten by some other plugin.
-			$args[ $this->secure_key ] = preg_replace( '/^token /', '', $args['headers']['Authorization'] );
+			$args[$this->secure_key] = preg_replace('/^token /', '', $args['headers']['Authorization']);
 
-			if ( ! has_filter( 'http_request_args', [ $this, 'force_api_key_header' ] ) ) {
-				add_filter( 'http_request_args', [ $this, 'force_api_key_header' ], IMAGIFY_INT_MAX + 25, 2 );
+			if (! has_filter('http_request_args', [$this, 'force_api_key_header'])) {
+				add_filter('http_request_args', [$this, 'force_api_key_header'], IMAGIFY_INT_MAX + 25, 2);
 			}
 		}
 
-		$response = wp_remote_request( self::API_ENDPOINT . $url, $args );
+		$response = wp_remote_request(self::API_ENDPOINT . $url, $args);
 
-		if ( is_wp_error( $response ) ) {
+		if (is_wp_error($response)) {
 			return $response;
 		}
 
-		$http_code = wp_remote_retrieve_response_code( $response );
-		$response  = wp_remote_retrieve_body( $response );
+		$http_code = wp_remote_retrieve_response_code($response);
+		$response  = wp_remote_retrieve_body($response);
 
-		return $this->handle_response( $response, $http_code );
+		return $this->handle_response($response, $http_code);
 	}
 
 	/**
@@ -435,10 +451,11 @@ class Imagify {
 	 * @param  array  $args The request arguments.
 	 * @return object
 	 */
-	private function curl_http_call( $url, $args = [] ) {
+	private function curl_http_call($url, $args = [])
+	{
 		// Check if curl is available.
-		if ( ! Imagify_Requirements::supports_curl() ) {
-			return new WP_Error( 'curl', 'cURL isn\'t installed on the server.' );
+		if (! Imagify_Requirements::supports_curl()) {
+			return new WP_Error('curl', 'cURL isn\'t installed on the server.');
 		}
 
 		/**
@@ -448,9 +465,9 @@ class Imagify {
 		 * @param string $url URL from the call.
 		 * @param array $args Arguments from the call.
 		 */
-		$response = apply_filters( 'pre_imagify_request', null, $url, $args );
+		$response = apply_filters('pre_imagify_request', null, $url, $args);
 
-		if ( $response ) {
+		if ($response) {
 			return $response;
 		}
 
@@ -458,52 +475,52 @@ class Imagify {
 			$url = self::API_ENDPOINT . $url;
 			$ch  = curl_init(); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
 
-			if ( false === $ch ) {
-				throw new Exception( 'Could not initialize a new cURL handle' );
+			if (false === $ch) {
+				throw new Exception('Could not initialize a new cURL handle');
 			}
 
-			if ( isset( $args['post_data']['image'] ) && is_string( $args['post_data']['image'] ) && $this->filesystem->exists( $args['post_data']['image'] ) ) {
-				$args['post_data']['image'] = curl_file_create( $args['post_data']['image'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_file_create
+			if (isset($args['post_data']['image']) && is_string($args['post_data']['image']) && $this->filesystem->exists($args['post_data']['image'])) {
+				$args['post_data']['image'] = curl_file_create($args['post_data']['image']); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_file_create
 			}
 
 			// Handle proxies.
 			$proxy = new WP_HTTP_Proxy();
 
-			if ( $proxy->is_enabled() && $proxy->send_through_proxy( $url ) ) {
-				curl_setopt( $ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-				curl_setopt( $ch, CURLOPT_PROXY, $proxy->host() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-				curl_setopt( $ch, CURLOPT_PROXYPORT, $proxy->port() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			if ($proxy->is_enabled() && $proxy->send_through_proxy($url)) {
+				curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+				curl_setopt($ch, CURLOPT_PROXY, $proxy->host()); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+				curl_setopt($ch, CURLOPT_PROXYPORT, $proxy->port()); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 
-				if ( $proxy->use_authentication() ) {
-					curl_setopt( $ch, CURLOPT_PROXYAUTH, CURLAUTH_ANY ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-					curl_setopt( $ch, CURLOPT_PROXYUSERPWD, $proxy->authentication() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+				if ($proxy->use_authentication()) {
+					curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_ANY); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+					curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy->authentication()); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 				}
 			}
 
-			if ( 'POST' === $args['method'] ) {
-				curl_setopt( $ch, CURLOPT_POST, true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-				curl_setopt( $ch, CURLOPT_POSTFIELDS, $args['post_data'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			} elseif ( 'PUT' === $args['method'] ) {
-				curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'PUT' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-				curl_setopt( $ch, CURLOPT_POSTFIELDS, $args['post_data'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			if ('POST' === $args['method']) {
+				curl_setopt($ch, CURLOPT_POST, true); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $args['post_data']); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			} elseif ('PUT' === $args['method']) {
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT'); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $args['post_data']); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 			}
 
-			if ( defined( 'CURLOPT_PROTOCOLS' ) ) {
-				curl_setopt( $ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			if (defined('CURLOPT_PROTOCOLS')) {
+				curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 			}
 
-			$user_agent = apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ), $url );
+			$user_agent = apply_filters('http_headers_useragent', 'WordPress/' . get_bloginfo('version') . '; ' . get_bloginfo('url'), $url);
 
-			curl_setopt( $ch, CURLOPT_URL, $url ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_HEADER, false ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_HTTPHEADER, $this->headers ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_TIMEOUT, $args['timeout'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $args['timeout'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_USERAGENT, $user_agent ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			@curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, false ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, false ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
-			curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_URL, $url); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_HEADER, false); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_TIMEOUT, $args['timeout']); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $args['timeout']); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_USERAGENT, $user_agent); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 
 			/**
 			 * Tell which http version to use with cURL during image optimization.
@@ -514,22 +531,22 @@ class Imagify {
 			 *
 			 * @param $use_version_1_0 bool True to use version 1.0. False for 1.1. Default is false.
 			 */
-			if ( apply_filters( 'imagify_curl_http_version_1_0', false ) ) {
-				curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+			if (apply_filters('imagify_curl_http_version_1_0', false)) {
+				curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 			} else {
-				curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
+				curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 			}
 
-			$response  = curl_exec( $ch ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
-			$error     = curl_error( $ch ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
-			$http_code = (int) curl_getinfo( $ch, CURLINFO_HTTP_CODE ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+			$response  = curl_exec($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
+			$error     = curl_error($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+			$http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
 
-			if ( is_resource( $ch ) ) {
-				curl_close( $ch ); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
+			if (is_resource($ch)) {
+				curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 			} else {
-				unset( $ch );
+				unset($ch);
 			}
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			$args['headers'] = $this->headers;
 			/**
 			 * Fires after a failed curl request.
@@ -541,9 +558,9 @@ class Imagify {
 			 * @param array  $args The request arguments.
 			 * @param object $e    The raised Exception.
 			 */
-			do_action( 'imagify_curl_http_response', $url, $args, $e );
+			do_action('imagify_curl_http_response', $url, $args, $e);
 
-			return new WP_Error( 'curl', 'An error occurred (' . $e->getMessage() . ')' );
+			return new WP_Error('curl', 'An error occurred (' . $e->getMessage() . ')');
 		}
 
 		$args['headers'] = $this->headers;
@@ -560,9 +577,9 @@ class Imagify {
 		 * @param int    $http_code The request HTTP code.
 		 * @param string $error     An error message.
 		 */
-		do_action( 'imagify_curl_http_response', $url, $args, $response, $http_code, $error );
+		do_action('imagify_curl_http_response', $url, $args, $response, $http_code, $error);
 
-		return $this->handle_response( $response, $http_code, $error );
+		return $this->handle_response($response, $http_code, $error);
 	}
 
 	/**
@@ -576,37 +593,38 @@ class Imagify {
 	 * @param  string $error     An error message.
 	 * @return object
 	 */
-	private function handle_response( $response, $http_code, $error = '' ) {
-		$response = json_decode( $response );
+	private function handle_response($response, $http_code, $error = '')
+	{
+		$response = json_decode($response);
 
-		if ( 401 === $http_code ) {
+		if (401 === $http_code) {
 			// Reset the API validity cache if the API key is not valid.
-			Imagify_Requirements::reset_cache( 'api_key_valid' );
+			Imagify_Requirements::reset_cache('api_key_valid');
 		}
 
-		if ( 200 !== $http_code && ! empty( $response->code ) ) {
-			if ( ! empty( $response->detail ) ) {
-				return new WP_Error( 'error ' . $http_code, $response->detail );
+		if (200 !== $http_code && ! empty($response->code)) {
+			if (! empty($response->detail)) {
+				return new WP_Error('error ' . $http_code, $response->detail);
 			}
-			if ( ! empty( $response->image ) ) {
+			if (! empty($response->image)) {
 				$error = (array) $response->image;
-				$error = reset( $error );
-				return new WP_Error( 'error ' . $http_code, $error );
+				$error = reset($error);
+				return new WP_Error('error ' . $http_code, $error);
 			}
 		}
 
-		if ( 413 === $http_code ) {
-			return new WP_Error( 'error ' . $http_code, 'Your image is too big to be uploaded on our server.' );
+		if (413 === $http_code) {
+			return new WP_Error('error ' . $http_code, 'Your image is too big to be uploaded on our server.');
 		}
 
-		if ( 200 !== $http_code ) {
-			$error = trim( (string) $error );
-			$error = '' !== $error ? ' - ' . htmlentities( $error ) : '';
-			return new WP_Error( 'error ' . $http_code, "Our server returned an error ({$http_code}{$error})" );
+		if (200 !== $http_code) {
+			$error = trim((string) $error);
+			$error = '' !== $error ? ' - ' . htmlentities($error) : '';
+			return new WP_Error('error ' . $http_code, "Our server returned an error ({$http_code}{$error})");
 		}
 
-		if ( ! is_object( $response ) ) {
-			return new WP_Error( 'invalid response', 'Our server returned an invalid response.', $response );
+		if (! is_object($response)) {
+			return new WP_Error('invalid response', 'Our server returned an invalid response.', $response);
 		}
 
 		return $response;
@@ -622,13 +640,14 @@ class Imagify {
 	 *
 	 * @return string
 	 */
-	private function generate_secure_key() {
-		$length   = wp_rand( 12, 20 );
+	private function generate_secure_key()
+	{
+		$length   = wp_rand(12, 20);
 		$chars    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|';
 		$password = '';
 
-		for ( $i = 0; $i < $length; $i++ ) {
-			$password .= substr( $chars, wp_rand( 0, strlen( $chars ) - 1 ), 1 );
+		for ($i = 0; $i < $length; $i++) {
+			$password .= substr($chars, wp_rand(0, strlen($chars) - 1), 1);
 		}
 
 		return $password;
@@ -644,14 +663,15 @@ class Imagify {
 	 * @param  string $url  The request URL.
 	 * @return array
 	 */
-	public function force_api_key_header( $args, $url ) {
-		if ( strpos( $url, self::API_ENDPOINT ) === false ) {
+	public function force_api_key_header($args, $url)
+	{
+		if (strpos($url, self::API_ENDPOINT) === false) {
 			return $args;
 		}
 
-		if ( ! empty( $args['headers']['Authorization'] ) || ! empty( $args[ $this->secure_key ] ) ) {
-			if ( ! empty( $args[ $this->secure_key ] ) ) {
-				$args['headers']['Authorization'] = 'token ' . $args[ $this->secure_key ];
+		if (! empty($args['headers']['Authorization']) || ! empty($args[$this->secure_key])) {
+			if (! empty($args[$this->secure_key])) {
+				$args['headers']['Authorization'] = 'token ' . $args[$this->secure_key];
 			} else {
 				$args['headers']['Authorization'] = 'token ' . $this->api_key;
 			}

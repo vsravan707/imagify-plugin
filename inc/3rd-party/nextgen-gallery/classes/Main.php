@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -9,7 +10,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.5
  * @author Jonathan Buttigieg
  */
-class Main {
+class Main
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -26,19 +28,20 @@ class Main {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function init() {
+	public function init()
+	{
 		static $done = false;
 
-		if ( $done ) {
+		if ($done) {
 			return;
 		}
 		$done = true;
 
-		add_filter( 'imagify_register_context', [ $this, 'register_context' ] );
-		add_filter( 'imagify_context_class_name', [ $this, 'add_context_class_name' ], 10, 2 );
-		add_filter( 'imagify_process_class_name', [ $this, 'add_process_class_name' ], 10, 2 );
-		add_filter( 'imagify_bulk_class_name', [ $this, 'add_bulk_class_name' ], 10, 2 );
-		add_action( 'init', [ $this, 'add_mixin' ] );
+		add_filter('imagify_register_context', [$this, 'register_context']);
+		add_filter('imagify_context_class_name', [$this, 'add_context_class_name'], 10, 2);
+		add_filter('imagify_process_class_name', [$this, 'add_process_class_name'], 10, 2);
+		add_filter('imagify_bulk_class_name', [$this, 'add_bulk_class_name'], 10, 2);
+		add_action('init', [$this, 'add_mixin']);
 	}
 
 	/**
@@ -51,7 +54,8 @@ class Main {
 	 * @param  array $contexts An array of context names.
 	 * @return array
 	 */
-	public function register_context( $contexts ) {
+	public function register_context($contexts)
+	{
 		$contexts[] = 'ngg';
 		return $contexts;
 	}
@@ -67,8 +71,9 @@ class Main {
 	 * @param  string $context    The context name.
 	 * @return string
 	 */
-	public function add_context_class_name( $class_name, $context ) {
-		if ( 'ngg' === $context ) {
+	public function add_context_class_name($class_name, $context)
+	{
+		if ('ngg' === $context) {
 			return '\\Imagify\\ThirdParty\\NGG\\Context\\NGG';
 		}
 
@@ -86,8 +91,9 @@ class Main {
 	 * @param  string $context    The context name.
 	 * @return string
 	 */
-	public function add_process_class_name( $class_name, $context ) {
-		if ( 'ngg' === $context ) {
+	public function add_process_class_name($class_name, $context)
+	{
+		if ('ngg' === $context) {
 			return '\\Imagify\\ThirdParty\\NGG\\Optimization\\Process\\NGG';
 		}
 
@@ -105,8 +111,9 @@ class Main {
 	 * @param  string $context    The context name.
 	 * @return string
 	 */
-	public function add_bulk_class_name( $class_name, $context ) {
-		if ( 'ngg' === $context ) {
+	public function add_bulk_class_name($class_name, $context)
+	{
+		if ('ngg' === $context) {
 			return '\\Imagify\\ThirdParty\\NGG\\Bulk\\NGG';
 		}
 
@@ -120,7 +127,8 @@ class Main {
 	 * @access public
 	 * @author Jonathan Buttigieg
 	 */
-	public function add_mixin() {
-		\C_Gallery_Storage::get_instance()->get_wrapped_instance()->add_mixin( '\\Imagify\\ThirdParty\\NGG\\NGGStorage' );
+	public function add_mixin()
+	{
+		\C_Gallery_Storage::get_instance()->get_wrapped_instance()->add_mixin('\\Imagify\\ThirdParty\\NGG\\NGGStorage');
 	}
 }

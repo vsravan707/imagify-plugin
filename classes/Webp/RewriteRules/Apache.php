@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Webp\RewriteRules;
@@ -10,7 +11,8 @@ use Imagify\WriteFile\AbstractApacheDirConfFile;
  *
  * @since 1.9
  */
-class Apache extends AbstractApacheDirConfFile {
+class Apache extends AbstractApacheDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delemiter.
@@ -28,10 +30,11 @@ class Apache extends AbstractApacheDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		$extensions = $this->get_extensions_pattern();
-		$extensions = str_replace( '|webp', '', $extensions );
-		$home_root  = wp_parse_url( home_url( '/' ) );
+		$extensions = str_replace('|webp', '', $extensions);
+		$home_root  = wp_parse_url(home_url('/'));
 		$home_root  = $home_root['path'];
 
 		return trim(

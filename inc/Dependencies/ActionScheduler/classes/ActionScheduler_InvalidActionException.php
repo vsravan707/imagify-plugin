@@ -7,7 +7,8 @@
  *
  * @package ActionScheduler
  */
-class ActionScheduler_InvalidActionException extends \InvalidArgumentException implements ActionScheduler_Exception {
+class ActionScheduler_InvalidActionException extends \InvalidArgumentException implements ActionScheduler_Exception
+{
 
 	/**
 	 * Create a new exception when the action's schedule cannot be fetched.
@@ -16,15 +17,16 @@ class ActionScheduler_InvalidActionException extends \InvalidArgumentException i
 	 * @param mixed  $schedule  Passed schedule.
 	 * @return static
 	 */
-	public static function from_schedule( $action_id, $schedule ) {
+	public static function from_schedule($action_id, $schedule)
+	{
 		$message = sprintf(
 			/* translators: 1: action ID 2: schedule */
-			__( 'Action [%1$s] has an invalid schedule: %2$s', 'action-scheduler' ),
+			__('Action [%1$s] has an invalid schedule: %2$s', 'action-scheduler'),
 			$action_id,
-			var_export( $schedule, true ) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+			var_export($schedule, true) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
 		);
 
-		return new static( $message );
+		return new static($message);
 	}
 
 	/**
@@ -34,14 +36,15 @@ class ActionScheduler_InvalidActionException extends \InvalidArgumentException i
 	 * @param mixed  $args      Passed arguments.
 	 * @return static
 	 */
-	public static function from_decoding_args( $action_id, $args = array() ) {
+	public static function from_decoding_args($action_id, $args = array())
+	{
 		$message = sprintf(
 			/* translators: 1: action ID 2: arguments */
-			__( 'Action [%1$s] has invalid arguments. It cannot be JSON decoded to an array. $args = %2$s', 'action-scheduler' ),
+			__('Action [%1$s] has invalid arguments. It cannot be JSON decoded to an array. $args = %2$s', 'action-scheduler'),
 			$action_id,
-			var_export( $args, true ) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+			var_export($args, true) // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
 		);
 
-		return new static( $message );
+		return new static($message);
 	}
 }

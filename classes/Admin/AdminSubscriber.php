@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Admin;
@@ -9,7 +10,8 @@ use Imagify\User\User;
 /**
  * Admin Subscriber
  */
-class AdminSubscriber implements SubscriberInterface {
+class AdminSubscriber implements SubscriberInterface
+{
 
 	/**
 	 * User instance.
@@ -23,7 +25,8 @@ class AdminSubscriber implements SubscriberInterface {
 	 *
 	 * @param User $user User instance.
 	 */
-	public function __construct( User $user ) {
+	public function __construct(User $user)
+	{
 		$this->user = $user;
 	}
 
@@ -32,8 +35,9 @@ class AdminSubscriber implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events() {
-		$basename = plugin_basename( IMAGIFY_FILE );
+	public static function get_subscribed_events()
+	{
+		$basename = plugin_basename(IMAGIFY_FILE);
 
 		return [
 			// @filter
@@ -51,16 +55,17 @@ class AdminSubscriber implements SubscriberInterface {
 	 * @param  array $actions An array of action links.
 	 * @return array
 	 */
-	public function plugin_action_links( $actions ) {
-		$text  = 1 !== $this->user->get_plan_id() ? __( 'Documentation', 'imagify' ) : __( 'Upgrade', 'imagify' );
-		$url   = 1 !== $this->user->get_plan_id() ? 'documentation' : 'subscription';
-		$class = 1 !== $this->user->get_plan_id() ? '' : ' class="imagify-plugin-upgrade"';
+	public function plugin_action_links($actions)
+	{
+		$text  = __('Documentation', 'imagify');
+		$url   = 'documentation';
+		$class = '';
 
 		array_unshift(
 			$actions,
 			sprintf(
 				'<a href="%s" target="_blank"%s>%s</a>',
-				esc_url( imagify_get_external_url( $url ) ),
+				esc_url(imagify_get_external_url($url)),
 				$class,
 				$text
 			)
@@ -70,8 +75,8 @@ class AdminSubscriber implements SubscriberInterface {
 			$actions,
 			sprintf(
 				'<a href="%s">%s</a>',
-				esc_url( get_imagify_admin_url( 'bulk-optimization' ) ),
-				__( 'Bulk Optimization', 'imagify' )
+				esc_url(get_imagify_admin_url('bulk-optimization')),
+				__('Bulk Optimization', 'imagify')
 			)
 		);
 
@@ -79,8 +84,8 @@ class AdminSubscriber implements SubscriberInterface {
 			$actions,
 			sprintf(
 				'<a href="%s">%s</a>',
-				esc_url( get_imagify_admin_url() ),
-				__( 'Settings', 'imagify' )
+				esc_url(get_imagify_admin_url()),
+				__('Settings', 'imagify')
 			)
 		);
 

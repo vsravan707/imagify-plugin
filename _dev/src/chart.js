@@ -1,4 +1,4 @@
-import * as chart from 'chart.js/auto'
+import * as chart from "chart.js/auto";
 
 window.imagify = window.imagify || {};
 

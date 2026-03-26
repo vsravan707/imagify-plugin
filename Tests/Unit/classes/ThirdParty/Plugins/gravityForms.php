@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-namespace ThirdParty\Plugins ;
+namespace ThirdParty\Plugins;
 
 use Imagify\Tests\Unit\TestCase;
 use Imagify\ThirdParty\Plugins\GravityForms;
@@ -17,30 +18,32 @@ use Brain\Monkey\Functions;
  *
  * @group  ThirdParty
  */
-class Test_GravityForms extends TestCase{
+class Test_GravityForms extends TestCase
+{
 
 	/**
 	 * @dataProvider configTestData
 	 */
-	public function testShouldReturnAsExpected( $config, $expected ) {
-		Functions\when( 'is_plugin_active' )->justReturn( $config[ 'is_plugin_active' ] );
-		Functions\when( 'get_option' )->justReturn( $config[ 'is_plugin_active' ] );
+	public function testShouldReturnAsExpected($config, $expected)
+	{
+		Functions\when('is_plugin_active')->justReturn($config['is_plugin_active']);
+		Functions\when('get_option')->justReturn($config['is_plugin_active']);
 
 		$gf_forms = Mockery::mock('overload:' . GFForms::class);
-		$gf_forms->expects()->is_gravity_page()->andReturn( $config[ 'is_plugin_active' ] );
+		$gf_forms->expects()->is_gravity_page()->andReturn($config['is_plugin_active']);
 
 		$gravity_forms = new GravityForms();
 
-		$styles = apply_filters( 'gform_noconflict_styles', [] ); // @phpstan-ignore-line
-		$styles = $gravity_forms->imagify_gf_noconflict_styles( $styles );
-		foreach ( $expected['styles'] as $style ) {
-			$this->assertContains( $style, $styles );
+		$styles = apply_filters('gform_noconflict_styles', []); // @phpstan-ignore-line
+		$styles = $gravity_forms->imagify_gf_noconflict_styles($styles);
+		foreach ($expected['styles'] as $style) {
+			$this->assertContains($style, $styles);
 		}
 
-		$scripts = apply_filters( 'gform_noconflict_scripts', [] ); // @phpstan-ignore-line
-		$scripts = $gravity_forms->imagify_gf_noconflict_scripts( $scripts );
-		foreach ( $expected['scripts'] as $script ) {
-			$this->assertContains( $script, $scripts);
+		$scripts = apply_filters('gform_noconflict_scripts', []); // @phpstan-ignore-line
+		$scripts = $gravity_forms->imagify_gf_noconflict_scripts($scripts);
+		foreach ($expected['scripts'] as $script) {
+			$this->assertContains($script, $scripts);
 		}
 	}
 }

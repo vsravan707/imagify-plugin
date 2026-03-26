@@ -6,7 +6,8 @@
  * @since  1.5
  * @source https://gist.github.com/pippinsplugins/e220a7f0f0f2fbe64608
  */
-abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implements \Imagify\DB\DBInterface {
+abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implements \Imagify\DB\DBInterface
+{
 	/**
 	 * Class version.
 	 *
@@ -94,14 +95,15 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @since  1.5
 	 * @access protected
 	 */
-	protected function __construct() {
+	protected function __construct()
+	{
 		global $wpdb;
 
 		$prefix = $this->table_is_global ? $wpdb->base_prefix : $wpdb->prefix;
 
 		$this->table_name = $prefix . $this->table;
 
-		if ( ! $this->table_is_up_to_date() ) {
+		if (! $this->table_is_up_to_date()) {
 			/**
 			 * The option doesn't exist or is not up-to-date: we must upgrade the table before declaring it ready.
 			 * See self::maybe_upgrade_table() for the upgrade.
@@ -120,8 +122,9 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function init() {
-		add_action( 'admin_init', [ $this, 'maybe_upgrade_table' ] );
+	public function init()
+	{
+		add_action('admin_init', [$this, 'maybe_upgrade_table']);
 	}
 
 	/**
@@ -133,7 +136,8 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return bool
 	 */
-	public function can_operate() {
+	public function can_operate()
+	{
 		return $this->table_created;
 	}
 
@@ -187,12 +191,13 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return bool True if the table contains at least one row.
 	 */
-	public function has_items() {
+	public function has_items()
+	{
 		global $wpdb;
 
-		$column = esc_sql( $this->primary_key );
+		$column = esc_sql($this->primary_key);
 
-		return (bool) $wpdb->get_var( "SELECT $column FROM $this->table_name LIMIT 1;" ); // WPCS: unprepared SQL ok.
+		return (bool) $wpdb->get_var("SELECT $column FROM $this->table_name LIMIT 1;"); // WPCS: unprepared SQL ok.
 	}
 
 	/**
@@ -204,12 +209,13 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $row_id A primary key.
 	 * @return array
 	 */
-	public function get( $row_id ) {
-		if ( $row_id <= 0 ) {
+	public function get($row_id)
+	{
+		if ($row_id <= 0) {
 			return [];
 		}
 
-		return $this->get_by( $this->primary_key, $row_id );
+		return $this->get_by($this->primary_key, $row_id);
 	}
 
 	/**
@@ -222,15 +228,16 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  mixed  $column_value A value.
 	 * @return array
 	 */
-	public function get_by( $column_where, $column_value ) {
+	public function get_by($column_where, $column_value)
+	{
 		global $wpdb;
 
-		$placeholder  = $this->get_placeholder( $column_where );
-		$column_where = esc_sql( $column_where );
+		$placeholder  = $this->get_placeholder($column_where);
+		$column_where = esc_sql($column_where);
 
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $this->table_name WHERE $column_where = $placeholder LIMIT 1;", $column_value ), ARRAY_A ); // WPCS: unprepared SQL ok, PreparedSQLPlaceholders replacement count ok.
+		$result = $wpdb->get_row($wpdb->prepare("SELECT * FROM $this->table_name WHERE $column_where = $placeholder LIMIT 1;", $column_value), ARRAY_A); // WPCS: unprepared SQL ok, PreparedSQLPlaceholders replacement count ok.
 
-		return (array) $this->cast_row( $result );
+		return (array) $this->cast_row($result);
 	}
 
 	/**
@@ -244,15 +251,16 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array  $column_values An array of values.
 	 * @return array
 	 */
-	public function get_in( $column_where, $column_values ) {
+	public function get_in($column_where, $column_values)
+	{
 		global $wpdb;
 
-		$column_where  = esc_sql( $column_where );
-		$column_values = Imagify_DB::prepare_values_list( $column_values );
+		$column_where  = esc_sql($column_where);
+		$column_values = Imagify_DB::prepare_values_list($column_values);
 
-		$result = $wpdb->get_row( "SELECT * FROM $this->table_name WHERE $column_where IN ( $column_values ) LIMIT 1;", ARRAY_A ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_row("SELECT * FROM $this->table_name WHERE $column_where IN ( $column_values ) LIMIT 1;", ARRAY_A); // WPCS: unprepared SQL ok.
 
-		return (array) $this->cast_row( $result );
+		return (array) $this->cast_row($result);
 	}
 
 	/**
@@ -267,12 +275,13 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $row_id        A primary key.
 	 * @return mixed
 	 */
-	public function get_var( $column_select, $row_id ) {
-		if ( $row_id <= 0 ) {
+	public function get_var($column_select, $row_id)
+	{
+		if ($row_id <= 0) {
 			return false;
 		}
 
-		return $this->get_var_by( $column_select, $this->primary_key, $row_id );
+		return $this->get_var_by($column_select, $this->primary_key, $row_id);
 	}
 
 	/**
@@ -288,16 +297,17 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $column_value  A value.
 	 * @return mixed
 	 */
-	public function get_var_by( $column_select, $column_where, $column_value ) {
+	public function get_var_by($column_select, $column_where, $column_value)
+	{
 		global $wpdb;
 
-		$placeholder  = $this->get_placeholder( $column_where );
-		$column       = esc_sql( $column_select );
-		$column_where = esc_sql( $column_where );
+		$placeholder  = $this->get_placeholder($column_where);
+		$column       = esc_sql($column_select);
+		$column_where = esc_sql($column_where);
 
-		$result = $wpdb->get_var( $wpdb->prepare( "SELECT $column FROM $this->table_name WHERE $column_where = $placeholder LIMIT 1;", $column_value ) ); // WPCS: unprepared SQL ok, PreparedSQLPlaceholders replacement count ok.
+		$result = $wpdb->get_var($wpdb->prepare("SELECT $column FROM $this->table_name WHERE $column_where = $placeholder LIMIT 1;", $column_value)); // WPCS: unprepared SQL ok, PreparedSQLPlaceholders replacement count ok.
 
-		return $this->cast( $result, $column_select );
+		return $this->cast($result, $column_select);
 	}
 
 	/**
@@ -313,16 +323,17 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array  $column_values An array of values.
 	 * @return mixed
 	 */
-	public function get_var_in( $column_select, $column_where, $column_values ) {
+	public function get_var_in($column_select, $column_where, $column_values)
+	{
 		global $wpdb;
 
-		$column        = esc_sql( $column_select );
-		$column_where  = esc_sql( $column_where );
-		$column_values = Imagify_DB::prepare_values_list( $column_values );
+		$column        = esc_sql($column_select);
+		$column_where  = esc_sql($column_where);
+		$column_values = Imagify_DB::prepare_values_list($column_values);
 
-		$result = $wpdb->get_var( "SELECT $column FROM $this->table_name WHERE $column_where IN ( $column_values ) LIMIT 1;" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_var("SELECT $column FROM $this->table_name WHERE $column_where IN ( $column_values ) LIMIT 1;"); // WPCS: unprepared SQL ok.
 
-		return $this->cast( $result, $column_select );
+		return $this->cast($result, $column_select);
 	}
 
 	/**
@@ -337,16 +348,17 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array  $column_values An array of values.
 	 * @return array
 	 */
-	public function get_column_in( $column_select, $column_where, $column_values ) {
+	public function get_column_in($column_select, $column_where, $column_values)
+	{
 		global $wpdb;
 
-		$column        = esc_sql( $column_select );
-		$column_where  = esc_sql( $column_where );
-		$column_values = Imagify_DB::prepare_values_list( $column_values );
+		$column        = esc_sql($column_select);
+		$column_where  = esc_sql($column_where);
+		$column_values = Imagify_DB::prepare_values_list($column_values);
 
-		$result = $wpdb->get_col( "SELECT $column FROM $this->table_name WHERE $column_where IN ( $column_values );" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_col("SELECT $column FROM $this->table_name WHERE $column_where IN ( $column_values );"); // WPCS: unprepared SQL ok.
 
-		return $this->cast_col( $result, $column_select );
+		return $this->cast_col($result, $column_select);
 	}
 
 	/**
@@ -361,16 +373,17 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array  $column_values An array of values.
 	 * @return array
 	 */
-	public function get_column_not_in( $column_select, $column_where, $column_values ) {
+	public function get_column_not_in($column_select, $column_where, $column_values)
+	{
 		global $wpdb;
 
-		$column        = esc_sql( $column_select );
-		$column_where  = esc_sql( $column_where );
-		$column_values = Imagify_DB::prepare_values_list( $column_values );
+		$column        = esc_sql($column_select);
+		$column_where  = esc_sql($column_where);
+		$column_values = Imagify_DB::prepare_values_list($column_values);
 
-		$result = $wpdb->get_col( "SELECT $column FROM $this->table_name WHERE $column_where NOT IN ( $column_values );" ); // WPCS: unprepared SQL ok.
+		$result = $wpdb->get_col("SELECT $column FROM $this->table_name WHERE $column_where NOT IN ( $column_values );"); // WPCS: unprepared SQL ok.
 
-		return $this->cast_col( $result, $column_select );
+		return $this->cast_col($result, $column_select);
 	}
 
 	/**
@@ -382,28 +395,29 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $data New data.
 	 * @return int          The ID.
 	 */
-	public function insert( $data ) {
+	public function insert($data)
+	{
 		global $wpdb;
 
 		// Initialise column format array.
 		$column_formats = $this->get_columns();
 
 		// Set default values.
-		$data = wp_parse_args( $data, $this->get_column_defaults() );
+		$data = wp_parse_args($data, $this->get_column_defaults());
 
 		// Force fields to lower case.
-		$data = array_change_key_case( $data );
+		$data = array_change_key_case($data);
 
 		// White list columns.
-		$data = array_intersect_key( $data, $column_formats );
+		$data = array_intersect_key($data, $column_formats);
 
 		// Maybe serialize some values.
-		$data = $this->serialize_columns( $data );
+		$data = $this->serialize_columns($data);
 
 		// Reorder $column_formats to match the order of columns given in $data.
-		$column_formats = array_merge( $data, $column_formats );
+		$column_formats = array_merge($data, $column_formats);
 
-		$wpdb->insert( $this->table_name, $data, $column_formats );
+		$wpdb->insert($this->table_name, $data, $column_formats);
 
 		return (int) $wpdb->insert_id;
 	}
@@ -419,19 +433,20 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $where  A column name.
 	 * @return bool
 	 */
-	public function update( $row_id, $data = [], $where = '' ) {
+	public function update($row_id, $data = [], $where = '')
+	{
 		global $wpdb;
 
-		if ( $row_id <= 0 ) {
+		if ($row_id <= 0) {
 			return false;
 		}
 
-		if ( ! $this->get( $row_id ) ) {
-			$this->insert( $data );
+		if (! $this->get($row_id)) {
+			$this->insert($data);
 			return true;
 		}
 
-		if ( empty( $where ) ) {
+		if (empty($where)) {
 			$where = $this->primary_key;
 		}
 
@@ -439,18 +454,18 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 		$column_formats = $this->get_columns();
 
 		// Force fields to lower case.
-		$data = array_change_key_case( $data );
+		$data = array_change_key_case($data);
 
 		// White list columns.
-		$data = array_intersect_key( $data, $column_formats );
+		$data = array_intersect_key($data, $column_formats);
 
 		// Maybe serialize some values.
-		$data = $this->serialize_columns( $data );
+		$data = $this->serialize_columns($data);
 
 		// Reorder $column_formats to match the order of columns given in $data.
-		$column_formats = array_merge( $data, $column_formats );
+		$column_formats = array_merge($data, $column_formats);
 
-		return (bool) $wpdb->update( $this->table_name, $data, [ $where => $row_id ], $column_formats, $this->get_placeholder( $where ) );
+		return (bool) $wpdb->update($this->table_name, $data, [$where => $row_id], $column_formats, $this->get_placeholder($where));
 	}
 
 	/**
@@ -462,16 +477,17 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $row_id A primary key.
 	 * @return bool
 	 */
-	public function delete( $row_id = 0 ) {
+	public function delete($row_id = 0)
+	{
 		global $wpdb;
 
-		if ( $row_id <= 0 ) {
+		if ($row_id <= 0) {
 			return false;
 		}
 
-		$placeholder = $this->get_placeholder( $this->primary_key );
+		$placeholder = $this->get_placeholder($this->primary_key);
 
-		return (bool) $wpdb->query( $wpdb->prepare( "DELETE FROM $this->table_name WHERE $this->primary_key = $placeholder", $row_id ) ); // WPCS: unprepared SQL ok, PreparedSQLPlaceholders replacement count ok.
+		return (bool) $wpdb->query($wpdb->prepare("DELETE FROM $this->table_name WHERE $this->primary_key = $placeholder", $row_id)); // WPCS: unprepared SQL ok, PreparedSQLPlaceholders replacement count ok.
 	}
 
 
@@ -486,10 +502,11 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function maybe_upgrade_table() {
+	public function maybe_upgrade_table()
+	{
 		global $wpdb;
 
-		if ( $this->table_is_up_to_date() ) {
+		if ($this->table_is_up_to_date()) {
 			// The table has the right version.
 			$this->set_table_ready();
 			return;
@@ -506,8 +523,9 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function create_table() {
-		if ( ! Imagify_DB::create_table( $this->get_table_name(), $this->get_table_schema() ) ) {
+	public function create_table()
+	{
+		if (! Imagify_DB::create_table($this->get_table_name(), $this->get_table_schema())) {
 			// Failure.
 			$this->set_table_not_ready();
 			$this->delete_db_version();
@@ -526,13 +544,14 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	protected function set_table_ready() {
+	protected function set_table_ready()
+	{
 		global $wpdb;
 
 		$this->table_created  = true;
 		$wpdb->{$this->table} = $this->table_name;
 
-		if ( $this->table_is_global ) {
+		if ($this->table_is_global) {
 			$wpdb->global_tables[] = $this->table;
 		} else {
 			$wpdb->tables[] = $this->table;
@@ -546,16 +565,17 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	protected function set_table_not_ready() {
+	protected function set_table_not_ready()
+	{
 		global $wpdb;
 
 		$this->table_created = false;
-		unset( $wpdb->{$this->table} );
+		unset($wpdb->{$this->table});
 
-		if ( $this->table_is_global ) {
-			$wpdb->global_tables = array_diff( $wpdb->global_tables, [ $this->table ] );
+		if ($this->table_is_global) {
+			$wpdb->global_tables = array_diff($wpdb->global_tables, [$this->table]);
 		} else {
-			$wpdb->tables = array_diff( $wpdb->tables, [ $this->table ] );
+			$wpdb->tables = array_diff($wpdb->tables, [$this->table]);
 		}
 	}
 
@@ -573,7 +593,8 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return int
 	 */
-	public function get_table_version() {
+	public function get_table_version()
+	{
 		return $this->table_version;
 	}
 
@@ -586,7 +607,8 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return bool
 	 */
-	public function table_is_up_to_date() {
+	public function table_is_up_to_date()
+	{
 		return $this->get_db_version() >= $this->get_table_version();
 	}
 
@@ -599,14 +621,15 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return int|bool The version. False if not set yet.
 	 */
-	public function get_db_version() {
+	public function get_db_version()
+	{
 		$option_name = $this->table . self::TABLE_VERSION_OPTION_SUFFIX;
 
-		if ( $this->table_is_global && is_multisite() ) {
-			return get_site_option( $option_name );
+		if ($this->table_is_global && is_multisite()) {
+			return get_site_option($option_name);
 		}
 
-		return get_option( $option_name );
+		return get_option($option_name);
 	}
 
 	/**
@@ -616,13 +639,14 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access protected
 	 * @author Grégory Viguier
 	 */
-	protected function update_db_version() {
+	protected function update_db_version()
+	{
 		$option_name = $this->table . self::TABLE_VERSION_OPTION_SUFFIX;
 
-		if ( $this->table_is_global && is_multisite() ) {
-			update_site_option( $option_name, $this->get_table_version() );
+		if ($this->table_is_global && is_multisite()) {
+			update_site_option($option_name, $this->get_table_version());
 		} else {
-			update_option( $option_name, $this->get_table_version() );
+			update_option($option_name, $this->get_table_version());
 		}
 	}
 
@@ -633,13 +657,14 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @access protected
 	 * @author Grégory Viguier
 	 */
-	protected function delete_db_version() {
+	protected function delete_db_version()
+	{
 		$option_name = $this->table . self::TABLE_VERSION_OPTION_SUFFIX;
 
-		if ( $this->table_is_global && is_multisite() ) {
-			delete_site_option( $option_name );
+		if ($this->table_is_global && is_multisite()) {
+			delete_site_option($option_name);
 		} else {
-			delete_option( $option_name );
+			delete_option($option_name);
 		}
 	}
 
@@ -657,7 +682,8 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return string
 	 */
-	public function get_table_name() {
+	public function get_table_name()
+	{
 		return $this->table_name;
 	}
 
@@ -670,7 +696,8 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return bool
 	 */
-	public function is_table_global() {
+	public function is_table_global()
+	{
 		return $this->table_is_global;
 	}
 
@@ -683,7 +710,8 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 *
 	 * @return string
 	 */
-	public function get_primary_key() {
+	public function get_primary_key()
+	{
 		return $this->primary_key;
 	}
 
@@ -697,13 +725,14 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array $columns An array of column names (as keys).
 	 * @return array
 	 */
-	public function get_column_formats( $columns ) {
-		if ( ! is_array( $columns ) ) {
-			$columns = array_flip( (array) $columns );
+	public function get_column_formats($columns)
+	{
+		if (! is_array($columns)) {
+			$columns = array_flip((array) $columns);
 		}
 
 		// White list columns.
-		return array_intersect_key( $this->get_columns(), $columns );
+		return array_intersect_key($this->get_columns(), $columns);
 	}
 
 	/**
@@ -716,9 +745,10 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $key The key.
 	 * @return string
 	 */
-	public function get_placeholder( $key ) {
+	public function get_placeholder($key)
+	{
 		$columns = $this->get_columns();
-		return isset( $columns[ $key ] ) ? $columns[ $key ] : '%s';
+		return isset($columns[$key]) ? $columns[$key] : '%s';
 	}
 
 	/**
@@ -731,9 +761,10 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $key The key.
 	 * @return bool
 	 */
-	public function is_column_serialized( $key ) {
+	public function is_column_serialized($key)
+	{
 		$columns = $this->get_column_defaults();
-		return isset( $columns[ $key ] ) && is_array( $columns[ $key ] );
+		return isset($columns[$key]) && is_array($columns[$key]);
 	}
 
 	/**
@@ -747,23 +778,24 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $key   The corresponding key.
 	 * @return mixed
 	 */
-	public function cast( $value, $key ) {
-		if ( null === $value || is_bool( $value ) ) {
+	public function cast($value, $key)
+	{
+		if (null === $value || is_bool($value)) {
 			return $value;
 		}
 
-		$placeholder = $this->get_placeholder( $key );
+		$placeholder = $this->get_placeholder($key);
 
-		if ( '%d' === $placeholder ) {
+		if ('%d' === $placeholder) {
 			return (int) $value;
 		}
 
-		if ( '%f' === $placeholder ) {
+		if ('%f' === $placeholder) {
 			return (float) $value;
 		}
 
-		if ( $value && $this->is_column_serialized( $key ) ) {
-			return maybe_unserialize( $value );
+		if ($value && $this->is_column_serialized($key)) {
+			return maybe_unserialize($value);
 		}
 
 		return $value;
@@ -780,13 +812,14 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  string $column The corresponding column name.
 	 * @return array
 	 */
-	public function cast_col( $values, $column ) {
-		if ( ! $values ) {
+	public function cast_col($values, $column)
+	{
+		if (! $values) {
 			return $values;
 		}
 
-		foreach ( $values as $i => $value ) {
-			$values[ $i ] = $this->cast( $value, $column );
+		foreach ($values as $i => $value) {
+			$values[$i] = $this->cast($value, $column);
 		}
 
 		return $values;
@@ -802,18 +835,19 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array|object $row_fields A row from the DB.
 	 * @return array|object
 	 */
-	public function cast_row( $row_fields ) {
-		if ( ! $row_fields ) {
+	public function cast_row($row_fields)
+	{
+		if (! $row_fields) {
 			return $row_fields;
 		}
 
-		if ( is_array( $row_fields ) ) {
-			foreach ( $row_fields as $field => $value ) {
-				$row_fields[ $field ] = $this->cast( $value, $field );
+		if (is_array($row_fields)) {
+			foreach ($row_fields as $field => $value) {
+				$row_fields[$field] = $this->cast($value, $field);
 			}
-		} elseif ( is_object( $row_fields ) ) {
-			foreach ( $row_fields as $field => $value ) {
-				$row_fields->$field = $this->cast( $value, $field );
+		} elseif (is_object($row_fields)) {
+			foreach ($row_fields as $field => $value) {
+				$row_fields->$field = $this->cast($value, $field);
 			}
 		}
 
@@ -830,29 +864,30 @@ abstract class Imagify_Abstract_DB extends Imagify_Abstract_DB_Deprecated implem
 	 * @param  array $data An array of values.
 	 * @return array
 	 */
-	public function serialize_columns( $data ) {
-		if ( ! isset( $this->to_serialize ) ) {
-			$this->to_serialize = array_filter( $this->get_column_defaults(), 'is_array' );
+	public function serialize_columns($data)
+	{
+		if (! isset($this->to_serialize)) {
+			$this->to_serialize = array_filter($this->get_column_defaults(), 'is_array');
 		}
 
-		if ( ! $this->to_serialize ) {
+		if (! $this->to_serialize) {
 			return $data;
 		}
 
-		$serialized_data = array_intersect_key( $data, $this->to_serialize );
+		$serialized_data = array_intersect_key($data, $this->to_serialize);
 
-		if ( ! $serialized_data ) {
+		if (! $serialized_data) {
 			return $data;
 		}
 
 		$serialized_data = array_map(
-			function ( $value ) {
+			function ($value) {
 				// Try not to store empty serialized arrays.
-				return [] === $value ? null : maybe_serialize( $value );
+				return [] === $value ? null : maybe_serialize($value);
 			},
 			$serialized_data
 		);
 
-		return array_merge( $data, $serialized_data );
+		return array_merge($data, $serialized_data);
 	}
 }

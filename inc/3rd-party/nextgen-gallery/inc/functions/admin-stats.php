@@ -1,7 +1,8 @@
 <?php
+
 use Imagify\ThirdParty\NGG\DB;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Count number of attachments.
@@ -11,16 +12,17 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return int The number of attachments.
  */
-function imagify_ngg_count_attachments() {
+function imagify_ngg_count_attachments()
+{
 	global $wpdb;
 	static $count;
 
-	if ( isset( $count ) ) {
+	if (isset($count)) {
 		return $count;
 	}
 
 	$table_name = $wpdb->prefix . 'ngg_pictures';
-	$count      = (int) $wpdb->get_var( "SELECT COUNT($table_name.pid) FROM $table_name" ); // WPCS: unprepared SQL ok.
+	$count      = (int) $wpdb->get_var("SELECT COUNT($table_name.pid) FROM $table_name"); // WPCS: unprepared SQL ok.
 
 	return $count;
 }
@@ -33,16 +35,17 @@ function imagify_ngg_count_attachments() {
  *
  * @return int The number of attachments.
  */
-function imagify_ngg_count_error_attachments() {
+function imagify_ngg_count_error_attachments()
+{
 	static $count;
 
-	if ( isset( $count ) ) {
+	if (isset($count)) {
 		return $count;
 	}
 
 	$ngg_db = DB::get_instance();
 	$key    = $ngg_db->get_primary_key();
-	$count  = (int) $ngg_db->get_var_by( "COUNT($key)", 'status', 'error' );
+	$count  = (int) $ngg_db->get_var_by("COUNT($key)", 'status', 'error');
 
 	return $count;
 }
@@ -55,16 +58,17 @@ function imagify_ngg_count_error_attachments() {
  *
  * @return int The number of attachments.
  */
-function imagify_ngg_count_optimized_attachments() {
+function imagify_ngg_count_optimized_attachments()
+{
 	static $count;
 
-	if ( isset( $count ) ) {
+	if (isset($count)) {
 		return $count;
 	}
 
 	$ngg_db = DB::get_instance();
 	$key    = $ngg_db->get_primary_key();
-	$count  = (int) $ngg_db->get_var_in( "COUNT($key)", 'status', [ 'success', 'already_optimized' ] );
+	$count  = (int) $ngg_db->get_var_in("COUNT($key)", 'status', ['success', 'already_optimized']);
 
 	return $count;
 }
@@ -77,7 +81,8 @@ function imagify_ngg_count_optimized_attachments() {
  *
  * @return int The number of attachments.
  */
-function imagify_ngg_count_unoptimized_attachments() {
+function imagify_ngg_count_unoptimized_attachments()
+{
 	return imagify_ngg_count_attachments() - imagify_ngg_count_optimized_attachments() - imagify_ngg_count_error_attachments();
 }
 
@@ -89,15 +94,16 @@ function imagify_ngg_count_unoptimized_attachments() {
  *
  * @return int The percent of optimized attachments.
  */
-function imagify_ngg_percent_optimized_attachments() {
+function imagify_ngg_percent_optimized_attachments()
+{
 	$total_attachments           = imagify_ngg_count_attachments();
 	$total_optimized_attachments = imagify_ngg_count_optimized_attachments();
 
-	if ( ! $total_attachments || ! $total_optimized_attachments ) {
+	if (! $total_attachments || ! $total_optimized_attachments) {
 		return 0;
 	}
 
-	return min( round( 100 * $total_optimized_attachments / $total_attachments ), 100 );
+	return min(round(100 * $total_optimized_attachments / $total_attachments), 100);
 }
 
 /**
@@ -110,10 +116,11 @@ function imagify_ngg_percent_optimized_attachments() {
  * @param  bool|array $attachments An array containing the keys 'count', 'original_size', and 'optimized_size', or an array of attachments (back compat', deprecated), or false.
  * @return array An array containing the keys 'count', 'original_size', and 'optimized_size'.
  */
-function imagify_ngg_count_saving_data( $attachments ) {
+function imagify_ngg_count_saving_data($attachments)
+{
 	global $wpdb;
 
-	if ( is_array( $attachments ) ) {
+	if (is_array($attachments)) {
 		return $attachments;
 	}
 
@@ -125,9 +132,9 @@ function imagify_ngg_count_saving_data( $attachments ) {
 	 *
 	 * @param bool|array $attachments An array containing the keys ('count', 'original_size', and 'optimized_size'), or false.
 	 */
-	$attachments = apply_filters( 'imagify_ngg_count_saving_data', false );
+	$attachments = apply_filters('imagify_ngg_count_saving_data', false);
 
-	if ( is_array( $attachments ) ) {
+	if (is_array($attachments)) {
 		return $attachments;
 	}
 
@@ -136,8 +143,8 @@ function imagify_ngg_count_saving_data( $attachments ) {
 	$count          = 0;
 
 	/** This filter is documented in /inc/functions/admin-stats.php */
-	$limit  = apply_filters( 'imagify_count_saving_data_limit', 15000 );
-	$limit  = absint( $limit );
+	$limit  = apply_filters('imagify_count_saving_data_limit', 15000);
+	$limit  = absint($limit);
 	$offset = 0;
 	$query  = "
 		SELECT data
@@ -145,14 +152,14 @@ function imagify_ngg_count_saving_data( $attachments ) {
 		WHERE status = 'success'
 		LIMIT %d, %d";
 
-	$attachments = $wpdb->get_col( $wpdb->prepare( $query, $offset, $limit ) ); // WPCS: unprepared SQL ok.
+	$attachments = $wpdb->get_col($wpdb->prepare($query, $offset, $limit)); // WPCS: unprepared SQL ok.
 	$wpdb->flush();
 
-	while ( $attachments ) {
-		$attachments = array_map( 'maybe_unserialize', $attachments );
+	while ($attachments) {
+		$attachments = array_map('maybe_unserialize', $attachments);
 
-		foreach ( $attachments as $attachment_data ) {
-			if ( ! $attachment_data ) {
+		foreach ($attachments as $attachment_data) {
+			if (! $attachment_data) {
 				continue;
 			}
 
@@ -163,26 +170,26 @@ function imagify_ngg_count_saving_data( $attachments ) {
 			$original_size  += $original_data['original_size'] ? $original_data['original_size'] : 0;
 			$optimized_size += $original_data['optimized_size'] ? $original_data['optimized_size'] : 0;
 
-			unset( $attachment_data['sizes']['full'], $original_data );
+			unset($attachment_data['sizes']['full'], $original_data);
 
 			// Increment the thumbnails sizes.
-			foreach ( $attachment_data['sizes'] as $size_data ) {
-				if ( ! empty( $size_data['success'] ) ) {
+			foreach ($attachment_data['sizes'] as $size_data) {
+				if (! empty($size_data['success'])) {
 					$original_size  += $size_data['original_size'] ? $size_data['original_size'] : 0;
 					$optimized_size += $size_data['optimized_size'] ? $size_data['optimized_size'] : 0;
 				}
 			}
 
-			unset( $size_data );
+			unset($size_data);
 		}
 
-		unset( $attachment_data );
+		unset($attachment_data);
 
-		if ( count( $attachments ) === $limit ) {
+		if (count($attachments) === $limit) {
 			// Unless we are really unlucky, we still have attachments to fetch.
 			$offset += $limit;
 
-			$attachments = $wpdb->get_col( $wpdb->prepare( $query, $offset, $limit ) ); // WPCS: unprepared SQL ok.
+			$attachments = $wpdb->get_col($wpdb->prepare($query, $offset, $limit)); // WPCS: unprepared SQL ok.
 			$wpdb->flush();
 		} else {
 			// Save one request, don't go back to the beginning of the loop.

@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\FormidablePro;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -10,7 +11,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.6.13
  * @author Grégory Viguier
  */
-class Main {
+class Main
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -33,9 +35,10 @@ class Main {
 	 * @since  1.6.13
 	 * @author Grégory Viguier
 	 */
-	public function init() {
-		add_action( 'parse_query', [ $this, 'maybe_remove_media_library_filter' ] );
-		add_action( 'posts_selection', [ $this, 'maybe_put_media_library_filter_back' ] );
+	public function init()
+	{
+		add_action('parse_query', [$this, 'maybe_remove_media_library_filter']);
+		add_action('posts_selection', [$this, 'maybe_put_media_library_filter_back']);
 	}
 
 	/**
@@ -46,10 +49,11 @@ class Main {
 	 *
 	 * @param object $wp_query The WP_Query instance (passed by reference).
 	 */
-	public function maybe_remove_media_library_filter( $wp_query ) {
-		if ( ! empty( $wp_query->query_vars['is_imagify'] ) && class_exists( 'FrmProFileField' ) ) {
+	public function maybe_remove_media_library_filter($wp_query)
+	{
+		if (! empty($wp_query->query_vars['is_imagify']) && class_exists('FrmProFileField')) {
 			$this->is_imagify = true;
-			remove_action( 'pre_get_posts', 'FrmProFileField::filter_media_library', 99 );
+			remove_action('pre_get_posts', 'FrmProFileField::filter_media_library', 99);
 		} else {
 			$this->is_imagify = false;
 		}
@@ -61,9 +65,10 @@ class Main {
 	 * @since  1.6.13
 	 * @author Grégory Viguier
 	 */
-	public function maybe_put_media_library_filter_back() {
-		if ( $this->is_imagify ) {
-			add_action( 'pre_get_posts', 'FrmProFileField::filter_media_library', 99 );
+	public function maybe_put_media_library_filter_back()
+	{
+		if ($this->is_imagify) {
+			add_action('pre_get_posts', 'FrmProFileField::filter_media_library', 99);
 		}
 	}
 }

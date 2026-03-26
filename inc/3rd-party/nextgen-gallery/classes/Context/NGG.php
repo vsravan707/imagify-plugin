@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG\Context;
 
 use Imagify\Context\AbstractContext;
@@ -10,7 +11,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.9
  * @author Grégory Viguier
  */
-class NGG extends AbstractContext {
+class NGG extends AbstractContext
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -70,7 +72,8 @@ class NGG extends AbstractContext {
 	 *
 	 * @return int
 	 */
-	public function get_resizing_threshold() {
+	public function get_resizing_threshold()
+	{
 		return 0;
 	}
 
@@ -83,8 +86,9 @@ class NGG extends AbstractContext {
 	 * @param  string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 	 * @return string
 	 */
-	public function get_capacity( $describer = 'manage' ) {
-		switch ( $describer ) {
+	public function get_capacity($describer = 'manage')
+	{
+		switch ($describer) {
 			case 'manage':
 				$capacity = 'NextGEN Change options';
 				break;
@@ -108,6 +112,6 @@ class NGG extends AbstractContext {
 				$capacity = $describer;
 		}
 
-		return $this->filter_capacity( $capacity, $describer );
+		return $this->filter_capacity($capacity, $describer);
 	}
 }

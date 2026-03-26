@@ -13,7 +13,8 @@ use ActionScheduler_Store as Store;
  *
  * @codeCoverageIgnore
  */
-class BatchFetcher {
+class BatchFetcher
+{
 	/**
 	 * Store instance.
 	 *
@@ -26,7 +27,8 @@ class BatchFetcher {
 	 *
 	 * @param ActionScheduler_Store $source_store Source store object.
 	 */
-	public function __construct( Store $source_store ) {
+	public function __construct(Store $source_store)
+	{
 		$this->store = $source_store;
 	}
 
@@ -37,10 +39,11 @@ class BatchFetcher {
 	 *
 	 * @return int[] A list of action IDs
 	 */
-	public function fetch( $count = 10 ) {
-		foreach ( $this->get_query_strategies( $count ) as $query ) {
-			$action_ids = $this->store->query_actions( $query );
-			if ( ! empty( $action_ids ) ) {
+	public function fetch($count = 10)
+	{
+		foreach ($this->get_query_strategies($count) as $query) {
+			$action_ids = $this->store->query_actions($query);
+			if (! empty($action_ids)) {
 				return $action_ids;
 			}
 		}
@@ -55,7 +58,8 @@ class BatchFetcher {
 	 *
 	 * @return array
 	 */
-	private function get_query_strategies( $count ) {
+	private function get_query_strategies($count)
+	{
 		$now  = as_get_datetime_object();
 		$args = array(
 			'date'     => $now,
@@ -74,7 +78,7 @@ class BatchFetcher {
 			'', // any other unanticipated status.
 		);
 
-		foreach ( $priorities as $status ) {
+		foreach ($priorities as $status) {
 			yield wp_parse_args(
 				array(
 					'status'       => $status,

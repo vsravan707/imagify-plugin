@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Deprecated class that handles compatibility with Regenerate Thumbnails plugin.
@@ -8,7 +8,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @author Grégory Viguier
  * @deprecated
  */
-class Imagify_Regenerate_Thumbnails_Deprecated {
+class Imagify_Regenerate_Thumbnails_Deprecated
+{
 
 	/**
 	 * Action used for the ajax callback.
@@ -42,34 +43,35 @@ class Imagify_Regenerate_Thumbnails_Deprecated {
 	 * @author Grégory Viguier
 	 * @deprecated
 	 */
-	public function regenerate_thumbnails_callback() {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '1.9' );
+	public function regenerate_thumbnails_callback()
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '1.9');
 
-		if ( empty( $_POST['_ajax_nonce'] ) || empty( $_POST['attachment_id'] ) || empty( $_POST['context'] ) ) { // WPCS: CSRF ok.
-			imagify_die( __( 'Invalid request', 'imagify' ) );
+		if (empty($_POST['_ajax_nonce']) || empty($_POST['attachment_id']) || empty($_POST['context'])) { // WPCS: CSRF ok.
+			imagify_die(__('Invalid request', 'imagify'));
 		}
 
-		if ( empty( $_POST['sizes'] ) || ! is_array( $_POST['sizes'] ) ) { // WPCS: CSRF ok.
-			imagify_die( __( 'No thumbnail sizes selected', 'imagify' ) );
+		if (empty($_POST['sizes']) || ! is_array($_POST['sizes'])) { // WPCS: CSRF ok.
+			imagify_die(__('No thumbnail sizes selected', 'imagify'));
 		}
 
-		$attachment_id = absint( $_POST['attachment_id'] );
-		$context       = imagify_sanitize_context( $_POST['context'] ); // WPCS: CSRF ok.
+		$attachment_id = absint($_POST['attachment_id']);
+		$context       = imagify_sanitize_context($_POST['context']); // WPCS: CSRF ok.
 
-		imagify_check_nonce( static::get_nonce_name( $attachment_id, $context ) );
-		imagify_check_user_capacity( 'manual-optimize', $attachment_id );
+		imagify_check_nonce(static::get_nonce_name($attachment_id, $context));
+		imagify_check_user_capacity('manual-optimize', $attachment_id);
 
-		$attachment = get_imagify_attachment( $context, $attachment_id, static::ACTION );
+		$attachment = get_imagify_attachment($context, $attachment_id, static::ACTION);
 
-		if ( ! $attachment->is_valid() || ! $attachment->is_image() ) {
+		if (! $attachment->is_valid() || ! $attachment->is_image()) {
 			wp_send_json_error();
 		}
 
 		// Optimize.
-		$attachment->reoptimize_thumbnails( wp_unslash( $_POST['sizes'] ) );
+		$attachment->reoptimize_thumbnails(wp_unslash($_POST['sizes']));
 
 		// Put the optimized original file back.
-		$this->put_optimized_file_back( $attachment_id );
+		$this->put_optimized_file_back($attachment_id);
 
 		wp_send_json_success();
 	}
@@ -86,22 +88,23 @@ class Imagify_Regenerate_Thumbnails_Deprecated {
 	 * @param  int $attachment_id Attachment ID.
 	 * @return object|false       An Imagify attachment object. False on failure.
 	 */
-	protected function set_attachment( $attachment_id ) {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\RegenerateThumbnails\\Main::get_instance()->set_process()' );
+	protected function set_attachment($attachment_id)
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\RegenerateThumbnails\\Main::get_instance()->set_process()');
 
-		if ( ! $attachment_id || ! Imagify_Requirements::is_api_key_valid() ) {
+		if (! $attachment_id || ! Imagify_Requirements::is_api_key_valid()) {
 			return false;
 		}
 
-		$attachment = get_imagify_attachment( 'wp', $attachment_id, 'regenerate_thumbnails' );
+		$attachment = get_imagify_attachment('wp', $attachment_id, 'regenerate_thumbnails');
 
-		if ( ! $attachment->is_valid() || ! $attachment->is_image() || ! $attachment->is_optimized() ) {
+		if (! $attachment->is_valid() || ! $attachment->is_image() || ! $attachment->is_optimized()) {
 			return false;
 		}
 
 		// This attachment can be optimized.
-		$this->attachments[ $attachment_id ] = $attachment;
-		return $this->attachments[ $attachment_id ];
+		$this->attachments[$attachment_id] = $attachment;
+		return $this->attachments[$attachment_id];
 	}
 
 	/**
@@ -115,10 +118,11 @@ class Imagify_Regenerate_Thumbnails_Deprecated {
 	 *
 	 * @param int $attachment_id Attachment ID.
 	 */
-	protected function unset_attachment( $attachment_id ) {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\RegenerateThumbnails\\Main::get_instance()->unset_process()' );
+	protected function unset_attachment($attachment_id)
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\RegenerateThumbnails\\Main::get_instance()->unset_process()');
 
-		unset( $this->attachments[ $attachment_id ] );
+		unset($this->attachments[$attachment_id]);
 	}
 
 	/**
@@ -133,10 +137,11 @@ class Imagify_Regenerate_Thumbnails_Deprecated {
 	 * @param  int $attachment_id Attachment ID.
 	 * @return object|false       An Imagify attachment object. False on failure.
 	 */
-	protected function get_attachment( $attachment_id ) {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\RegenerateThumbnails\\Main::get_instance()->get_process()' );
+	protected function get_attachment($attachment_id)
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '1.9', '\\Imagify\\ThirdParty\\RegenerateThumbnails\\Main::get_instance()->get_process()');
 
-		return ! empty( $this->attachments[ $attachment_id ] ) ? $this->attachments[ $attachment_id ] : false;
+		return ! empty($this->attachments[$attachment_id]) ? $this->attachments[$attachment_id] : false;
 	}
 
 	/**
@@ -152,8 +157,9 @@ class Imagify_Regenerate_Thumbnails_Deprecated {
 	 * @param  string $context  The context.
 	 * @return string
 	 */
-	public static function get_nonce_name( $media_id, $context ) {
-		_deprecated_function( get_called_class() . '::' . __FUNCTION__ . '()', '1.9' );
+	public static function get_nonce_name($media_id, $context)
+	{
+		_deprecated_function(get_called_class() . '::' . __FUNCTION__ . '()', '1.9');
 
 		return static::ACTION . '-' . $media_id . '-' . $context;
 	}

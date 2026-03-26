@@ -11,7 +11,7 @@ Optimize images in 1-click: compress images, convert to WebP & AVIF, resize, and
 
 == Description ==
 
-= 🏆 The Best Image Optimization Plugin For WordPress = 
+= 🏆 The Best Image Optimization Plugin For WordPress =
 
 [Imagify](https://imagify.io/) is the most advanced image optimization plugin to help you optimize images. In fact, you can easily resize and compress images, and convert them to WebP and Avif. You can now use its power directly in WordPress to optimize images and reduce the weight of the photos you want to add to your site – image optimization is all done with just one click and without sacrificing their quality.
 
@@ -33,7 +33,7 @@ Our video explains why Imagify is the easiest image optimization plugin and show
 * AVIF conversion in one click
 * Async bulk optimization
 
-= 📸 Optimize Images: Resize and Compress Images Without Losing Quality = 
+= 📸 Optimize Images: Resize and Compress Images Without Losing Quality =
 
 Imagify is a great image compressor and the ultimate solution to optimise images. You are able to resize and compress images from the most common image formats as well as PDF format. In case you have many images to optimize, you can also resize images in bulk thanks to our async bulk optimization option. In just one click, you will be able to compress multiple images super easily. Imagify compresses all your images in the background, so you can leave the page and not worry about anything.
 
@@ -56,7 +56,7 @@ Imagify can also display the AVIF images directly on your front-end. But because
 WebP is definitively an excellent replacement for jpeg, png, and gif images, and the same goes for AVIF, which improves your image performance even further. Imagify offers WebP conversion for all image formats: you can convert gif to WebP, jpeg to WebP, and even png to WebP. You can also benefit from AVIF conversion and convert gif to AVIF, jpg and jpeg to AVIF, png to AVIF.
 Whatever your favorite image format, let Imagify optimise your images!
 
-= ⚡ Optimize Images to Make Your Site Faster and Improve Core Web Vitals = 
+= ⚡ Optimize Images to Make Your Site Faster and Improve Core Web Vitals =
 
 Did you know that image optimization and web performance go hand in hand? In fact, when it comes to web page speed, one of the first things you should do is optimize your images. Large and heavy image sizes will indeed slow down your website and provide a bad user experience to your visitors – and that’s why you should compress images. On the contrary, when you optimise images and improve image loading speed, you should see a direct improvement in your website speed and performance. With Imagify, it’s time to say goodbye to images taking too long to load.
 
@@ -254,8 +254,8 @@ Yes, and no credit card is required.
 
 No. However, you get 20MB of quota per month for free to optimize your images (around 200 images).
 
-= Where do I report security bugs found in this plugin? =  
-  
+= Where do I report security bugs found in this plugin? =
+
 You can report any security bugs found in the source code of the site-reviews plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/imagify). The Patchstack team will assist you with verification, CVE assignment and take care of notifying the developers of this plugin.
 
 == Screenshots ==
@@ -271,22 +271,22 @@ You can report any security bugs found in the source code of the site-reviews pl
 == Changelog ==
 = 2.2.7 =
 - Enhancement: improve code to follow correctly various WordPress coding standards rules
-- Enhancement: Add a new filter `imagify_hide_plugin_family` to hide the Our Plugins section on the settings page 
+- Enhancement: Add a new filter `imagify_hide_plugin_family` to hide the Our Plugins section on the settings page
 
 = 2.2.6 =
-- Bugfix: Fix warning related to translation files being loaded too early, improving plugin stability during image optimization. 
-- 3rd-party library: Update bundled Action Scheduler to v3.9.2. 
+- Bugfix: Fix warning related to translation files being loaded too early, improving plugin stability during image optimization.
+- 3rd-party library: Update bundled Action Scheduler to v3.9.2.
 
 = 2.2.5 =
-- Enhancement: Optimize SQL queries inside the plugin to calculate necessary data faster and improve image optimization at scale. 
-- Enhancement: Improve the design of banners displayed within the image optimizer plugin interface. 
-- Enhancement: Correct the upgrade link to ensure smoother navigation within the image optimization flow. 
+- Enhancement: Optimize SQL queries inside the plugin to calculate necessary data faster and improve image optimization at scale.
+- Enhancement: Improve the design of banners displayed within the image optimizer plugin interface.
+- Enhancement: Correct the upgrade link to ensure smoother navigation within the image optimization flow.
 
 = 2.2.4 =
-- Enhancement: Disable by default the calculation of media elements used for filters in the Media Library view to speed up image optimization workflows. 
-- Enhancement: Remove unnecessary API calls on each page load to enhance image optimizer performance. 
-- Enhancement: Update banner UI and remove an extra checkout step, streamlining the optimization setup. 
-- 3rd-party compatibility: Fix display issue with unstyled banners in the Gravity Forms plugin view, improving integration during image optimization tasks. 
+- Enhancement: Disable by default the calculation of media elements used for filters in the Media Library view to speed up image optimization workflows.
+- Enhancement: Remove unnecessary API calls on each page load to enhance image optimizer performance.
+- Enhancement: Update banner UI and remove an extra checkout step, streamlining the optimization setup.
+- 3rd-party compatibility: Fix display issue with unstyled banners in the Gravity Forms plugin view, improving integration during image optimization tasks.
 
 = 2.2.3.2 =
 - Enhancement: Optimize and cache the modal attachment counter database query for better performance to optimize images in bulk.
@@ -295,28 +295,28 @@ You can report any security bugs found in the source code of the site-reviews pl
 - Enhancement: Reduce the number of requests sent to Imagify servers during large-scale image optimization operations.
 
 = 2.2.3 =
-- Enhancement: Cache license API calls to reduce load and improve how users optimize images. 
-- 3rd-party compatibility: Update template_redirect priority to improve compatibility with WP Rocket’s LazyLoad and optimized image delivery. 
-- Bugfix: Fix Uncaught TypeError: strpos() expects parameter 1 to be string fatal error. 
-- Enhancement: UI improvements across the image optimizer interface. 
-- Enhancement: Improve plugin architecture to support more efficient image optimization routines. 
+- Enhancement: Cache license API calls to reduce load and improve how users optimize images.
+- 3rd-party compatibility: Update template_redirect priority to improve compatibility with WP Rocket’s LazyLoad and optimized image delivery.
+- Bugfix: Fix Uncaught TypeError: strpos() expects parameter 1 to be string fatal error.
+- Enhancement: UI improvements across the image optimizer interface.
+- Enhancement: Improve plugin architecture to support more efficient image optimization routines.
 
 = 2.2.2 =
-- Enhancement: Let users choose which Next-Gen image formats (WebP, AVIF) should be generated in the UI for more flexible image optimization. 
-- Enhancement: Add safeguards for image size values that are not strings to improve optimizer stability. 
-- Enhancement: Improve detection of file types for better image optimization compatibility. 
-- Bugfix: Fix fatal error related to “WP_List_Table”. 
+- Enhancement: Let users choose which Next-Gen image formats (WebP, AVIF) should be generated in the UI for more flexible image optimization.
+- Enhancement: Add safeguards for image size values that are not strings to improve optimizer stability.
+- Enhancement: Improve detection of file types for better image optimization compatibility.
+- Bugfix: Fix fatal error related to “WP_List_Table”.
 
 = 2.2.1 =
-- Enhancement: Prevent unnecessary .htaccess updates when switching between AVIF and WebP generation, improving image optimization stability. 
-- Enhancement: Display the smallest image version in the Media Library image details section for easier review of optimized image output. 
-- Enhancement: Correctly delete all Next-Gen versions when restoring the original image. 
-- Enhancement: Bump minimum supported PHP version to 7.3. 
-- Bugfix: Fix progress bar issue when disabling AVIF generation. 
-- Bugfix: Fix incorrect image count in the Bulk Optimization section. 
-- Bugfix: Correct display bug in original vs. optimized image comparison. 
-- 3rd-party compatibility: Update compatibility with NextGen Gallery for AVIF support. 
-- 3rd-party compatibility: Improve compatibility of AVIF images with AMP, Regenerate Thumbnails, and WooCommerce for consistent image optimization results. 
+- Enhancement: Prevent unnecessary .htaccess updates when switching between AVIF and WebP generation, improving image optimization stability.
+- Enhancement: Display the smallest image version in the Media Library image details section for easier review of optimized image output.
+- Enhancement: Correctly delete all Next-Gen versions when restoring the original image.
+- Enhancement: Bump minimum supported PHP version to 7.3.
+- Bugfix: Fix progress bar issue when disabling AVIF generation.
+- Bugfix: Fix incorrect image count in the Bulk Optimization section.
+- Bugfix: Correct display bug in original vs. optimized image comparison.
+- 3rd-party compatibility: Update compatibility with NextGen Gallery for AVIF support.
+- 3rd-party compatibility: Improve compatibility of AVIF images with AMP, Regenerate Thumbnails, and WooCommerce for consistent image optimization results.
 
 = 2.2.0.1 =
 - Bugfix: Preserve "Display images in WebP format" setting when updating the plugin to maintain optimized image delivery.

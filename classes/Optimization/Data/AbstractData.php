@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Optimization\Data;
 
 use Imagify\Media\MediaInterface;
@@ -9,7 +10,8 @@ use Imagify\Media\MediaInterface;
  * @since  1.9
  * @author Grégory Viguier
  */
-abstract class AbstractData implements DataInterface {
+abstract class AbstractData implements DataInterface
+{
 
 	/**
 	 * Optimization data structure.
@@ -63,14 +65,15 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @param mixed $id An ID, or whatever type the constructor accepts.
 	 */
-	public function __construct( $id ) {
+	public function __construct($id)
+	{
 		// Set the Media instance.
-		if ( $id instanceof MediaInterface ) {
+		if ($id instanceof MediaInterface) {
 			$this->media = $id;
-		} elseif ( static::constructor_accepts( $id ) ) {
-			$media_class = str_replace( '\\Optimization\\Data\\', '\\Media\\', get_called_class() );
-			$media_class = '\\' . ltrim( $media_class, '\\' );
-			$this->media = new $media_class( $id );
+		} elseif (static::constructor_accepts($id)) {
+			$media_class = str_replace('\\Optimization\\Data\\', '\\Media\\', get_called_class());
+			$media_class = '\\' . ltrim($media_class, '\\');
+			$this->media = new $media_class($id);
 		} else {
 			$this->media = false;
 		}
@@ -88,15 +91,16 @@ abstract class AbstractData implements DataInterface {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
-		if ( $id instanceof MediaInterface ) {
+	public static function constructor_accepts($id)
+	{
+		if ($id instanceof MediaInterface) {
 			return true;
 		}
 
-		$media_class = str_replace( '\\Optimization\\Data\\', '\\Media\\', get_called_class() );
-		$media_class = '\\' . ltrim( $media_class, '\\' );
+		$media_class = str_replace('\\Optimization\\Data\\', '\\Media\\', get_called_class());
+		$media_class = '\\' . ltrim($media_class, '\\');
 
-		return $media_class::constructor_accepts( $id );
+		return $media_class::constructor_accepts($id);
 	}
 
 	/**
@@ -108,7 +112,8 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return MediaInterface|false
 	 */
-	public function get_media() {
+	public function get_media()
+	{
 		return $this->media;
 	}
 
@@ -121,7 +126,8 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_valid() {
+	public function is_valid()
+	{
 		return $this->get_media() && $this->get_media()->is_valid();
 	}
 
@@ -139,7 +145,8 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return bool True if the media is optimized.
 	 */
-	public function is_optimized() {
+	public function is_optimized()
+	{
 		return 'success' === $this->get_optimization_status();
 	}
 
@@ -152,7 +159,8 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return bool True if the media is optimized.
 	 */
-	public function is_already_optimized() {
+	public function is_already_optimized()
+	{
 		return 'already_optimized' === $this->get_optimization_status();
 	}
 
@@ -165,7 +173,8 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return bool True if the media is optimized.
 	 */
-	public function is_error() {
+	public function is_error()
+	{
 		return 'error' === $this->get_optimization_status();
 	}
 
@@ -178,8 +187,9 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return int|false The optimization level. False if not optimized.
 	 */
-	public function get_optimization_level() {
-		if ( ! $this->is_valid() ) {
+	public function get_optimization_level()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
@@ -196,8 +206,9 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return string The optimization status. An empty string if there is none.
 	 */
-	public function get_optimization_status() {
-		if ( ! $this->is_valid() ) {
+	public function get_optimization_status()
+	{
+		if (! $this->is_valid()) {
 			return '';
 		}
 
@@ -214,23 +225,24 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return int Number of optimized sizes.
 	 */
-	public function get_optimized_sizes_count() {
+	public function get_optimized_sizes_count()
+	{
 		$data  = $this->get_optimization_data();
 		$count = 0;
 
-		if ( ! $data['sizes'] ) {
+		if (! $data['sizes']) {
 			return 0;
 		}
 
 		$context_sizes = $this->get_media()->get_media_files();
-		$data['sizes'] = array_intersect_key( $data['sizes'], $context_sizes );
+		$data['sizes'] = array_intersect_key($data['sizes'], $context_sizes);
 
-		if ( ! $data['sizes'] ) {
+		if (! $data['sizes']) {
 			return 0;
 		}
 
-		foreach ( $data['sizes'] as $size ) {
-			if ( ! empty( $size['success'] ) ) {
+		foreach ($data['sizes'] as $size) {
+			if (! empty($size['success'])) {
 				++$count;
 			}
 		}
@@ -249,29 +261,30 @@ abstract class AbstractData implements DataInterface {
 	 * @param  int  $decimals     Precision of number of decimal places.
 	 * @return string|int
 	 */
-	public function get_original_size( $human_format = true, $decimals = 2 ) {
-		if ( ! $this->is_valid() ) {
-			return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+	public function get_original_size($human_format = true, $decimals = 2)
+	{
+		if (! $this->is_valid()) {
+			return $human_format ? imagify_size_format(0, $decimals) : 0;
 		}
 
 		$size = $this->get_optimization_data();
-		$size = ! empty( $size['sizes']['full']['original_size'] ) ? $size['sizes']['full']['original_size'] : 0;
+		$size = ! empty($size['sizes']['full']['original_size']) ? $size['sizes']['full']['original_size'] : 0;
 
 		// If nothing in the database, try to get the info from the file.
-		if ( ! $size ) {
+		if (! $size) {
 			// Check for the backup file first.
 			$filepath = $this->get_media()->get_backup_path();
 
-			if ( ! $filepath ) {
+			if (! $filepath) {
 				// Try the original file then.
 				$filepath = $this->get_media()->get_original_path();
 			}
 
-			$size = $filepath ? $this->filesystem->size( $filepath ) : 0;
+			$size = $filepath ? $this->filesystem->size($filepath) : 0;
 		}
 
-		if ( $human_format ) {
-			return imagify_size_format( (int) $size, $decimals );
+		if ($human_format) {
+			return imagify_size_format((int) $size, $decimals);
 		}
 
 		return (int) $size;
@@ -290,67 +303,70 @@ abstract class AbstractData implements DataInterface {
 	 * @param  bool $use_nextgen     Use the Nextgen size if available.
 	 * @return string|int
 	 */
-	public function get_optimized_size( $human_format = true, $decimals = 2, $use_nextgen = true ) {
-		if ( ! $this->is_valid() ) {
-			return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+	public function get_optimized_size($human_format = true, $decimals = 2, $use_nextgen = true)
+	{
+		if (! $this->is_valid()) {
+			return $human_format ? imagify_size_format(0, $decimals) : 0;
 		}
 
 		$data   = $this->get_optimization_data();
 		$media  = $this->get_media();
 		$format = 'webp';
 
-		$process_class_name     = imagify_get_optimization_process_class_name( $media->get_context() );
-		$nextgen_avif_size_name = 'full' . constant( $process_class_name . '::AVIF_SUFFIX' );
-		$nextgen_webp_size_name = 'full' . constant( $process_class_name . '::WEBP_SUFFIX' );
+		$process_class_name     = imagify_get_optimization_process_class_name($media->get_context());
+		$nextgen_avif_size_name = 'full' . constant($process_class_name . '::AVIF_SUFFIX');
+		$nextgen_webp_size_name = 'full' . constant($process_class_name . '::WEBP_SUFFIX');
 
 		$size = 0;
 
-		if ( $use_nextgen ) {
+		if ($use_nextgen) {
 			/**Checking for success status before size, some cases the response is false
 			 * because the image is already compressed, or we have a connection timed out
 			 * */
-			$size = ! empty( $data['sizes'][ $nextgen_webp_size_name ] ) && $data['sizes'][ $nextgen_webp_size_name ]['success'] ?
-				(int) $data['sizes'][ $nextgen_webp_size_name ]['optimized_size'] : 0;
-			if ( ! empty( $data['sizes'][ $nextgen_avif_size_name ]['optimized_size'] ) &&
-				$data['sizes'][ $nextgen_avif_size_name ] ) {
-				$size = (int) $data['sizes'][ $nextgen_avif_size_name ]['optimized_size'];
+			$size = ! empty($data['sizes'][$nextgen_webp_size_name]) && $data['sizes'][$nextgen_webp_size_name]['success'] ?
+				(int) $data['sizes'][$nextgen_webp_size_name]['optimized_size'] : 0;
+			if (
+				! empty($data['sizes'][$nextgen_avif_size_name]['optimized_size']) &&
+				$data['sizes'][$nextgen_avif_size_name]
+			) {
+				$size = (int) $data['sizes'][$nextgen_avif_size_name]['optimized_size'];
 			}
-		} elseif ( ! empty( $data['sizes']['full']['optimized_size'] ) ) {
+		} elseif (! empty($data['sizes']['full']['optimized_size'])) {
 			$size = (int) $data['sizes']['full']['optimized_size'];
 		}
 
-		if ( $size ) {
-			return $human_format ? imagify_size_format( $size, $decimals ) : $size;
+		if ($size) {
+			return $human_format ? imagify_size_format($size, $decimals) : $size;
 		}
 
 		// If nothing in the database, try to get the info from the file.
 		$filepath = false;
 
-		if ( $use_nextgen ) {
-			if ( ! empty( $data['sizes'][ $nextgen_avif_size_name ]['success'] ) ) {
+		if ($use_nextgen) {
+			if (! empty($data['sizes'][$nextgen_avif_size_name]['success'])) {
 				$format = 'avif';
 			}
 			// Try with the Nextgen file first.
 			$filepath = $media->get_raw_fullsize_path();
-			$filepath = $filepath ? imagify_path_to_nextgen( $filepath, $format ) : false;
+			$filepath = $filepath ? imagify_path_to_nextgen($filepath, $format) : false;
 
-			if ( ! $filepath || ! $this->filesystem->exists( $filepath ) ) {
+			if (! $filepath || ! $this->filesystem->exists($filepath)) {
 				$filepath = false;
 			}
 		}
 
-		if ( ! $filepath ) {
+		if (! $filepath) {
 			// No Nextgen? The full size then.
 			$filepath = $media->get_fullsize_path();
 		}
 
-		if ( ! $filepath ) {
-			return $human_format ? imagify_size_format( 0, $decimals ) : 0;
+		if (! $filepath) {
+			return $human_format ? imagify_size_format(0, $decimals) : 0;
 		}
 
-		$size = (int) $this->filesystem->size( $filepath );
+		$size = (int) $this->filesystem->size($filepath);
 
-		return $human_format ? imagify_size_format( $size, $decimals ) : $size;
+		return $human_format ? imagify_size_format($size, $decimals) : $size;
 	}
 
 
@@ -369,22 +385,23 @@ abstract class AbstractData implements DataInterface {
 	 * @param  string $key  The specific data slug.
 	 * @return array|string
 	 */
-	public function get_size_data( $size = 'full', $key = '' ) {
+	public function get_size_data($size = 'full', $key = '')
+	{
 		$data = $this->get_optimization_data();
 
-		if ( ! isset( $data['sizes'][ $size ] ) ) {
+		if (! isset($data['sizes'][$size])) {
 			return $key ? '' : [];
 		}
 
-		if ( ! $key ) {
-			return $data['sizes'][ $size ];
+		if (! $key) {
+			return $data['sizes'][$size];
 		}
 
-		if ( ! isset( $data['sizes'][ $size ][ $key ] ) ) {
+		if (! isset($data['sizes'][$size][$key])) {
 			return '';
 		}
 
-		return $data['sizes'][ $size ][ $key ];
+		return $data['sizes'][$size][$key];
 	}
 
 	/**
@@ -397,19 +414,20 @@ abstract class AbstractData implements DataInterface {
 	 * @param  string $key The specific data slug.
 	 * @return array|string
 	 */
-	public function get_stats_data( $key = '' ) {
+	public function get_stats_data($key = '')
+	{
 		$data  = $this->get_optimization_data();
 		$stats = '';
 
-		if ( empty( $data['stats'] ) ) {
+		if (empty($data['stats'])) {
 			return $key ? '' : [];
 		}
 
-		if ( ! isset( $data['stats'][ $key ] ) ) {
+		if (! isset($data['stats'][$key])) {
 			return '';
 		}
 
-		return $data['stats'][ $key ];
+		return $data['stats'][$key];
 	}
 
 	/**
@@ -421,28 +439,29 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return float A 2-decimals float.
 	 */
-	public function get_saving_percent() {
-		if ( ! $this->is_valid() ) {
-			return round( (float) 0, 2 );
+	public function get_saving_percent()
+	{
+		if (! $this->is_valid()) {
+			return round((float) 0, 2);
 		}
 
-		$process_class_name     = imagify_get_optimization_process_class_name( $this->get_media()->get_context() );
-		$nextgen_webp_size_name = 'full' . constant( $process_class_name . '::WEBP_SUFFIX' );
-		$nextgen_avif_size_name = 'full' . constant( $process_class_name . '::AVIF_SUFFIX' );
+		$process_class_name     = imagify_get_optimization_process_class_name($this->get_media()->get_context());
+		$nextgen_webp_size_name = 'full' . constant($process_class_name . '::WEBP_SUFFIX');
+		$nextgen_avif_size_name = 'full' . constant($process_class_name . '::AVIF_SUFFIX');
 
-		$percent = $this->get_size_data( $nextgen_avif_size_name, 'percent' );
+		$percent = $this->get_size_data($nextgen_avif_size_name, 'percent');
 
 		// Check for webp version if avif is not found.
-		if ( ! $percent ) {
-			$percent = $this->get_size_data( $nextgen_webp_size_name, 'percent' );
+		if (! $percent) {
+			$percent = $this->get_size_data($nextgen_webp_size_name, 'percent');
 		}
 
-		if ( ! $percent ) {
-			$percent = $this->get_size_data( 'full', 'percent' );
+		if (! $percent) {
+			$percent = $this->get_size_data('full', 'percent');
 		}
 		$percent = $percent ? $percent : 0;
 
-		return round( (float) $percent, 2 );
+		return round((float) $percent, 2);
 	}
 
 	/**
@@ -454,13 +473,14 @@ abstract class AbstractData implements DataInterface {
 	 *
 	 * @return float A 2-decimals float.
 	 */
-	public function get_overall_saving_percent() {
-		if ( ! $this->is_valid() ) {
-			return round( (float) 0, 2 );
+	public function get_overall_saving_percent()
+	{
+		if (! $this->is_valid()) {
+			return round((float) 0, 2);
 		}
 
-		$percent = $this->get_stats_data( 'percent' );
+		$percent = $this->get_stats_data('percent');
 
-		return round( (float) $percent, 2 );
+		return round((float) $percent, 2);
 	}
 }

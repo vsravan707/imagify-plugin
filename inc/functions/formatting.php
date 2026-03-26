@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Round UP to nearest half integer.
@@ -10,27 +10,28 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @param  int|float|string $number  The number to round up.
  * @return float The formatted number.
  */
-function imagify_round_half_five( $number ) {
-	$number = strval( $number );
-	$number = explode( '.', $number );
+function imagify_round_half_five($number)
+{
+	$number = strval($number);
+	$number = explode('.', $number);
 
-	if ( ! isset( $number[1] ) ) {
+	if (! isset($number[1])) {
 		return $number[0];
 	}
 
-	$decimal = floatval( '0.' . substr( $number[1], 0, 2 ) ); // Cut only 2 numbers.
+	$decimal = floatval('0.' . substr($number[1], 0, 2)); // Cut only 2 numbers.
 
-	if ( $decimal > 0 ) {
-		if ( $decimal <= 0.5 ) {
-			return floatval( $number[0] ) + 0.5;
+	if ($decimal > 0) {
+		if ($decimal <= 0.5) {
+			return floatval($number[0]) + 0.5;
 		}
-		if ( $decimal <= 0.99 ) {
-			return floatval( $number[0] ) + 1;
+		if ($decimal <= 0.99) {
+			return floatval($number[0]) + 1;
 		}
 		return 1;
 	}
 
-	return floatval( $number );
+	return floatval($number);
 }
 
 /**
@@ -46,12 +47,13 @@ function imagify_round_half_five( $number ) {
  *                              If negative or not an integer, $decimals value is "automatic": 0 if $bytes <= 1GB, or 1 if > 1GB.
  * @return string|false         False on failure. Number string on success.
  */
-function imagify_size_format( $bytes, $decimals = -1 ) {
+function imagify_size_format($bytes, $decimals = -1)
+{
 
-	if ( $decimals < 0 || ! is_int( $decimals ) ) {
-		$decimals = $bytes > pow( 1024, 3 ) ? 1 : 0;
+	if ($decimals < 0 || ! is_int($decimals)) {
+		$decimals = $bytes > pow(1024, 3) ? 1 : 0;
 	}
 
-	$bytes = @size_format( $bytes, $decimals ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-	return str_replace( ' ', ' ', $bytes );
+	$bytes = @size_format($bytes, $decimals); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+	return str_replace(' ', ' ', $bytes);
 }

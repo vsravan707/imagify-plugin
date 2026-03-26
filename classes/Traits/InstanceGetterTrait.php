@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Traits;
 
 /**
@@ -10,7 +11,8 @@ namespace Imagify\Traits;
  * @since  1.9.4 Renamed into InstanceGetterTrait.
  * @author Grégory Viguier
  */
-trait InstanceGetterTrait {
+trait InstanceGetterTrait
+{
 
 	/**
 	 * The "not-so-single" instance of the class.
@@ -31,8 +33,9 @@ trait InstanceGetterTrait {
 	 *
 	 * @return object Main instance.
 	 */
-	public static function get_instance() {
-		if ( ! isset( static::$instance ) ) {
+	public static function get_instance()
+	{
+		if (! isset(static::$instance)) {
 			static::$instance = new static();
 		}
 

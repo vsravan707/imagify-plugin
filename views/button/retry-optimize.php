@@ -1,30 +1,30 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 $html_atts = '';
 
-if ( empty( $data['atts'] ) ) {
+if (empty($data['atts'])) {
 	$data['atts'] = [];
 }
 
-if ( ! isset( $data['atts']['class'] ) ) {
+if (! isset($data['atts']['class'])) {
 	// Class used for JS.
 	$data['atts']['class'] = 'button button-imagify-optimize';
 }
 
-if ( ! isset( $data['atts']['data-processing-label'] ) ) {
+if (! isset($data['atts']['data-processing-label'])) {
 	// Used for JS.
-	$data['atts']['data-processing-label'] = __( 'Optimizing...', 'imagify' );
+	$data['atts']['data-processing-label'] = __('Optimizing...', 'imagify');
 }
 
-$html_atts = $this->build_attributes( $data['atts'] );
+$html_atts = $this->build_attributes($data['atts']);
 
-if ( ! empty( $data['error'] ) ) {
-	?>
+if (! empty($data['error'])) {
+?>
 	<strong>
 		<?php
 		echo wp_kses(
-			imagify_translate_api_message( $data['error'] ),
+			imagify_translate_api_message($data['error']),
 			[
 				'br'     => true,
 				'code'   => true,
@@ -34,15 +34,16 @@ if ( ! empty( $data['error'] ) ) {
 		);
 		?>
 	</strong>
-	<br/>
-	<?php
+	<br />
+<?php
 }
 ?>
-<a href="<?php echo esc_url( $data['url'] ); ?>"<?php echo $html_atts; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-	<?php esc_html_e( 'Try again', 'imagify' ); ?>
+<a href="<?php echo esc_url($data['url']); ?>" <?php echo $html_atts; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+												?>>
+	<?php esc_html_e('Try again', 'imagify'); ?>
 </a>
 
 <?php
-if ( ! empty( $data['atts']['data-processing-label'] ) ) {
-	$this->print_js_template_in_footer( 'button/processing' );
+if (! empty($data['atts']['data-processing-label'])) {
+	$this->print_js_template_in_footer('button/processing');
 }

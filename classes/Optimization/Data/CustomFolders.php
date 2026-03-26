@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Optimization\Data;
 
 use Imagify\Traits\MediaRowTrait;
@@ -15,7 +16,8 @@ use Imagify\Traits\MediaRowTrait;
  * @see    Imagify\Media\CustomFolders
  * @author Grégory Viguier
  */
-class CustomFolders extends AbstractData {
+class CustomFolders extends AbstractData
+{
 	use MediaRowTrait;
 
 	/**
@@ -37,16 +39,17 @@ class CustomFolders extends AbstractData {
 	 *
 	 * @param mixed $id An ID, or whatever type the "Media" class constructor accepts.
 	 */
-	public function __construct( $id ) {
-		parent::__construct( $id );
+	public function __construct($id)
+	{
+		parent::__construct($id);
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			return;
 		}
 
 		$media = $this->get_media();
 
-		if ( ! $media ) {
+		if (! $media) {
 			return;
 		}
 
@@ -66,19 +69,20 @@ class CustomFolders extends AbstractData {
 	 *
 	 * @return array The data. See parent method for details.
 	 */
-	public function get_optimization_data() {
-		if ( ! $this->is_valid() ) {
+	public function get_optimization_data()
+	{
+		if (! $this->is_valid()) {
 			return $this->default_optimization_data;
 		}
 
-		$row  = array_merge( $this->get_row_db_instance()->get_column_defaults(), $this->get_row() );
+		$row  = array_merge($this->get_row_db_instance()->get_column_defaults(), $this->get_row());
 		$data = $this->default_optimization_data;
 
 		$data['status'] = $row['status'];
 		$data['level']  = $row['optimization_level'];
-		$data['level']  = is_numeric( $data['level'] ) ? (int) $data['level'] : false;
+		$data['level']  = is_numeric($data['level']) ? (int) $data['level'] : false;
 
-		if ( 'success' === $row['status'] ) {
+		if ('success' === $row['status']) {
 			/**
 			 * Success.
 			 */
@@ -88,7 +92,7 @@ class CustomFolders extends AbstractData {
 				'optimized_size' => $row['optimized_size'],
 				'percent'        => $row['percent'],
 			];
-		} elseif ( ! empty( $row['status'] ) ) {
+		} elseif (! empty($row['status'])) {
 			/**
 			 * Error.
 			 */
@@ -98,37 +102,37 @@ class CustomFolders extends AbstractData {
 			];
 		}
 
-		if ( ! empty( $row['data']['sizes'] ) && is_array( $row['data']['sizes'] ) ) {
-			unset( $row['data']['sizes']['full'] );
-			$data['sizes'] = array_merge( $data['sizes'], $row['data']['sizes'] );
-			$data['sizes'] = array_filter( $data['sizes'], 'is_array' );
+		if (! empty($row['data']['sizes']) && is_array($row['data']['sizes'])) {
+			unset($row['data']['sizes']['full']);
+			$data['sizes'] = array_merge($data['sizes'], $row['data']['sizes']);
+			$data['sizes'] = array_filter($data['sizes'], 'is_array');
 		}
 
-		if ( empty( $data['sizes'] ) ) {
+		if (empty($data['sizes'])) {
 			return $data;
 		}
 
-		foreach ( $data['sizes'] as $size_data ) {
+		foreach ($data['sizes'] as $size_data) {
 			// Cast.
-			if ( isset( $size_data['original_size'] ) ) {
+			if (isset($size_data['original_size'])) {
 				$size_data['original_size'] = (int) $size_data['original_size'];
 			}
-			if ( isset( $size_data['optimized_size'] ) ) {
+			if (isset($size_data['optimized_size'])) {
 				$size_data['optimized_size'] = (int) $size_data['optimized_size'];
 			}
-			if ( isset( $size_data['percent'] ) ) {
-				$size_data['percent'] = round( $size_data['percent'], 2 );
+			if (isset($size_data['percent'])) {
+				$size_data['percent'] = round($size_data['percent'], 2);
 			}
 			// Stats.
-			if ( ! empty( $size_data['original_size'] ) && ! empty( $size_data['optimized_size'] ) ) {
+			if (! empty($size_data['original_size']) && ! empty($size_data['optimized_size'])) {
 				$data['stats']['original_size']  += $size_data['original_size'];
 				$data['stats']['optimized_size'] += $size_data['optimized_size'];
 			}
 		}
 
-		if ( $data['stats']['original_size'] && $data['stats']['optimized_size'] ) {
+		if ($data['stats']['original_size'] && $data['stats']['optimized_size']) {
 			$data['stats']['percent'] = $data['stats']['original_size'] - $data['stats']['optimized_size'];
-			$data['stats']['percent'] = round( $data['stats']['percent'] / $data['stats']['original_size'] * 100, 2 );
+			$data['stats']['percent'] = round($data['stats']['percent'] / $data['stats']['original_size'] * 100, 2);
 		}
 
 		return $data;
@@ -144,14 +148,15 @@ class CustomFolders extends AbstractData {
 	 * @param string $size The size name.
 	 * @param array  $data The optimization data. See parent method for details.
 	 */
-	public function update_size_optimization_data( $size, array $data ) {
-		if ( ! $this->is_valid() ) {
+	public function update_size_optimization_data($size, array $data)
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
-		$old_data = array_merge( $this->get_reset_data(), $this->get_row() );
+		$old_data = array_merge($this->get_reset_data(), $this->get_row());
 
-		if ( 'full' === $size ) {
+		if ('full' === $size) {
 			/**
 			 * Original file.
 			 */
@@ -161,15 +166,15 @@ class CustomFolders extends AbstractData {
 
 			$file_path = $this->get_media()->get_fullsize_path();
 
-			if ( $file_path ) {
-				$old_data['hash'] = md5_file( $file_path );
+			if ($file_path) {
+				$old_data['hash'] = md5_file($file_path);
 			}
 
-			if ( key_exists( 'message', $data ) ) {
+			if (key_exists('message', $data)) {
 				$old_data['message'] = $data['message'];
 			}
 
-			if ( ! $data['success'] ) {
+			if (! $data['success']) {
 				/**
 				 * Error.
 				 */
@@ -181,20 +186,20 @@ class CustomFolders extends AbstractData {
 				$old_data['original_size']  = $data['original_size'];
 				$old_data['optimized_size'] = $data['optimized_size'];
 				$old_data['percent']        = $data['original_size'] - $data['optimized_size'];
-				$old_data['percent']        = round( ( $old_data['percent'] / $data['original_size'] ) * 100, 2 );
+				$old_data['percent']        = round(($old_data['percent'] / $data['original_size']) * 100, 2);
 			}
 		} else {
 			/**
 			 * WebP version or any other size.
 			 */
-			$old_data['data']          = ! empty( $old_data['data'] ) && is_array( $old_data['data'] ) ? $old_data['data'] : [];
-			$old_data['data']['sizes'] = ! empty( $old_data['data']['sizes'] ) && is_array( $old_data['data']['sizes'] ) ? $old_data['data']['sizes'] : [];
+			$old_data['data']          = ! empty($old_data['data']) && is_array($old_data['data']) ? $old_data['data'] : [];
+			$old_data['data']['sizes'] = ! empty($old_data['data']['sizes']) && is_array($old_data['data']['sizes']) ? $old_data['data']['sizes'] : [];
 
-			if ( ! $data['success'] ) {
+			if (! $data['success']) {
 				/**
 				 * Error.
 				 */
-				$old_data['data']['sizes'][ $size ] = [
+				$old_data['data']['sizes'][$size] = [
 					'success' => false,
 					'error'   => $data['error'],
 				];
@@ -202,20 +207,20 @@ class CustomFolders extends AbstractData {
 				/**
 				 * Success.
 				 */
-				$old_data['data']['sizes'][ $size ] = [
+				$old_data['data']['sizes'][$size] = [
 					'success'        => true,
 					'original_size'  => $data['original_size'],
 					'optimized_size' => $data['optimized_size'],
-					'percent'        => round( ( ( $data['original_size'] - $data['optimized_size'] ) / $data['original_size'] ) * 100, 2 ),
+					'percent'        => round((($data['original_size'] - $data['optimized_size']) / $data['original_size']) * 100, 2),
 				];
 			}
 		}
 
-		if ( isset( $old_data['data']['sizes'] ) && ( ! $old_data['data']['sizes'] || ! is_array( $old_data['data']['sizes'] ) ) ) {
-			unset( $old_data['data']['sizes'] );
+		if (isset($old_data['data']['sizes']) && (! $old_data['data']['sizes'] || ! is_array($old_data['data']['sizes']))) {
+			unset($old_data['data']['sizes']);
 		}
 
-		$this->update_row( $old_data );
+		$this->update_row($old_data);
 	}
 
 	/**
@@ -225,12 +230,13 @@ class CustomFolders extends AbstractData {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function delete_optimization_data() {
-		if ( ! $this->is_valid() ) {
+	public function delete_optimization_data()
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
-		$this->update_row( $this->get_reset_data() );
+		$this->update_row($this->get_reset_data());
 	}
 
 	/**
@@ -244,35 +250,36 @@ class CustomFolders extends AbstractData {
 	 *
 	 * @param array $sizes A list of sizes to remove.
 	 */
-	public function delete_sizes_optimization_data( array $sizes ) {
-		if ( ! $sizes || ! $this->is_valid() ) {
+	public function delete_sizes_optimization_data(array $sizes)
+	{
+		if (! $sizes || ! $this->is_valid()) {
 			return;
 		}
 
-		$data = array_merge( $this->get_reset_data(), $this->get_row() );
+		$data = array_merge($this->get_reset_data(), $this->get_row());
 
-		$data['data']['sizes'] = ! empty( $data['data']['sizes'] ) && is_array( $data['data']['sizes'] ) ? $data['data']['sizes'] : [];
+		$data['data']['sizes'] = ! empty($data['data']['sizes']) && is_array($data['data']['sizes']) ? $data['data']['sizes'] : [];
 
-		if ( ! $data['data']['sizes'] ) {
+		if (! $data['data']['sizes']) {
 			return;
 		}
 
-		$remaining_sizes_data = array_diff_key( $data['data']['sizes'], array_flip( $sizes ) );
+		$remaining_sizes_data = array_diff_key($data['data']['sizes'], array_flip($sizes));
 
-		if ( ! $remaining_sizes_data ) {
+		if (! $remaining_sizes_data) {
 			// All sizes have been removed: delete everything.
 			$this->delete_optimization_data();
 			return;
 		}
 
-		if ( count( $remaining_sizes_data ) === count( $data['data']['sizes'] ) ) {
+		if (count($remaining_sizes_data) === count($data['data']['sizes'])) {
 			// Nothing has been removed.
 			return;
 		}
 
 		$data['data']['sizes'] = $remaining_sizes_data;
 
-		$this->update_row( $data );
+		$this->update_row($data);
 	}
 
 	/**
@@ -294,20 +301,21 @@ class CustomFolders extends AbstractData {
 	 *     @type string $error              An error message.
 	 * }
 	 */
-	protected function get_reset_data() {
+	protected function get_reset_data()
+	{
 		static $column_defaults;
 
-		if ( ! isset( $column_defaults ) ) {
+		if (! isset($column_defaults)) {
 			$column_defaults = $this->get_row_db_instance()->get_column_defaults();
 
 			// All DB columns that have `null` as default value, are Imagify data.
-			foreach ( $column_defaults as $column_name => $value ) {
-				if ( 'hash' === $column_name || 'modified' === $column_name || 'data' === $column_name ) {
+			foreach ($column_defaults as $column_name => $value) {
+				if ('hash' === $column_name || 'modified' === $column_name || 'data' === $column_name) {
 					continue;
 				}
 
-				if ( isset( $value ) ) {
-					unset( $column_defaults[ $column_name ] );
+				if (isset($value)) {
+					unset($column_defaults[$column_name]);
 				}
 			}
 		}
@@ -317,8 +325,8 @@ class CustomFolders extends AbstractData {
 		// Also set the new file hash.
 		$file_path = $this->get_media()->get_fullsize_path();
 
-		if ( $file_path ) {
-			$imagify_columns['hash'] = md5_file( $file_path );
+		if ($file_path) {
+			$imagify_columns['hash'] = md5_file($file_path);
 		}
 
 		return $imagify_columns;

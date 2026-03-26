@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Job;
 
 use Imagify\Optimization\Process\ProcessInterface;
@@ -10,7 +11,8 @@ use WP_Error;
  *
  * @since 1.9
  */
-final class MediaOptimization extends \Imagify_Abstract_Background_Process {
+final class MediaOptimization extends \Imagify_Abstract_Background_Process
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -53,19 +55,20 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * }
 	 * @return array|bool The modified item to put back in the queue. False to remove the item from the queue.
 	 */
-	protected function task( $item ) {
-		$item = $this->validate_item( $item );
+	protected function task($item)
+	{
+		$item = $this->validate_item($item);
 
-		if ( ! $item ) {
+		if (! $item) {
 			// Not valid.
 			return false;
 		}
 
 		// Launch the task.
 		$method = 'task_' . $item['task'];
-		$item   = $this->$method( $item );
+		$item   = $this->$method($item);
 
-		if ( $item['task'] ) {
+		if ($item['task']) {
 			// Next task.
 			return $item;
 		}
@@ -83,8 +86,9 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * @param  array $item See $this->task().
 	 * @return array       The item.
 	 */
-	private function task_before( $item ) {
-		if ( ! empty( $item['error'] ) && is_wp_error( $item['error'] ) ) {
+	private function task_before($item)
+	{
+		if (! empty($item['error']) && is_wp_error($item['error'])) {
 			$wp_error = $item['error'];
 		} else {
 			$wp_error = new WP_Error();
@@ -102,22 +106,22 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 		 * @param ProcessInterface $process  The optimization process.
 		 * @param array            $item     The item being processed. See $this->task().
 		 */
-		$data = apply_filters( 'imagify_before_optimize', [], $wp_error, $this->optimization_process, $item ); // @phpstan-ignore-line
+		$data = apply_filters('imagify_before_optimize', [], $wp_error, $this->optimization_process, $item); // @phpstan-ignore-line
 
-		if ( is_wp_error( $data ) ) {
+		if (is_wp_error($data)) {
 			$wp_error = $data;
-		} elseif ( $data && is_array( $data ) ) {
-			$item['data'] = array_merge( $data, $item['data'] );
+		} elseif ($data && is_array($data)) {
+			$item['data'] = array_merge($data, $item['data']);
 		}
 
-		if ( $wp_error->get_error_codes() ) {
+		if ($wp_error->get_error_codes()) {
 			// Don't optimize if there is an error.
 			$item['task']  = 'after';
 			$item['error'] = $wp_error;
 			return $item;
 		}
 
-		if ( empty( $item['data']['hook_suffix'] ) ) {
+		if (empty($item['data']['hook_suffix'])) {
 			// Next task.
 			$item['task'] = 'optimize';
 			return $item;
@@ -137,15 +141,15 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 		 * @param ProcessInterface $process  The optimization process.
 		 * @param array            $item     The item being processed. See $this->task().
 		 */
-		$data = apply_filters( "imagify_before_{$hook_suffix}", [], $wp_error, $this->optimization_process, $item ); // @phpstan-ignore-line
+		$data = apply_filters("imagify_before_{$hook_suffix}", [], $wp_error, $this->optimization_process, $item); // @phpstan-ignore-line
 
-		if ( is_wp_error( $data ) ) {
+		if (is_wp_error($data)) {
 			$wp_error = $data;
-		} elseif ( $data && is_array( $data ) ) {
-			$item['data'] = array_merge( $data, $item['data'] );
+		} elseif ($data && is_array($data)) {
+			$item['data'] = array_merge($data, $item['data']);
 		}
 
-		if ( $wp_error->get_error_codes() ) {
+		if ($wp_error->get_error_codes()) {
 			// Don't optimize if there is an error.
 			$item['task']  = 'after';
 			$item['error'] = $wp_error;
@@ -166,37 +170,36 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * @param  array $item See $this->task().
 	 * @return array       The item.
 	 */
-	private function task_optimize( $item ) {
+	private function task_optimize($item)
+	{
 		// Determine which size we're going to optimize. The 'full' size must be optimized before any other.
-		if ( in_array( 'full', $item['sizes'], true ) ) {
+		if (in_array('full', $item['sizes'], true)) {
 			$current_size  = 'full';
-			$item['sizes'] = array_diff( $item['sizes'], [ 'full' ] );
+			$item['sizes'] = array_diff($item['sizes'], ['full']);
 		} else {
-			$current_size = array_shift( $item['sizes'] );
+			$current_size = array_shift($item['sizes']);
 		}
 
 		$item['sizes_done'][] = $current_size;
 
 		// Optimize the file.
-		$data = $this->optimization_process->optimize_size( $current_size, $item['optimization_level'] );
+		$data = $this->optimization_process->optimize_size($current_size, $item['optimization_level']);
 
-		if ( 'full' === $current_size ) {
-			if ( is_wp_error( $data ) ) {
+		if ('full' === $current_size) {
+			if (is_wp_error($data)) {
 				// Don't go further if there is an error.
 				$item['sizes'] = [];
 				$item['error'] = $data;
-
-			} elseif ( 'already_optimized' === $data['status'] ) {
+			} elseif ('already_optimized' === $data['status']) {
 				// Status is "already_optimized", try to create next-gen versions only.
-				$item['sizes'] = array_filter( $item['sizes'], [ $this->optimization_process, 'is_size_next_gen' ] );
-
-			} elseif ( 'success' !== $data['status'] ) {
+				$item['sizes'] = array_filter($item['sizes'], [$this->optimization_process, 'is_size_next_gen']);
+			} elseif ('success' !== $data['status']) {
 				// Don't go further if the full size has not the "success" status.
 				$item['sizes'] = [];
 			}
 		}
 
-		if ( ! $item['sizes'] ) {
+		if (! $item['sizes']) {
 			// No more files to optimize.
 			$item['task'] = 'after';
 		}
@@ -213,8 +216,9 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * @param  array $item See $this->task().
 	 * @return array       The item.
 	 */
-	private function task_after( $item ) {
-		if ( ! empty( $item['data']['delete_backup'] ) ) {
+	private function task_after($item)
+	{
+		if (! empty($item['data']['delete_backup'])) {
 			$this->optimization_process->delete_backup();
 		}
 
@@ -227,9 +231,9 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 		 * @param ProcessInterface $process The optimization process.
 		 * @param array            $item    The item being processed. See $this->task().
 		 */
-		do_action( 'imagify_after_optimize', $this->optimization_process, $item );
+		do_action('imagify_after_optimize', $this->optimization_process, $item);
 
-		if ( empty( $item['data']['hook_suffix'] ) ) {
+		if (empty($item['data']['hook_suffix'])) {
 			$item['task'] = false;
 			return $item;
 		}
@@ -245,7 +249,7 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 		 * @param ProcessInterface $process The optimization process.
 		 * @param array            $item    The item being processed. See $this->task().
 		 */
-		do_action( "imagify_after_{$hook_suffix}", $this->optimization_process, $item );
+		do_action("imagify_after_{$hook_suffix}", $this->optimization_process, $item);
 
 		$item['task'] = false;
 		return $item;
@@ -260,7 +264,8 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * @param array $item See $this->task().
 	 * @return array|bool The item. False if invalid.
 	 */
-	protected function validate_item( $item ) {
+	protected function validate_item($item)
+	{
 		$this->optimization_process = null;
 
 		$default = [
@@ -273,58 +278,58 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 			'data'               => [],
 		];
 
-		$item = imagify_merge_intersect( $item, $default );
+		$item = imagify_merge_intersect($item, $default);
 
 		// Validate some types first.
-		if ( ! is_array( $item['sizes'] ) ) {
+		if (! is_array($item['sizes'])) {
 			return false;
 		}
 
-		if ( isset( $item['error'] ) && ! is_wp_error( $item['error'] ) ) {
-			unset( $item['error'] );
+		if (isset($item['error']) && ! is_wp_error($item['error'])) {
+			unset($item['error']);
 		}
 
-		if ( isset( $item['data']['hook_suffix'] ) && ! is_string( $item['data']['hook_suffix'] ) ) {
-			unset( $item['data']['hook_suffix'] );
+		if (isset($item['data']['hook_suffix']) && ! is_string($item['data']['hook_suffix'])) {
+			unset($item['data']['hook_suffix']);
 		}
 
 		$item['id']                 = (int) $item['id'];
-		$item['optimization_level'] = $this->sanitize_optimization_level( $item['optimization_level'] );
+		$item['optimization_level'] = $this->sanitize_optimization_level($item['optimization_level']);
 
-		if ( ! $item['id'] || ! $item['process_class'] ) {
+		if (! $item['id'] || ! $item['process_class']) {
 			return false;
 		}
 
 		// Process.
-		$item['process_class'] = '\\' . ltrim( $item['process_class'], '\\' );
+		$item['process_class'] = '\\' . ltrim($item['process_class'], '\\');
 
-		if ( ! class_exists( $item['process_class'] ) ) {
+		if (! class_exists($item['process_class'])) {
 			return false;
 		}
 
-		$process = $this->get_process( $item );
+		$process = $this->get_process($item);
 
-		if ( ! $process ) {
+		if (! $process) {
 			return false;
 		}
 
 		$this->optimization_process = $process;
 
 		// Validate the current task.
-		if ( empty( $item['task'] ) ) {
+		if (empty($item['task'])) {
 			$item['task'] = 'before';
 		}
 
-		if ( ! $item['task'] || ! method_exists( $this, 'task_' . $item['task'] ) ) {
+		if (! $item['task'] || ! method_exists($this, 'task_' . $item['task'])) {
 			return false;
 		}
 
-		if ( ! $item['sizes'] && 'after' !== $item['task'] ) {
+		if (! $item['sizes'] && 'after' !== $item['task']) {
 			// Allow to have no sizes, but only after the optimize task is complete.
 			return false;
 		}
 
-		if ( ! isset( $item['sizes_done'] ) || ! is_array( $item['sizes_done'] ) ) {
+		if (! isset($item['sizes_done']) || ! is_array($item['sizes_done'])) {
 			$item['sizes_done'] = [];
 		}
 
@@ -339,11 +344,12 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * @param array $item             See $this->task().
 	 * @return ProcessInterface|bool The instance object on success. False on failure.
 	 */
-	protected function get_process( $item ) {
+	protected function get_process($item)
+	{
 		$process_class = $item['process_class'];
-		$process       = new $process_class( $item['id'] );
+		$process       = new $process_class($item['id']);
 
-		if ( ! $process instanceof ProcessInterface || ! $process->is_valid() ) {
+		if (! $process instanceof ProcessInterface || ! $process->is_valid()) {
 			return false;
 		}
 
@@ -359,15 +365,16 @@ final class MediaOptimization extends \Imagify_Abstract_Background_Process {
 	 * @param  mixed $optimization_level The optimization level.
 	 * @return int
 	 */
-	protected function sanitize_optimization_level( $optimization_level ) {
-		if ( ! is_numeric( $optimization_level ) ) {
-			if ( get_imagify_option( 'lossless' ) ) {
+	protected function sanitize_optimization_level($optimization_level)
+	{
+		if (! is_numeric($optimization_level)) {
+			if (get_imagify_option('lossless')) {
 				return 0;
 			}
 
-			return get_imagify_option( 'optimization_level' );
+			return get_imagify_option('optimization_level');
 		}
 
-		return \Imagify_Options::get_instance()->sanitize_and_validate( 'optimization_level', $optimization_level );
+		return \Imagify_Options::get_instance()->sanitize_and_validate('optimization_level', $optimization_level);
 	}
 }

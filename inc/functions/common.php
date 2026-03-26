@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Get the list of the names of the Imagify context currently in use.
@@ -9,10 +9,11 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return array An array of strings.
  */
-function imagify_get_context_names() {
+function imagify_get_context_names()
+{
 	static $contexts;
 
-	if ( isset( $contexts ) ) {
+	if (isset($contexts)) {
 		return $contexts;
 	}
 
@@ -24,17 +25,17 @@ function imagify_get_context_names() {
 	 *
 	 * @param array $contexts An array of context names.
 	 */
-	$contexts = (array) apply_filters( 'imagify_register_context', [] );
+	$contexts = (array) apply_filters('imagify_register_context', []);
 
 	$contexts = array_filter(
 		$contexts,
-		function ( $context ) {
-			return $context && is_string( $context );
+		function ($context) {
+			return $context && is_string($context);
 		}
 	);
-	$contexts = array_merge( [ 'wp', 'custom-folders' ], $contexts );
+	$contexts = array_merge(['wp', 'custom-folders'], $contexts);
 
-	sort( $contexts );
+	sort($contexts);
 
 	return $contexts;
 }
@@ -48,8 +49,9 @@ function imagify_get_context_names() {
  * @param  string $context The context.
  * @return string
  */
-function imagify_sanitize_context( $context ) {
-	return sanitize_key( $context );
+function imagify_sanitize_context($context)
+{
+	return sanitize_key($context);
 }
 
 /**
@@ -61,8 +63,9 @@ function imagify_sanitize_context( $context ) {
  * @param  string $context  The context name. Default values are 'wp' and 'custom-folders'.
  * @return \Imagify\Context\ContextInterface The context instance.
  */
-function imagify_get_context( $context ) {
-	$class_name = imagify_get_context_class_name( $context );
+function imagify_get_context($context)
+{
+	$class_name = imagify_get_context_class_name($context);
 	return $class_name::get_instance();
 }
 
@@ -75,10 +78,11 @@ function imagify_get_context( $context ) {
  * @param  string $context The context name. Default values are 'wp' and 'custom-folders'.
  * @return string          The context class name.
  */
-function imagify_get_context_class_name( $context ) {
-	$context = imagify_sanitize_context( $context );
+function imagify_get_context_class_name($context)
+{
+	$context = imagify_sanitize_context($context);
 
-	switch ( $context ) {
+	switch ($context) {
 		case 'wp':
 			$class_name = '\\Imagify\\Context\\WP';
 			break;
@@ -100,9 +104,9 @@ function imagify_get_context_class_name( $context ) {
 	 * @param int    $class_name The class name.
 	 * @param string $context    The context name.
 	 */
-	$class_name = apply_filters( 'imagify_context_class_name', $class_name, $context );
+	$class_name = apply_filters('imagify_context_class_name', $class_name, $context);
 
-	return '\\' . ltrim( $class_name, '\\' );
+	return '\\' . ltrim($class_name, '\\');
 }
 
 /**
@@ -115,9 +119,10 @@ function imagify_get_context_class_name( $context ) {
  * @param  string $context  The context name. Default values are 'wp' and 'custom-folders'.
  * @return \Imagify\Optimization\Process\ProcessInterface The optimization process instance.
  */
-function imagify_get_optimization_process( $media_id, $context ) {
-	$class_name = imagify_get_optimization_process_class_name( $context );
-	return new $class_name( $media_id );
+function imagify_get_optimization_process($media_id, $context)
+{
+	$class_name = imagify_get_optimization_process_class_name($context);
+	return new $class_name($media_id);
 }
 
 /**
@@ -129,10 +134,11 @@ function imagify_get_optimization_process( $media_id, $context ) {
  * @param  string $context The context name. Default values are 'wp' and 'custom-folders'.
  * @return string          The optimization process class name.
  */
-function imagify_get_optimization_process_class_name( $context ) {
-	$context = imagify_sanitize_context( $context );
+function imagify_get_optimization_process_class_name($context)
+{
+	$context = imagify_sanitize_context($context);
 
-	switch ( $context ) {
+	switch ($context) {
 		case 'wp':
 			$class_name = '\\Imagify\\Optimization\\Process\\WP';
 			break;
@@ -154,9 +160,9 @@ function imagify_get_optimization_process_class_name( $context ) {
 	 * @param int    $class_name The class name.
 	 * @param string $context    The context name.
 	 */
-	$class_name = apply_filters( 'imagify_process_class_name', $class_name, $context );
+	$class_name = apply_filters('imagify_process_class_name', $class_name, $context);
 
-	return '\\' . ltrim( $class_name, '\\' );
+	return '\\' . ltrim($class_name, '\\');
 }
 
 /**
@@ -167,7 +173,8 @@ function imagify_get_optimization_process_class_name( $context ) {
  *
  * @return object A Imagify_Filesystem object.
  */
-function imagify_get_filesystem() {
+function imagify_get_filesystem()
+{
 	return Imagify_Filesystem::get_instance();
 }
 
@@ -184,7 +191,8 @@ function imagify_get_filesystem() {
  * @param  string $path A file path or URL.
  * @return string
  */
-function imagify_path_to_webp( $path ) {
+function imagify_path_to_webp($path)
+{
 	return $path . '.webp';
 }
 
@@ -201,8 +209,9 @@ function imagify_path_to_webp( $path ) {
  * @param  string $format format we are targeting.
  * @return string
  */
-function imagify_path_to_nextgen( $path, string $format ) {
-	switch ( $format ) {
+function imagify_path_to_nextgen($path, string $format)
+{
+	switch ($format) {
 		case 'webp':
 			$path = $path . '.webp';
 			break;
@@ -222,21 +231,22 @@ function imagify_path_to_nextgen( $path, string $format ) {
  *
  * @return bool
  */
-function imagify_can_optimize_custom_folders() {
+function imagify_can_optimize_custom_folders()
+{
 	static $can;
 
-	if ( isset( $can ) ) {
+	if (isset($can)) {
 		return $can;
 	}
 
 	// Check if the DB tables are ready.
-	if ( ! Imagify_Folders_DB::get_instance()->can_operate() || ! Imagify_Files_DB::get_instance()->can_operate() ) {
+	if (! Imagify_Folders_DB::get_instance()->can_operate() || ! Imagify_Files_DB::get_instance()->can_operate()) {
 		$can = false;
 		return $can;
 	}
 
 	// Check for user capacity.
-	$can = imagify_get_context( 'custom-folders' )->current_user_can( 'optimize' );
+	$can = imagify_get_context('custom-folders')->current_user_can('optimize');
 
 	return $can;
 }
@@ -251,14 +261,15 @@ function imagify_can_optimize_custom_folders() {
  * @param  array  $query_args An array of query arguments.
  * @return string The URL.
  */
-function imagify_get_external_url( $target, $query_args = [] ) {
+function imagify_get_external_url($target, $query_args = [])
+{
 	$site_url = IMAGIFY_SITE_DOMAIN . '/';
 	$app_url  = IMAGIFY_APP_DOMAIN . '/#/';
 
-	switch ( $target ) {
+	switch ($target) {
 		case 'plugin':
 			/* translators: Plugin URI of the plugin/theme */
-			$url = __( 'https://wordpress.org/plugins/imagify/', 'imagify' );
+			$url = __('https://wordpress.org/plugins/imagify/', 'imagify');
 			break;
 
 		case 'rate':
@@ -266,13 +277,13 @@ function imagify_get_external_url( $target, $query_args = [] ) {
 			break;
 
 		case 'contact':
-			$lang  = imagify_get_current_lang_in( 'fr' );
+			$lang  = imagify_get_current_lang_in('fr');
 			$paths = [
 				'en' => 'contact',
 				'fr' => 'fr/contact',
 			];
 
-			$url = $site_url . $paths[ $lang ] . '/';
+			$url = $site_url . $paths[$lang] . '/';
 			break;
 
 		case 'documentation':
@@ -286,7 +297,7 @@ function imagify_get_external_url( $target, $query_args = [] ) {
 		case 'register':
 			$partner = imagify_get_partner();
 
-			if ( $partner ) {
+			if ($partner) {
 				$query_args['partner'] = $partner;
 			}
 
@@ -310,8 +321,8 @@ function imagify_get_external_url( $target, $query_args = [] ) {
 			return '';
 	}
 
-	if ( $query_args ) {
-		$url = add_query_arg( $query_args, $url );
+	if ($query_args) {
+		$url = add_query_arg($query_args, $url);
 	}
 
 	return $url;
@@ -326,16 +337,17 @@ function imagify_get_external_url( $target, $query_args = [] ) {
  * @param  array $langs An array of langs, like array( 'de', 'es', 'fr', 'it' ).
  * @return string The current lang. Default is 'en'.
  */
-function imagify_get_current_lang_in( $langs ) {
+function imagify_get_current_lang_in($langs)
+{
 	static $locale;
 
-	if ( ! isset( $locale ) ) {
+	if (! isset($locale)) {
 		$locale = imagify_get_locale();
-		$locale = explode( '_', strtolower( $locale . '_' ) ); // Trailing underscore is to make sure $locale[1] is set.
+		$locale = explode('_', strtolower($locale . '_')); // Trailing underscore is to make sure $locale[1] is set.
 	}
 
-	foreach ( (array) $langs as $lang ) {
-		if ( $lang === $locale[0] || $lang === $locale[1] ) {
+	foreach ((array) $langs as $lang) {
+		if ($lang === $locale[0] || $lang === $locale[1]) {
 			return $lang;
 		}
 	}
@@ -351,8 +363,9 @@ function imagify_get_current_lang_in( $langs ) {
  *
  * @return string The current locale.
  */
-function imagify_get_locale() {
-	$locale = function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
+function imagify_get_locale()
+{
+	$locale = function_exists('get_user_locale') ? get_user_locale() : get_locale();
 	/**
 	 * Filter the locale used by Imagify.
 	 *
@@ -361,7 +374,7 @@ function imagify_get_locale() {
 	 *
 	 * @param string $locale The current locale.
 	 */
-	return apply_filters( 'imagify_locale', $locale );
+	return apply_filters('imagify_locale', $locale);
 }
 
 /**
@@ -374,15 +387,16 @@ function imagify_get_locale() {
  * @param  string   $format Format to display the label. Use %ICON% for the icon and %s for the label.
  * @return string           The label.
  */
-function imagify_get_optimization_level_label( $level, $format = '%s' ) {
-	if ( ! is_numeric( $level ) ) {
+function imagify_get_optimization_level_label($level, $format = '%s')
+{
+	if (! is_numeric($level)) {
 		return '';
 	}
 
-	if ( strpos( $format, '%ICON%' ) !== false ) {
+	if (strpos($format, '%ICON%') !== false) {
 		$icon = '<svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><g fill="#40B1D0" fill-rule="evenodd">';
 
-		switch ( $level ) {
+		switch ($level) {
 			case 2:
 			case 1:
 				$icon .= '<polygon points="11.6054688 11.6054688 8.7890625 11.6054688 8.7890625 0.39453125 11.6054688 0.39453125"/><polygon points="7.39453125 11.6054688 4.60546875 11.6054688 4.60546875 3.89453125 7.39453125 3.89453125"/><polygon points="3.2109375 11.6054688 0.39453125 11.6054688 0.39453125 6 3.2109375 6"/>';
@@ -393,15 +407,15 @@ function imagify_get_optimization_level_label( $level, $format = '%s' ) {
 
 		$icon .= '</g></svg>';
 
-		$format = str_replace( '%ICON%', $icon, $format );
+		$format = str_replace('%ICON%', $icon, $format);
 	}
 
-	switch ( $level ) {
+	switch ($level) {
 		case 2:
 		case 1:
-			return sprintf( $format, __( 'Smart', 'imagify' ) );
+			return sprintf($format, __('Smart', 'imagify'));
 		case 0:
-			return sprintf( $format, __( 'Lossless', 'imagify' ) );
+			return sprintf($format, __('Lossless', 'imagify'));
 	}
 
 	return '';
@@ -417,9 +431,10 @@ function imagify_get_optimization_level_label( $level, $format = '%s' ) {
  * @param  array $default_values The array we use as boundaries.
  * @return array
  */
-function imagify_merge_intersect( $values, $default_values ) {
-	$values = array_merge( $default_values, (array) $values );
-	return array_intersect_key( $values, $default_values );
+function imagify_merge_intersect($values, $default_values)
+{
+	$values = array_merge($default_values, (array) $values);
+	return array_intersect_key($values, $default_values);
 }
 
 /**
@@ -432,7 +447,8 @@ function imagify_merge_intersect( $values, $default_values ) {
  *
  * @return bool True.
  */
-function imagify_return_true() {
+function imagify_return_true()
+{
 	return true;
 }
 
@@ -446,7 +462,8 @@ function imagify_return_true() {
  *
  * @return bool False.
  */
-function imagify_return_false() {
+function imagify_return_false()
+{
 	return false;
 }
 
@@ -463,7 +480,8 @@ function imagify_return_false() {
  * @param string $replacement  Optional. The function that should have been called. Default null.
  * @param string $parent_class Optional. The parent class calling the deprecated constructor. Default empty string.
  */
-function imagify_deprecated_class( $class_name, $version, $replacement = null, $parent_class = '' ) {
+function imagify_deprecated_class($class_name, $version, $replacement = null, $parent_class = '')
+{
 
 	/**
 	 * Fires when a deprecated class is called.
@@ -476,9 +494,9 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 	 * @param string $replacement  Optional. The function that should have been called.
 	 * @param string $parent_class The parent class calling the deprecated constructor.
 	 */
-	do_action( 'imagify_deprecated_class_run', $class_name, $version, $replacement, $parent_class );
+	do_action('imagify_deprecated_class_run', $class_name, $version, $replacement, $parent_class);
 
-	if ( ! WP_DEBUG ) {
+	if (! WP_DEBUG) {
 		return;
 	}
 
@@ -492,16 +510,16 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 	 *
 	 * @param bool $trigger Whether to trigger the error for deprecated classes. Default true.
 	 */
-	if ( ! apply_filters( 'imagify_deprecated_class_trigger_error', true ) ) {
+	if (! apply_filters('imagify_deprecated_class_trigger_error', true)) {
 		return;
 	}
 
-	if ( function_exists( '__' ) ) {
-		if ( ! empty( $parent_class ) ) {
+	if (function_exists('__')) {
+		if (! empty($parent_class)) {
 			/**
 			 * With parent class.
 			 */
-			if ( ! empty( $replacement ) ) {
+			if (! empty($replacement)) {
 				/**
 				 * With replacement.
 				 */
@@ -509,7 +527,7 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 					'trigger_error',
 					sprintf(
 						/* translators: 1: PHP class name, 2: PHP parent class name, 3: version number, 4: replacement class name. */
-						__( 'The called class %1$s extending %2$s is <strong>deprecated</strong> since version %3$s! Use %4$s instead.', 'imagify' ),
+						__('The called class %1$s extending %2$s is <strong>deprecated</strong> since version %3$s! Use %4$s instead.', 'imagify'),
 						'<code>' . $class_name . '</code>',
 						'<code>' . $parent_class . '</code>',
 						'<strong>' . $version . '</strong>',
@@ -526,7 +544,7 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 				'trigger_error',
 				sprintf(
 					/* translators: 1: PHP class name, 2: PHP parent class name, 3: version number. */
-					__( 'The called class %1$s extending %2$s is <strong>deprecated</strong> since version %3$s!', 'imagify' ),
+					__('The called class %1$s extending %2$s is <strong>deprecated</strong> since version %3$s!', 'imagify'),
 					'<code>' . $class_name . '</code>',
 					'<code>' . $parent_class . '</code>',
 					'<strong>' . $version . '</strong>'
@@ -538,7 +556,7 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 		/**
 		 * Without parent class.
 		 */
-		if ( ! empty( $replacement ) ) {
+		if (! empty($replacement)) {
 			/**
 			 * With replacement.
 			 */
@@ -546,7 +564,7 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 				'trigger_error',
 				sprintf(
 					/* translators: 1: PHP class name, 2: version number, 3: replacement class name. */
-					__( 'The called class %1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.', 'imagify' ),
+					__('The called class %1$s is <strong>deprecated</strong> since version %2$s! Use %3$s instead.', 'imagify'),
 					'<code>' . $class_name . '</code>',
 					'<strong>' . $version . '</strong>',
 					'<code>' . $replacement . '</code>'
@@ -562,7 +580,7 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 			'trigger_error',
 			sprintf(
 				/* translators: 1: PHP class name, 2: version number. */
-				__( 'The called class %1$s is <strong>deprecated</strong> since version %2$s!', 'imagify' ),
+				__('The called class %1$s is <strong>deprecated</strong> since version %2$s!', 'imagify'),
 				'<code>' . $class_name . '</code>',
 				'<strong>' . $version . '</strong>'
 			)
@@ -570,11 +588,11 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 		return;
 	}
 
-	if ( ! empty( $parent_class ) ) {
+	if (! empty($parent_class)) {
 		/**
 		 * With parent class.
 		 */
-		if ( ! empty( $replacement ) ) {
+		if (! empty($replacement)) {
 			/**
 			 * With replacement.
 			 */
@@ -609,7 +627,7 @@ function imagify_deprecated_class( $class_name, $version, $replacement = null, $
 	/**
 	 * Without parent class.
 	 */
-	if ( ! empty( $replacement ) ) {
+	if (! empty($replacement)) {
 		/**
 		 * With replacement.
 		 */

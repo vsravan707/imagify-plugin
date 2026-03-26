@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Get all mime types which could be optimized by Imagify.
@@ -10,8 +10,9 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  *
  * @return array $mime_type  The mime type.
  */
-function get_imagify_mime_type() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7', 'imagify_get_mime_types()' );
+function get_imagify_mime_type()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7', 'imagify_get_mime_types()');
 
 	return imagify_get_mime_types();
 }
@@ -24,8 +25,9 @@ function get_imagify_mime_type() {
  * @since 1.7 Deprecated.
  * @deprecated
  */
-function _imagify_rating_scheduled() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Cron_Rating::get_instance()->schedule_event()' );
+function _imagify_rating_scheduled()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Cron_Rating::get_instance()->schedule_event()');
 
 	Imagify_Cron_Rating::get_instance()->schedule_event();
 }
@@ -37,8 +39,9 @@ function _imagify_rating_scheduled() {
  * @since 1.7 Deprecated.
  * @deprecated
  */
-function _do_imagify_rating_cron() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Cron_Rating::get_instance()->do_event()' );
+function _do_imagify_rating_cron()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Cron_Rating::get_instance()->do_event()');
 
 	Imagify_Cron_Rating::get_instance()->do_event();
 }
@@ -54,10 +57,11 @@ function _do_imagify_rating_cron() {
  * @param  Array $schedules An array of intervals used by cron jobs.
  * @return Array Updated array of intervals.
  */
-function imagify_purge_cron_schedule( $schedules ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Cron_Library_Size::get_instance()->maybe_add_recurrence( $schedules )' );
+function imagify_purge_cron_schedule($schedules)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Cron_Library_Size::get_instance()->maybe_add_recurrence( $schedules )');
 
-	return Imagify_Cron_Library_Size::get_instance()->do_event( $schedules );
+	return Imagify_Cron_Library_Size::get_instance()->do_event($schedules);
 }
 
 /**
@@ -69,8 +73,9 @@ function imagify_purge_cron_schedule( $schedules ) {
  * @author Remy Perona
  * @deprecated
  */
-function _imagify_update_library_size_calculations_scheduled() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Cron_Library_Size::get_instance()->schedule_event()' );
+function _imagify_update_library_size_calculations_scheduled()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Cron_Library_Size::get_instance()->schedule_event()');
 
 	Imagify_Cron_Library_Size::get_instance()->schedule_event();
 }
@@ -83,8 +88,9 @@ function _imagify_update_library_size_calculations_scheduled() {
  * @author Remy Perona
  * @deprecated
  */
-function _do_imagify_update_library_size_calculations() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Cron_Library_Size::get_instance()->do_event()' );
+function _do_imagify_update_library_size_calculations()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Cron_Library_Size::get_instance()->do_event()');
 
 	Imagify_Cron_Library_Size::get_instance()->do_event();
 }
@@ -100,10 +106,11 @@ function _do_imagify_update_library_size_calculations() {
  * @param  string $file_path Path to the file.
  * @return bool              True on success, false on failure.
  */
-function imagify_chmod_file( $file_path ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->chmod_file( $file_path )' );
+function imagify_chmod_file($file_path)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->chmod_file( $file_path )');
 
-	return imagify_get_filesystem()->chmod_file( $file_path );
+	return imagify_get_filesystem()->chmod_file($file_path);
 }
 
 /**
@@ -118,10 +125,11 @@ function imagify_chmod_file( $file_path ) {
  * @param  string $file_path A file path (prefered) or a filename.
  * @return string|bool       A mime type. False on failure: the test is limited to mime types supported by Imagify.
  */
-function imagify_get_mime_type_from_file( $file_path ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->get_mime_type( $file_path )' );
+function imagify_get_mime_type_from_file($file_path)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->get_mime_type( $file_path )');
 
-	return imagify_get_filesystem()->get_mime_type( $file_path );
+	return imagify_get_filesystem()->get_mime_type($file_path);
 }
 
 /**
@@ -135,10 +143,11 @@ function imagify_get_mime_type_from_file( $file_path ) {
  * @param  string $file_path The file path.
  * @return string            The date.
  */
-function imagify_get_file_date( $file_path ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->get_date( $file_path )' );
+function imagify_get_file_date($file_path)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->get_date( $file_path )');
 
-	return imagify_get_filesystem()->get_date( $file_path );
+	return imagify_get_filesystem()->get_date($file_path);
 }
 
 /**
@@ -151,8 +160,9 @@ function imagify_get_file_date( $file_path ) {
  *
  * @return string The path to WordPress' root folder.
  */
-function imagify_get_abspath() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->get_abspath()' );
+function imagify_get_abspath()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->get_abspath()');
 
 	return imagify_get_filesystem()->get_abspath();
 }
@@ -171,10 +181,11 @@ function imagify_get_abspath() {
  * @param  string $base      A base path to use instead of ABSPATH.
  * @return string|bool       A relative path. Can return the absolute path or false in case of a failure.
  */
-function imagify_make_file_path_relative( $file_path, $base = '' ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->make_path_relative( $file_path, $base )' );
+function imagify_make_file_path_relative($file_path, $base = '')
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->make_path_relative( $file_path, $base )');
 
-	return imagify_get_filesystem()->make_path_relative( $file_path, $base );
+	return imagify_get_filesystem()->make_path_relative($file_path, $base);
 }
 
 /**
@@ -188,10 +199,11 @@ function imagify_make_file_path_relative( $file_path, $base = '' ) {
  * @param  string $file_path An absolute path.
  * @return bool
  */
-function imagify_file_is_symlinked( $file_path ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->is_symlinked( $file_path )' );
+function imagify_file_is_symlinked($file_path)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'imagify_get_filesystem()->is_symlinked( $file_path )');
 
-	return imagify_get_filesystem()->is_symlinked( $file_path );
+	return imagify_get_filesystem()->is_symlinked($file_path);
 }
 
 /**
@@ -203,8 +215,9 @@ function imagify_file_is_symlinked( $file_path ) {
  *
  * @return bool True if the API key is valid.
  */
-function imagify_valid_key() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'Imagify_Requirements::is_api_key_valid()' );
+function imagify_valid_key()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'Imagify_Requirements::is_api_key_valid()');
 
 	return Imagify_Requirements::is_api_key_valid();
 }
@@ -218,8 +231,9 @@ function imagify_valid_key() {
  *
  * @return bool True if Imagify API can't be called.
  */
-function is_imagify_blocked() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'Imagify_Requirements::is_imagify_blocked()' );
+function is_imagify_blocked()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'Imagify_Requirements::is_imagify_blocked()');
 
 	return Imagify_Requirements::is_imagify_blocked();
 }
@@ -233,8 +247,9 @@ function is_imagify_blocked() {
  *
  * @return bool True if the Imagify API is available.
  */
-function is_imagify_servers_up() {
-	_deprecated_function( __FUNCTION__ . '()', '1.7.1', 'Imagify_Requirements::is_api_up()' );
+function is_imagify_servers_up()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.7.1', 'Imagify_Requirements::is_api_up()');
 
 	return Imagify_Requirements::is_api_up();
 }
@@ -252,10 +267,11 @@ function is_imagify_servers_up() {
  * @param  int   $attachment_id Current attachment ID.
  * @return array
  */
-function _imagify_optimize_attachment( $metadata, $attachment_id ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.8.4', 'Imagify_Auto_Optimization::get_instance()->store_upload_ids()' );
+function _imagify_optimize_attachment($metadata, $attachment_id)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.8.4', 'Imagify_Auto_Optimization::get_instance()->store_upload_ids()');
 
-	if ( ! Imagify_Requirements::is_api_key_valid() || ! get_imagify_option( 'auto_optimize' ) ) {
+	if (! Imagify_Requirements::is_api_key_valid() || ! get_imagify_option('auto_optimize')) {
 		return $metadata;
 	}
 
@@ -269,17 +285,17 @@ function _imagify_optimize_attachment( $metadata, $attachment_id ) {
 	 * @param int   $attachment_id Attachment ID.
 	 * @param array $metadata      An array of attachment meta data.
 	 */
-	$optimize = apply_filters( 'imagify_auto_optimize_attachment', true, $attachment_id, $metadata );
+	$optimize = apply_filters('imagify_auto_optimize_attachment', true, $attachment_id, $metadata);
 
-	if ( ! $optimize ) {
+	if (! $optimize) {
 		return $metadata;
 	}
 
 	$context     = 'wp';
 	$action      = 'imagify_async_optimize_upload_new_media';
-	$_ajax_nonce = wp_create_nonce( 'new_media-' . $attachment_id );
+	$_ajax_nonce = wp_create_nonce('new_media-' . $attachment_id);
 
-	imagify_do_async_job( compact( 'action', '_ajax_nonce', 'metadata', 'attachment_id', 'context' ) );
+	imagify_do_async_job(compact('action', '_ajax_nonce', 'metadata', 'attachment_id', 'context'));
 
 	return $metadata;
 }
@@ -292,31 +308,32 @@ function _imagify_optimize_attachment( $metadata, $attachment_id ) {
  * @since 1.8.4 Deprecated
  * @deprecated
  */
-function _imagify_optimize_save_image_editor_file() {
-	_deprecated_function( __FUNCTION__ . '()', '1.8.4' );
+function _imagify_optimize_save_image_editor_file()
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.8.4');
 
-	if ( ! isset( $_POST['action'], $_POST['do'], $_POST['postid'] ) || 'image-editor' !== $_POST['action'] || 'open' === $_POST['do'] ) { // WPCS: CSRF ok.
+	if (! isset($_POST['action'], $_POST['do'], $_POST['postid']) || 'image-editor' !== $_POST['action'] || 'open' === $_POST['do']) { // WPCS: CSRF ok.
 		return;
 	}
 
-	$attachment_id = absint( $_POST['postid'] );
+	$attachment_id = absint($_POST['postid']);
 
-	if ( ! $attachment_id || ! Imagify_Requirements::is_api_key_valid() ) {
+	if (! $attachment_id || ! Imagify_Requirements::is_api_key_valid()) {
 		return;
 	}
 
-	check_ajax_referer( 'image_editor-' . $attachment_id );
+	check_ajax_referer('image_editor-' . $attachment_id);
 
-	$attachment = get_imagify_attachment( 'wp', $attachment_id, 'save_image_editor_file' );
+	$attachment = get_imagify_attachment('wp', $attachment_id, 'save_image_editor_file');
 
-	if ( ! $attachment->get_data() ) {
+	if (! $attachment->get_data()) {
 		return;
 	}
 
 	$body           = $_POST;
 	$body['action'] = 'imagify_async_optimize_save_image_editor_file';
 
-	imagify_do_async_job( $body );
+	imagify_do_async_job($body);
 }
 
 
@@ -328,30 +345,31 @@ function _imagify_optimize_save_image_editor_file() {
  * @author Grégory Viguier
  * @deprecated
  */
-function imagify_wp_version_notice() {
+function imagify_wp_version_notice()
+{
 	global $wp_version;
 
-	_deprecated_function( __FUNCTION__ . '()', '1.9', 'Imagify_Requirements_Check->print_notice()' );
+	_deprecated_function(__FUNCTION__ . '()', '1.9', 'Imagify_Requirements_Check->print_notice()');
 
-	if ( is_multisite() ) {
-		if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+	if (is_multisite()) {
+		if (! function_exists('is_plugin_active_for_network')) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		$is_active = is_plugin_active_for_network( plugin_basename( IMAGIFY_FILE ) );
+		$is_active = is_plugin_active_for_network(plugin_basename(IMAGIFY_FILE));
 		$capacity  = $is_active ? 'manage_network_options' : 'manage_options';
 	} else {
 		$capacity = 'manage_options';
 	}
 
-	if ( ! current_user_can( $capacity ) ) {
+	if (! current_user_can($capacity)) {
 		return;
 	}
 
 	echo '<div class="error notice"><p>';
-	echo '<strong>' . __( 'Notice:', 'imagify' ) . '</strong> ';
+	echo '<strong>' . __('Notice:', 'imagify') . '</strong> ';
 	/* translators: 1 is this plugin name, 2 is the required WP version, 3 is the current WP version. */
-	printf( __( '%1$s requires WordPress %2$s minimum, your website is actually running version %3$s.', 'imagify' ), '<strong>Imagify</strong>', '<code>' . IMAGIFY_WP_MIN . '</code>', '<code>' . $wp_version . '</code>' );
+	printf(__('%1$s requires WordPress %2$s minimum, your website is actually running version %3$s.', 'imagify'), '<strong>Imagify</strong>', '<code>' . IMAGIFY_WP_MIN . '</code>', '<code>' . $wp_version . '</code>');
 	echo '</p></div>';
 }
 
@@ -364,10 +382,11 @@ function imagify_wp_version_notice() {
  *
  * @param int $post_id Attachment ID.
  */
-function _imagify_delete_backup_file( $post_id ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9', 'imagify_cleanup_after_media_deletion( $post_id )' );
+function _imagify_delete_backup_file($post_id)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9', 'imagify_cleanup_after_media_deletion( $post_id )');
 
-	get_imagify_attachment( 'wp', $post_id, 'delete_attachment' )->delete_backup();
+	get_imagify_attachment('wp', $post_id, 'delete_attachment')->delete_backup();
 }
 
 /**
@@ -380,13 +399,14 @@ function _imagify_delete_backup_file( $post_id ) {
  *
  * @param string $class Name of the class to include.
  */
-function imagify_autoload( $class ) {
+function imagify_autoload($class)
+{
 	static $strtolower;
 
-	_deprecated_function( __FUNCTION__ . '()', '1.9' );
+	_deprecated_function(__FUNCTION__ . '()', '1.9');
 
-	if ( ! isset( $strtolower ) ) {
-		$strtolower = function_exists( 'mb_strtolower' ) ? 'mb_strtolower' : 'strtolower';
+	if (! isset($strtolower)) {
+		$strtolower = function_exists('mb_strtolower') ? 'mb_strtolower' : 'strtolower';
 	}
 
 	// Generic classes.
@@ -424,8 +444,8 @@ function imagify_autoload( $class ) {
 		'Imagify'                             => 1,
 	);
 
-	if ( isset( $classes[ $class ] ) ) {
-		$class = str_replace( '_', '-', call_user_func( $strtolower, $class ) );
+	if (isset($classes[$class])) {
+		$class = str_replace('_', '-', call_user_func($strtolower, $class));
 		include IMAGIFY_PATH . 'inc/classes/class-' . $class . '.php';
 		return;
 	}
@@ -447,9 +467,9 @@ function imagify_autoload( $class ) {
 		'Imagify_WP_Time_Capsule'                           => 'wp-time-capsule',
 	);
 
-	if ( isset( $classes[ $class ] ) ) {
-		$folder = $classes[ $class ];
-		$class  = str_replace( '_', '-', call_user_func( $strtolower, $class ) );
+	if (isset($classes[$class])) {
+		$folder = $classes[$class];
+		$class  = str_replace('_', '-', call_user_func($strtolower, $class));
 		include IMAGIFY_PATH . 'inc/3rd-party/' . $folder . '/inc/classes/class-' . $class . '.php';
 	}
 }
@@ -466,16 +486,17 @@ function imagify_autoload( $class ) {
  * @param  int $attachment_id The attachment ID.
  * @return bool
  */
-function imagify_attachment_has_required_metadata( $attachment_id ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9', '( new Imagify\\Media\\WP( $attachment_id ) )->has_required_media_data() )' );
+function imagify_attachment_has_required_metadata($attachment_id)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9', '( new Imagify\\Media\\WP( $attachment_id ) )->has_required_media_data() )');
 
-	$file = get_post_meta( $attachment_id, '_wp_attached_file', true );
+	$file = get_post_meta($attachment_id, '_wp_attached_file', true);
 
-	if ( ! $file || preg_match( '@://@', $file ) || preg_match( '@^.:\\\@', $file ) ) {
+	if (! $file || preg_match('@://@', $file) || preg_match('@^.:\\\@', $file)) {
 		return false;
 	}
 
-	return (bool) wp_get_attachment_metadata( $attachment_id, true );
+	return (bool) wp_get_attachment_metadata($attachment_id, true);
 }
 
 /**
@@ -490,21 +511,22 @@ function imagify_attachment_has_required_metadata( $attachment_id ) {
  * @param  int $sizes Number of image sizes per item (attachment).
  * @return int        The buffer size.
  */
-function get_imagify_bulk_buffer_size( $sizes = false ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9' );
+function get_imagify_bulk_buffer_size($sizes = false)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9');
 
-	if ( ! $sizes ) {
-		$sizes = count( get_imagify_thumbnail_sizes() );
+	if (! $sizes) {
+		$sizes = count(get_imagify_thumbnail_sizes());
 	}
 
-	switch ( true ) {
-		case ( $sizes >= 10 ):
+	switch (true) {
+		case ($sizes >= 10):
 			return 1;
 
-		case ( $sizes >= 8 ):
+		case ($sizes >= 8):
 			return 2;
 
-		case ( $sizes >= 6 ):
+		case ($sizes >= 6):
 			return 3;
 
 		default:
@@ -526,12 +548,13 @@ function get_imagify_bulk_buffer_size( $sizes = false ) {
  * @param  string $identifier    An identifier.
  * @return string                The Imagify attachment class name.
  */
-function get_imagify_attachment_class_name( $context, $attachment_id, $identifier ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9', 'imagify_get_optimization_process_class_name( $context )' );
+function get_imagify_attachment_class_name($context, $attachment_id, $identifier)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9', 'imagify_get_optimization_process_class_name( $context )');
 
 	$context = $context ? $context : 'wp';
 
-	if ( 'wp' !== $context && 'wp' === strtolower( $context ) ) {
+	if ('wp' !== $context && 'wp' === strtolower($context)) {
 		$context = 'wp';
 	}
 
@@ -545,9 +568,9 @@ function get_imagify_attachment_class_name( $context, $attachment_id, $identifie
 	 * @param int    $attachment_id The attachment ID.
 	 * @param string $identifier    An identifier.
 	 */
-	$context = apply_filters( 'imagify_optimize_attachment_context', $context, $attachment_id, $identifier );
+	$context = apply_filters('imagify_optimize_attachment_context', $context, $attachment_id, $identifier);
 
-	return 'Imagify_' . ( 'wp' !== $context ? $context . '_' : '' ) . 'Attachment';
+	return 'Imagify_' . ('wp' !== $context ? $context . '_' : '') . 'Attachment';
 }
 
 /**
@@ -563,11 +586,12 @@ function get_imagify_attachment_class_name( $context, $attachment_id, $identifie
  * @param  string $identifier    An identifier.
  * @return object                The Imagify attachment instance.
  */
-function get_imagify_attachment( $context, $attachment_id, $identifier ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9', 'imagify_get_optimization_process( $media_id, $context )' );
+function get_imagify_attachment($context, $attachment_id, $identifier)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9', 'imagify_get_optimization_process( $media_id, $context )');
 
-	$class_name = get_imagify_attachment_class_name( $context, $attachment_id, $identifier );
-	return new $class_name( $attachment_id );
+	$class_name = get_imagify_attachment_class_name($context, $attachment_id, $identifier);
+	return new $class_name($attachment_id);
 }
 
 /**
@@ -587,18 +611,19 @@ function get_imagify_attachment( $context, $attachment_id, $identifier ) {
  * }
  * @return array|WP_Error    Optimized image data. A WP_Error object on error.
  */
-function do_imagify( $file_path, $args = array() ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9', '(new Imagify\\Optimization\\File( $file_path ))->optimize( $args )' );
+function do_imagify($file_path, $args = array())
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9', '(new Imagify\\Optimization\\File( $file_path ))->optimize( $args )');
 
-	$args = array_merge( array(
-		'backup'             => get_imagify_option( 'backup' ),
-		'optimization_level' => get_imagify_option( 'optimization_level' ),
-		'keep_exif'          => get_imagify_option( 'exif' ),
+	$args = array_merge(array(
+		'backup'             => get_imagify_option('backup'),
+		'optimization_level' => get_imagify_option('optimization_level'),
+		'keep_exif'          => get_imagify_option('exif'),
 		'context'            => 'wp',
 		'resized'            => false,
 		'original_size'      => 0,
 		'backup_path'        => null,
-	), $args );
+	), $args);
 
 	/**
 	 * Filter the attachment path.
@@ -607,49 +632,49 @@ function do_imagify( $file_path, $args = array() ) {
 	 *
 	 * @param string $file_path The attachment path.
 	 */
-	$file_path = apply_filters( 'imagify_file_path', $file_path );
+	$file_path = apply_filters('imagify_file_path', $file_path);
 
 	// Check that file path isn't empty.
-	if ( ! $file_path ) {
-		return new WP_Error( 'empty_path', __( 'File path is empty.', 'imagify' ) );
+	if (! $file_path) {
+		return new WP_Error('empty_path', __('File path is empty.', 'imagify'));
 	}
 
 	// Check if curl is available.
-	if ( ! Imagify_Requirements::supports_curl() ) {
-		return new WP_Error( 'curl', __( 'cURL is not available on the server.', 'imagify' ) );
+	if (! Imagify_Requirements::supports_curl()) {
+		return new WP_Error('curl', __('cURL is not available on the server.', 'imagify'));
 	}
 
 	$filesystem = imagify_get_filesystem();
 
 	// Check if imageMagick or GD is available.
-	if ( $filesystem->is_image( $file_path ) && ! Imagify_Requirements::supports_image_editor() ) {
-		return new WP_Error( 'image_editor', sprintf(
+	if ($filesystem->is_image($file_path) && ! Imagify_Requirements::supports_image_editor()) {
+		return new WP_Error('image_editor', sprintf(
 			/* translators: %s is a "More info?" link. */
-			__( 'No php extensions are available to edit images on the server. ImageMagick or GD is required. %s', 'imagify' ),
-			'<a href="' . esc_url( imagify_get_external_url( 'documentation-imagick-gd' ) ) . '" target="_blank">' . __( 'More info?', 'imagify' ) . '</a>'
-		) );
+			__('No php extensions are available to edit images on the server. ImageMagick or GD is required. %s', 'imagify'),
+			'<a href="' . esc_url(imagify_get_external_url('documentation-imagick-gd')) . '" target="_blank">' . __('More info?', 'imagify') . '</a>'
+		));
 	}
 
 	// Check if external HTTP requests are blocked.
-	if ( Imagify_Requirements::is_imagify_blocked() ) {
-		return new WP_Error( 'http_block_external', __( 'External HTTP requests are blocked.', 'imagify' ) );
+	if (Imagify_Requirements::is_imagify_blocked()) {
+		return new WP_Error('http_block_external', __('External HTTP requests are blocked.', 'imagify'));
 	}
 
 	// Check if the Imagify servers & the API are accessible.
-	if ( ! Imagify_Requirements::is_api_up() ) {
-		return new WP_Error( 'api_server_down', __( 'Sorry, our servers are temporarily unavailable. Please, try again in a couple of minutes.', 'imagify' ) );
+	if (! Imagify_Requirements::is_api_up()) {
+		return new WP_Error('api_server_down', __('Sorry, our servers are temporarily unavailable. Please, try again in a couple of minutes.', 'imagify'));
 	}
 
 	// Check that the file exists.
-	if ( ! $filesystem->is_writable( $file_path ) || ! $filesystem->is_file( $file_path ) ) {
+	if (! $filesystem->is_writable($file_path) || ! $filesystem->is_file($file_path)) {
 		/* translators: %s is a file path. */
-		return new WP_Error( 'file_not_found', sprintf( __( 'Could not find %s.', 'imagify' ), $filesystem->make_path_relative( $file_path ) ) );
+		return new WP_Error('file_not_found', sprintf(__('Could not find %s.', 'imagify'), $filesystem->make_path_relative($file_path)));
 	}
 
 	// Check that the file directory is writable.
-	if ( ! $filesystem->is_writable( $filesystem->dir_path( $file_path ) ) ) {
+	if (! $filesystem->is_writable($filesystem->dir_path($file_path))) {
 		/* translators: %s is a file path. */
-		return new WP_Error( 'not_writable', sprintf( __( '%s is not writable.', 'imagify' ), $filesystem->make_path_relative( $filesystem->dir_path( $file_path ) ) ) );
+		return new WP_Error('not_writable', sprintf(__('%s is not writable.', 'imagify'), $filesystem->make_path_relative($filesystem->dir_path($file_path))));
 	}
 
 	/**
@@ -659,49 +684,49 @@ function do_imagify( $file_path, $args = array() ) {
 	 *
 	 * @param string $file_path Absolute path to the image file.
 	 * @param bool   $backup    Force a backup of the original file.
-	*/
-	do_action( 'before_do_imagify', $file_path, $args['backup'] );
+	 */
+	do_action('before_do_imagify', $file_path, $args['backup']);
 
 	// Create a backup file before sending to optimization (to make sure we can backup the file).
 	$do_backup = $args['backup'] && ! $args['resized'];
 
-	if ( $do_backup ) {
-		$backup_result = imagify_backup_file( $file_path, $args['backup_path'] );
+	if ($do_backup) {
+		$backup_result = imagify_backup_file($file_path, $args['backup_path']);
 
-		if ( is_wp_error( $backup_result ) ) {
+		if (is_wp_error($backup_result)) {
 			// Stop the process if we can't backup the file.
 			return $backup_result;
 		}
 	}
 
 	// Send image for optimization and fetch the response.
-	$response = upload_imagify_image( array(
+	$response = upload_imagify_image(array(
 		'image' => $file_path,
-		'data'  => wp_json_encode( array(
-			'aggressive'    => ( 1 === (int) $args['optimization_level'] ),
-			'ultra'         => ( 2 === (int) $args['optimization_level'] ),
+		'data'  => wp_json_encode(array(
+			'aggressive'    => (1 === (int) $args['optimization_level']),
+			'ultra'         => (2 === (int) $args['optimization_level']),
 			'keep_exif'     => $args['keep_exif'],
 			'context'       => $args['context'],
 			'original_size' => $args['original_size'],
-		) ),
-	) );
+		)),
+	));
 
 	// Check status code.
-	if ( is_wp_error( $response ) ) {
-		return new WP_Error( 'api_error', $response->get_error_message() );
+	if (is_wp_error($response)) {
+		return new WP_Error('api_error', $response->get_error_message());
 	}
 
-	if ( ! function_exists( 'download_url' ) ) {
+	if (! function_exists('download_url')) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 	}
 
-	$temp_file = download_url( $response->image );
+	$temp_file = download_url($response->image);
 
-	if ( is_wp_error( $temp_file ) ) {
-		return new WP_Error( 'temp_file_not_found', $temp_file->get_error_message() );
+	if (is_wp_error($temp_file)) {
+		return new WP_Error('temp_file_not_found', $temp_file->get_error_message());
 	}
 
-	$filesystem->move( $temp_file, $file_path, true );
+	$filesystem->move($temp_file, $file_path, true);
 
 	/**
 	 * Fires after to optimize the Image with Imagify.
@@ -710,8 +735,8 @@ function do_imagify( $file_path, $args = array() ) {
 	 *
 	 * @param string $file_path Absolute path to the image file.
 	 * @param bool   $backup    Force a backup of the original file.
-	*/
-	do_action( 'after_do_imagify', $file_path, $args['backup'] );
+	 */
+	do_action('after_do_imagify', $file_path, $args['backup']);
 
 	return $response;
 }
@@ -728,48 +753,49 @@ function do_imagify( $file_path, $args = array() ) {
  * @param  string $backup_path The backup path. This is useful for NGG for example, who doesn't store the backups in our backup folder.
  * @return bool|object         True on success. False if the backup option is not enabled. A WP_Error object on failure.
  */
-function imagify_backup_file( $file_path, $backup_path = null ) {
-	_deprecated_function( __FUNCTION__ . '()', '1.9', '(new Imagify\\Optimization\\File( $file_path ))->backup( $backup_path )' );
+function imagify_backup_file($file_path, $backup_path = null)
+{
+	_deprecated_function(__FUNCTION__ . '()', '1.9', '(new Imagify\\Optimization\\File( $file_path ))->backup( $backup_path )');
 
-	if ( ! get_imagify_option( 'backup' ) ) {
+	if (! get_imagify_option('backup')) {
 		return false;
 	}
 
 	// Make sure the source path is not empty.
-	if ( ! $file_path ) {
-		return new WP_Error( 'empty_path', __( 'The file path is empty.', 'imagify' ) );
+	if (! $file_path) {
+		return new WP_Error('empty_path', __('The file path is empty.', 'imagify'));
 	}
 
 	$filesystem = imagify_get_filesystem();
 
 	// Make sure the filesystem has no errors.
-	if ( ! empty( $filesystem->errors->errors ) ) {
-		return new WP_Error( 'filesystem_error', __( 'Filesystem error.', 'imagify' ), $filesystem->errors );
+	if (! empty($filesystem->errors->errors)) {
+		return new WP_Error('filesystem_error', __('Filesystem error.', 'imagify'), $filesystem->errors);
 	}
 
 	// Make sure the source file exists.
-	if ( ! $filesystem->exists( $file_path ) ) {
-		return new WP_Error( 'source_doesnt_exist', __( 'The file to backup does not exist.', 'imagify' ), array(
-			'file_path' => $filesystem->make_path_relative( $file_path ),
-		) );
+	if (! $filesystem->exists($file_path)) {
+		return new WP_Error('source_doesnt_exist', __('The file to backup does not exist.', 'imagify'), array(
+			'file_path' => $filesystem->make_path_relative($file_path),
+		));
 	}
 
-	if ( ! isset( $backup_path ) ) {
+	if (! isset($backup_path)) {
 		// Make sure the backup directory is writable.
-		if ( ! Imagify_Requirements::attachments_backup_dir_is_writable() ) {
-			return new WP_Error( 'backup_dir_not_writable', __( 'The backup directory is not writable.', 'imagify' ) );
+		if (! Imagify_Requirements::attachments_backup_dir_is_writable()) {
+			return new WP_Error('backup_dir_not_writable', __('The backup directory is not writable.', 'imagify'));
 		}
 
-		$backup_path = get_imagify_attachment_backup_path( $file_path );
+		$backup_path = get_imagify_attachment_backup_path($file_path);
 	}
 
 	// Make sure the uploads directory has no errors.
-	if ( ! $backup_path ) {
-		return new WP_Error( 'wp_upload_error', __( 'Error while retrieving the uploads directory path.', 'imagify' ) );
+	if (! $backup_path) {
+		return new WP_Error('wp_upload_error', __('Error while retrieving the uploads directory path.', 'imagify'));
 	}
 
 	// Create sub-directories.
-	$filesystem->make_dir( $filesystem->dir_path( $backup_path ) );
+	$filesystem->make_dir($filesystem->dir_path($backup_path));
 
 	/**
 	 * Allow to overwrite the backup file if it already exists.
@@ -781,23 +807,23 @@ function imagify_backup_file( $file_path, $backup_path = null ) {
 	 * @param string $file_path   The file path.
 	 * @param string $backup_path The backup path.
 	 */
-	$overwrite = apply_filters( 'imagify_backup_overwrite_backup', false, $file_path, $backup_path );
+	$overwrite = apply_filters('imagify_backup_overwrite_backup', false, $file_path, $backup_path);
 
 	// Copy the file.
-	$filesystem->copy( $file_path, $backup_path, $overwrite, FS_CHMOD_FILE );
+	$filesystem->copy($file_path, $backup_path, $overwrite, FS_CHMOD_FILE);
 
 	// Make sure the backup copy exists.
-	if ( ! $filesystem->exists( $backup_path ) ) {
-		return new WP_Error( 'backup_doesnt_exist', __( 'The file could not be saved.', 'imagify' ), array(
-			'file_path'   => $filesystem->make_path_relative( $file_path ),
-			'backup_path' => $filesystem->make_path_relative( $backup_path ),
-		) );
+	if (! $filesystem->exists($backup_path)) {
+		return new WP_Error('backup_doesnt_exist', __('The file could not be saved.', 'imagify'), array(
+			'file_path'   => $filesystem->make_path_relative($file_path),
+			'backup_path' => $filesystem->make_path_relative($backup_path),
+		));
 	}
 
 	return true;
 }
 
-if ( is_admin() ) :
+if (is_admin()) :
 
 	/**
 	 * Fix the capability for our capacity filter hook
@@ -807,8 +833,9 @@ if ( is_admin() ) :
 	 * @author Jonathan
 	 * @deprecated
 	 */
-	function _imagify_correct_capability_for_options_page() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->get_capability()' );
+	function _imagify_correct_capability_for_options_page()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->get_capability()');
 
 		return Imagify_Settings::get_instance()->get_capability();
 	}
@@ -821,8 +848,9 @@ if ( is_admin() ) :
 	 * @author Jonathan
 	 * @deprecated
 	 */
-	function _imagify_register_setting() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->register()' );
+	function _imagify_register_setting()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->register()');
 
 		Imagify_Settings::get_instance()->register();
 	}
@@ -839,10 +867,11 @@ if ( is_admin() ) :
 	 * @param  mixed $old_value The old option value.
 	 * @return array The new option value.
 	 */
-	function _imagify_pre_update_option( $value, $old_value ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->sanitize_and_validate( $value )' );
+	function _imagify_pre_update_option($value, $old_value)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->sanitize_and_validate( $value )');
 
-		return Imagify_Settings::get_instance()->sanitize_and_validate( $value );
+		return Imagify_Settings::get_instance()->sanitize_and_validate($value);
 	}
 
 	/**
@@ -858,10 +887,11 @@ if ( is_admin() ) :
 	 * @param  mixed $old_value The old option value.
 	 * @return mixed            The option value.
 	 */
-	function _imagify_maybe_set_redirection_before_save_options( $value, $old_value ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->maybe_set_redirection( $value, $old_value )' );
+	function _imagify_maybe_set_redirection_before_save_options($value, $old_value)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->maybe_set_redirection( $value, $old_value )');
 
-		return Imagify_Settings::get_instance()->maybe_set_redirection( $value, $old_value );
+		return Imagify_Settings::get_instance()->maybe_set_redirection($value, $old_value);
 	}
 
 	/**
@@ -876,10 +906,11 @@ if ( is_admin() ) :
 	 * @param mixed  $value      Current value of the network option.
 	 * @param mixed  $old_value  Old value of the network option.
 	 */
-	function _imagify_after_save_network_options( $option, $value, $old_value ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->after_save_network_options( $option, $value, $old_value )' );
+	function _imagify_after_save_network_options($option, $value, $old_value)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->after_save_network_options( $option, $value, $old_value )');
 
-		Imagify_Settings::get_instance()->after_save_network_options( $option, $value, $old_value );
+		Imagify_Settings::get_instance()->after_save_network_options($option, $value, $old_value);
 	}
 
 	/**
@@ -895,10 +926,11 @@ if ( is_admin() ) :
 	 * @param mixed $old_value The old option value.
 	 * @param mixed $value     The new option value.
 	 */
-	function _imagify_after_save_options( $old_value, $value ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->after_save_options( $old_value, $value )' );
+	function _imagify_after_save_options($old_value, $value)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->after_save_options( $old_value, $value )');
 
-		Imagify_Settings::get_instance()->after_save_options( $old_value, $value );
+		Imagify_Settings::get_instance()->after_save_options($old_value, $value);
 	}
 
 	/**
@@ -908,8 +940,9 @@ if ( is_admin() ) :
 	 * @since 1.7 Deprecated.
 	 * @deprecated
 	 */
-	function _imagify_update_site_option_on_network() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->update_site_option_on_network()' );
+	function _imagify_update_site_option_on_network()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Settings::get_instance()->update_site_option_on_network()');
 
 		Imagify_Settings::get_instance()->update_site_option_on_network();
 	}
@@ -924,10 +957,11 @@ if ( is_admin() ) :
 	 *
 	 * @return string HTML.
 	 */
-	function get_imagify_new_to_imagify() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'imagify_get_template( \'part-new-to-imagify\' )' );
+	function get_imagify_new_to_imagify()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'imagify_get_template( \'part-new-to-imagify\' )');
 
-		return imagify_get_template( 'part-new-to-imagify' );
+		return imagify_get_template('part-new-to-imagify');
 	}
 
 	/**
@@ -939,10 +973,11 @@ if ( is_admin() ) :
 	 * @author Geoffrey
 	 * @deprecated
 	 */
-	function imagify_payment_modal() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->print_template( \'modal-payment\' )' );
+	function imagify_payment_modal()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->print_template( \'modal-payment\' )');
 
-		Imagify_Views::get_instance()->print_template( 'modal-payment' );
+		Imagify_Views::get_instance()->print_template('modal-payment');
 	}
 
 	/**
@@ -953,10 +988,11 @@ if ( is_admin() ) :
 	 * @author Geoffrey Crofte
 	 * @deprecated
 	 */
-	function imagify_print_discount_banner() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->print_template( \'part-discount-banner\' )' );
+	function imagify_print_discount_banner()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->print_template( \'part-discount-banner\' )');
 
-		Imagify_Views::get_instance()->print_template( 'part-discount-banner' );
+		Imagify_Views::get_instance()->print_template('part-discount-banner');
 	}
 
 	/**
@@ -970,12 +1006,13 @@ if ( is_admin() ) :
 	 * @param  float $value The price value.
 	 * @return string       The markuped price.
 	 */
-	function get_imagify_price_table_format( $value ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7' );
+	function get_imagify_price_table_format($value)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7');
 
-		$v = explode( '.', (string) $value );
+		$v = explode('.', (string) $value);
 
-		return '<span class="imagify-price-big">' . $v[0] . '</span> <span class="imagify-price-mini">.' . ( strlen( $v[1] ) === 1 ? $v[1] . '0' : $v[1] ) . '</span>';
+		return '<span class="imagify-price-big">' . $v[0] . '</span> <span class="imagify-price-mini">.' . (strlen($v[1]) === 1 ? $v[1] . '0' : $v[1]) . '</span>';
 	}
 
 	/**
@@ -985,8 +1022,9 @@ if ( is_admin() ) :
 	 * @since 1.7 Deprecated.
 	 * @deprecated
 	 */
-	function _imagify_settings_menu() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->add_network_menus()' );
+	function _imagify_settings_menu()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->add_network_menus()');
 
 		Imagify_Views::get_instance()->add_network_menus();
 	}
@@ -998,8 +1036,9 @@ if ( is_admin() ) :
 	 * @since 1.7 Deprecated.
 	 * @deprecated
 	 */
-	function _imagify_bulk_optimization_menu() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->add_site_menus()' );
+	function _imagify_bulk_optimization_menu()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->add_site_menus()');
 
 		Imagify_Views::get_instance()->add_site_menus();
 	}
@@ -1011,8 +1050,9 @@ if ( is_admin() ) :
 	 * @since 1.7 Deprecated.
 	 * @deprecated
 	 */
-	function _imagify_display_options_page() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->display_settings_page()' );
+	function _imagify_display_options_page()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->display_settings_page()');
 
 		Imagify_Views::get_instance()->display_settings_page();
 	}
@@ -1024,8 +1064,9 @@ if ( is_admin() ) :
 	 * @since 1.7 Deprecated.
 	 * @deprecated
 	 */
-	function _imagify_display_bulk_page() {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->display_bulk_page()' );
+	function _imagify_display_bulk_page()
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->display_bulk_page()');
 
 		Imagify_Views::get_instance()->display_bulk_page();
 	}
@@ -1039,10 +1080,11 @@ if ( is_admin() ) :
 	 * @param  array $actions An array of action links.
 	 * @return array
 	 */
-	function _imagify_plugin_action_links( $actions ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->plugin_action_links( $actions )' );
+	function _imagify_plugin_action_links($actions)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->plugin_action_links( $actions )');
 
-		return Imagify_Views::get_instance()->plugin_action_links( $actions );
+		return Imagify_Views::get_instance()->plugin_action_links($actions);
 	}
 
 	/**
@@ -1056,13 +1098,14 @@ if ( is_admin() ) :
 	 * @param  string $context A context.
 	 * @return array
 	 */
-	function imagify_get_folder_type_data( $context ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9', 'Imagify_Admin_Ajax_Post::get_instance()->get_bulk_instance( $context )->get_context_data()' );
+	function imagify_get_folder_type_data($context)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9', 'Imagify_Admin_Ajax_Post::get_instance()->get_bulk_instance( $context )->get_context_data()');
 
 		/**
 		 * Get the data.
 		 */
-		switch ( $context ) {
+		switch ($context) {
 			case 'wp':
 				$total_saving_data = imagify_count_saving_data();
 				$data              = array(
@@ -1070,7 +1113,7 @@ if ( is_admin() ) :
 					'errors'           => imagify_count_error_attachments(),
 					'optimized'        => $total_saving_data['optimized_size'],
 					'original'         => $total_saving_data['original_size'],
-					'errors_url'       => get_imagify_admin_url( 'folder-errors', $context ),
+					'errors_url'       => get_imagify_admin_url('folder-errors', $context),
 				);
 				break;
 
@@ -1080,7 +1123,7 @@ if ( is_admin() ) :
 					'errors'           => Imagify_Files_Stats::count_error_files(),
 					'optimized'        => Imagify_Files_Stats::get_optimized_size(),
 					'original'         => Imagify_Files_Stats::get_original_size(),
-					'errors_url'       => get_imagify_admin_url( 'folder-errors', $context ),
+					'errors_url'       => get_imagify_admin_url('folder-errors', $context),
 				);
 				break;
 
@@ -1094,9 +1137,9 @@ if ( is_admin() ) :
 				 * @param array  $data    An array with keys corresponding to cell classes, and values formatted with HTML.
 				 * @param string $context A context.
 				 */
-				$data = apply_filters( 'imagify_get_folder_type_data', [], $context );
+				$data = apply_filters('imagify_get_folder_type_data', [], $context);
 
-				if ( ! $data || ! is_array( $data ) ) {
+				if (! $data || ! is_array($data)) {
 					return [];
 				}
 		}
@@ -1105,29 +1148,29 @@ if ( is_admin() ) :
 		 * Format the data.
 		 */
 		/* translators: %s is a formatted number, dont use %d. */
-		$data['images-optimized'] = sprintf( _n( '%s Media File Optimized', '%s Media Files Optimized', $data['images-optimized'], 'imagify' ), '<span>' . number_format_i18n( $data['images-optimized'] ) . '</span>' );
+		$data['images-optimized'] = sprintf(_n('%s Media File Optimized', '%s Media Files Optimized', $data['images-optimized'], 'imagify'), '<span>' . number_format_i18n($data['images-optimized']) . '</span>');
 
-		if ( $data['errors'] ) {
+		if ($data['errors']) {
 			/* translators: %s is a formatted number, dont use %d. */
-			$data['errors']  = sprintf( _n( '%s Error', '%s Errors', $data['errors'], 'imagify' ), '<span>' . number_format_i18n( $data['errors'] ) . '</span>' );
-			$data['errors'] .= ' <a href="' . esc_url( $data['errors_url'] ) . '">' . __( 'View Errors', 'imagify' ) . '</a>';
+			$data['errors']  = sprintf(_n('%s Error', '%s Errors', $data['errors'], 'imagify'), '<span>' . number_format_i18n($data['errors']) . '</span>');
+			$data['errors'] .= ' <a href="' . esc_url($data['errors_url']) . '">' . __('View Errors', 'imagify') . '</a>';
 		} else {
 			$data['errors'] = '';
 		}
 
-		if ( $data['optimized'] ) {
-			$data['optimized'] = '<span class="imagify-cell-label">' . __( 'Optimized Filesize', 'imagify' ) . '</span> ' . imagify_size_format( $data['optimized'], 2 );
+		if ($data['optimized']) {
+			$data['optimized'] = '<span class="imagify-cell-label">' . __('Optimized Filesize', 'imagify') . '</span> ' . imagify_size_format($data['optimized'], 2);
 		} else {
 			$data['optimized'] = '';
 		}
 
-		if ( $data['original'] ) {
-			$data['original'] = '<span class="imagify-cell-label">' . __( 'Original Filesize', 'imagify' ) . '</span> ' . imagify_size_format( $data['original'], 2 );
+		if ($data['original']) {
+			$data['original'] = '<span class="imagify-cell-label">' . __('Original Filesize', 'imagify') . '</span> ' . imagify_size_format($data['original'], 2);
 		} else {
 			$data['original'] = '';
 		}
 
-		unset( $data['errors_url'] );
+		unset($data['errors_url']);
 
 		return $data;
 	}
@@ -1145,31 +1188,32 @@ if ( is_admin() ) :
 	 * @param  int    $post_id   A post ID.
 	 * @return bool
 	 */
-	function imagify_current_user_can( $describer = 'manage', $post_id = null ) {
+	function imagify_current_user_can($describer = 'manage', $post_id = null)
+	{
 		static $can_upload;
 
-		_deprecated_function( __FUNCTION__ . '()', '1.9', 'imagify_get_context( $context )->current_user_can( $describer, $media_id )' );
+		_deprecated_function(__FUNCTION__ . '()', '1.9', 'imagify_get_context( $context )->current_user_can( $describer, $media_id )');
 
 		$post_id  = $post_id ? $post_id : null;
-		$capacity = imagify_get_capacity( $describer );
+		$capacity = imagify_get_capacity($describer);
 		$user_can = false;
 
-		if ( 'manage' !== $describer && 'bulk-optimize' !== $describer && 'optimize-file' !== $describer ) {
+		if ('manage' !== $describer && 'bulk-optimize' !== $describer && 'optimize-file' !== $describer) {
 			// Describers that are not 'manage', 'bulk-optimize', and 'optimize-file' need an additional test for 'upload_files'.
-			if ( ! isset( $can_upload ) ) {
-				$can_upload = current_user_can( 'upload_files' );
+			if (! isset($can_upload)) {
+				$can_upload = current_user_can('upload_files');
 			}
 
-			if ( $can_upload ) {
-				if ( 'upload_files' === $capacity ) {
+			if ($can_upload) {
+				if ('upload_files' === $capacity) {
 					// We already know it's true.
 					$user_can = true;
 				} else {
-					$user_can = current_user_can( $capacity, $post_id );
+					$user_can = current_user_can($capacity, $post_id);
 				}
 			}
 		} else {
-			$user_can = current_user_can( $capacity );
+			$user_can = current_user_can($capacity);
 		}
 
 		/**
@@ -1182,7 +1226,7 @@ if ( is_admin() ) :
 		 * @param string $describer Capacity describer. See imagify_get_capacity() for possible values. Can also be a "real" user capacity.
 		 * @param int    $post_id   A post ID (a gallery ID for NGG).
 		 */
-		return apply_filters( 'imagify_current_user_can', $user_can, $capacity, $describer, $post_id );
+		return apply_filters('imagify_current_user_can', $user_can, $capacity, $describer, $post_id);
 	}
 
 	/**
@@ -1197,21 +1241,22 @@ if ( is_admin() ) :
 	 * @param  string $describer Capacity describer. Possible values are 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize', and 'optimize-file'.
 	 * @return string
 	 */
-	function imagify_get_capacity( $describer = 'manage' ) {
+	function imagify_get_capacity($describer = 'manage')
+	{
 		static $edit_attachment_cap;
 
-		_deprecated_function( __FUNCTION__ . '()', '1.9', 'imagify_get_context( $context )->get_capacity( $describer )' );
+		_deprecated_function(__FUNCTION__ . '()', '1.9', 'imagify_get_context( $context )->get_capacity( $describer )');
 
 		// Back compat.
-		if ( ! is_string( $describer ) ) {
-			if ( $describer || ! is_multisite() ) {
+		if (! is_string($describer)) {
+			if ($describer || ! is_multisite()) {
 				$describer = 'bulk-optimize';
 			} else {
 				$describer = 'manage';
 			}
 		}
 
-		switch ( $describer ) {
+		switch ($describer) {
 			case 'manage':
 				$capacity = imagify_is_active_for_network() ? 'manage_network_options' : 'manage_options';
 				break;
@@ -1227,8 +1272,8 @@ if ( is_admin() ) :
 			case 'optimize':
 			case 'restore':
 				// This is a generic capacity: don't use it unless you have no other choices!
-				if ( ! isset( $edit_attachment_cap ) ) {
-					$edit_attachment_cap = get_post_type_object( 'attachment' );
+				if (! isset($edit_attachment_cap)) {
+					$edit_attachment_cap = get_post_type_object('attachment');
 					$edit_attachment_cap = $edit_attachment_cap ? $edit_attachment_cap->cap->edit_posts : 'edit_posts';
 				}
 
@@ -1259,7 +1304,7 @@ if ( is_admin() ) :
 		 * @param string $capacity  The user capacity.
 		 * @param string $describer Capacity describer. Possible values are 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize', and 'optimize-file'.
 		 */
-		return apply_filters( 'imagify_capacity', $capacity, $describer );
+		return apply_filters('imagify_capacity', $capacity, $describer);
 	}
 
 	/**
@@ -1275,10 +1320,11 @@ if ( is_admin() ) :
 	 * @param string $describer Capacity describer. See imagify_get_capacity() for possible values. Can also be a "real" user capacity.
 	 * @param int    $post_id   A post ID.
 	 */
-	function imagify_check_user_capacity( $describer = 'manage', $post_id = null ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9' );
+	function imagify_check_user_capacity($describer = 'manage', $post_id = null)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9');
 
-		if ( ! imagify_current_user_can( $describer, $post_id ) ) {
+		if (! imagify_current_user_can($describer, $post_id)) {
 			imagify_die();
 		}
 	}
@@ -1293,8 +1339,9 @@ if ( is_admin() ) :
 	 * @param  array $settings Heartbeat API settings.
 	 * @return array
 	 */
-	function _imagify_heartbeat_settings( $settings ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3' );
+	function _imagify_heartbeat_settings($settings)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3');
 
 		$settings['interval'] = 30;
 		return $settings;
@@ -1311,20 +1358,21 @@ if ( is_admin() ) :
 	 * @param  array $data     The $_POST data sent.
 	 * @return array
 	 */
-	function _imagify_heartbeat_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_bulk_optimization_stats_to_response()' );
+	function _imagify_heartbeat_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_bulk_optimization_stats_to_response()');
 
 		$heartbeat_id = 'imagify_bulk_data';
 
-		if ( empty( $data[ $heartbeat_id ] ) ) {
+		if (empty($data[$heartbeat_id])) {
 			return $response;
 		}
 
-		$folder_types = array_flip( array_filter( $data[ $heartbeat_id ] ) );
+		$folder_types = array_flip(array_filter($data[$heartbeat_id]));
 
-		$response[ $heartbeat_id ] = imagify_get_bulk_stats( $folder_types, array(
+		$response[$heartbeat_id] = imagify_get_bulk_stats($folder_types, array(
 			'fullset' => true,
-		) );
+		));
 
 		return $response;
 	}
@@ -1341,16 +1389,17 @@ if ( is_admin() ) :
 	 * @param  array $data     The $_POST data sent.
 	 * @return array
 	 */
-	function imagify_heartbeat_requirements_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_requirements_to_response()' );
+	function imagify_heartbeat_requirements_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_requirements_to_response()');
 
 		$heartbeat_id = 'imagify_bulk_requirements';
 
-		if ( empty( $data[ $heartbeat_id ] ) ) {
+		if (empty($data[$heartbeat_id])) {
 			return $response;
 		}
 
-		$response[ $heartbeat_id ] = array(
+		$response[$heartbeat_id] = array(
 			'curl_missing'          => ! Imagify_Requirements::supports_curl(),
 			'editor_missing'        => ! Imagify_Requirements::supports_image_editor(),
 			'external_http_blocked' => Imagify_Requirements::is_imagify_blocked(),
@@ -1375,42 +1424,43 @@ if ( is_admin() ) :
 	 * @param  array $data     The $_POST data sent.
 	 * @return array
 	 */
-	function imagify_heartbeat_bulk_optimization_status_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_bulk_optimization_status_to_response()' );
+	function imagify_heartbeat_bulk_optimization_status_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_bulk_optimization_status_to_response()');
 
 		$heartbeat_id = 'imagify_bulk_queue';
 
-		if ( empty( $data[ $heartbeat_id ] ) || ! is_array( $data[ $heartbeat_id ] ) ) {
+		if (empty($data[$heartbeat_id]) || ! is_array($data[$heartbeat_id])) {
 			return $response;
 		}
 
 		$statuses = [];
 
-		foreach ( $data[ $heartbeat_id ] as $item ) {
-			if ( empty( $statuses[ $item['context'] ] ) ) {
-				$statuses[ $item['context'] ] = [];
+		foreach ($data[$heartbeat_id] as $item) {
+			if (empty($statuses[$item['context']])) {
+				$statuses[$item['context']] = [];
 			}
 
-			$statuses[ $item['context'] ][ '_' . $item['mediaID'] ] = 1;
+			$statuses[$item['context']]['_' . $item['mediaID']] = 1;
 		}
 
-		$results = imagify_get_modified_optimization_statusses( $statuses );
+		$results = imagify_get_modified_optimization_statusses($statuses);
 
-		if ( ! $results ) {
+		if (! $results) {
 			return $response;
 		}
 
-		$response[ $heartbeat_id ] = [];
+		$response[$heartbeat_id] = [];
 
 		// Sanitize received data and grab some other info.
-		foreach ( $results as $context_id => $media_atts ) {
-			$process    = imagify_get_optimization_process( $media_atts['media_id'], $media_atts['context'] );
+		foreach ($results as $context_id => $media_atts) {
+			$process    = imagify_get_optimization_process($media_atts['media_id'], $media_atts['context']);
 			$optim_data = $process->get_data();
 
-			if ( $optim_data->is_optimized() ) {
+			if ($optim_data->is_optimized()) {
 				// Successfully optimized.
 				$full_size_data              = $optim_data->get_size_data();
-				$response[ $heartbeat_id ][] = [
+				$response[$heartbeat_id][] = [
 					'mediaID'                  => $media_atts['media_id'],
 					'context'                  => $media_atts['context'],
 					'success'                  => true,
@@ -1421,15 +1471,15 @@ if ( is_admin() ) :
 					'overallSaving'            => $full_size_data['original_size'] - $full_size_data['optimized_size'],
 					'thumbnailsCount'          => $optim_data->get_optimized_sizes_count(),
 					// Human readable data.
-					'originalSizeHuman'        => imagify_size_format( $full_size_data['original_size'], 2 ),
-					'newSizeHuman'             => imagify_size_format( $full_size_data['optimized_size'], 2 ),
-					'overallSavingHuman'       => imagify_size_format( $full_size_data['original_size'] - $full_size_data['optimized_size'], 2 ),
-					'originalOverallSizeHuman' => imagify_size_format( $full_size_data['original_size'], 2 ),
+					'originalSizeHuman'        => imagify_size_format($full_size_data['original_size'], 2),
+					'newSizeHuman'             => imagify_size_format($full_size_data['optimized_size'], 2),
+					'overallSavingHuman'       => imagify_size_format($full_size_data['original_size'] - $full_size_data['optimized_size'], 2),
+					'originalOverallSizeHuman' => imagify_size_format($full_size_data['original_size'], 2),
 					'percentHuman'             => $full_size_data['percent'] . '%',
 				];
-			} elseif ( $optim_data->is_already_optimized() ) {
+			} elseif ($optim_data->is_already_optimized()) {
 				// Already optimized.
-				$response[ $heartbeat_id ][] = [
+				$response[$heartbeat_id][] = [
 					'mediaID' => $media_atts['media_id'],
 					'context' => $media_atts['context'],
 					'success' => true,
@@ -1438,19 +1488,19 @@ if ( is_admin() ) :
 			} else {
 				// Error.
 				$full_size_data = $optim_data->get_size_data();
-				$message        = ! empty( $full_size_data['error'] ) ? $full_size_data['error'] : '';
+				$message        = ! empty($full_size_data['error']) ? $full_size_data['error'] : '';
 				$status         = 'error';
 
-				if ( 'You\'ve consumed all your data. You have to upgrade your account to continue' === $message ) {
+				if ('You\'ve consumed all your data. You have to upgrade your account to continue' === $message) {
 					$status = 'over-quota';
 				}
 
-				$response[ $heartbeat_id ][] = [
+				$response[$heartbeat_id][] = [
 					'mediaID' => $media_atts['media_id'],
 					'context' => $media_atts['context'],
 					'success' => false,
 					'status'  => $status,
-					'error'   => imagify_translate_api_message( $message ),
+					'error'   => imagify_translate_api_message($message),
 				];
 			}
 		}
@@ -1471,35 +1521,36 @@ if ( is_admin() ) :
 	 * @param  array $data     The $_POST data sent.
 	 * @return array
 	 */
-	function imagify_heartbeat_options_bulk_optimization_status_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_options_optimization_status_to_response()' );
+	function imagify_heartbeat_options_bulk_optimization_status_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_options_optimization_status_to_response()');
 
 		$heartbeat_id = 'imagify_options_bulk_queue';
 
-		if ( empty( $data[ $heartbeat_id ] ) || ! is_array( $data[ $heartbeat_id ] ) ) {
+		if (empty($data[$heartbeat_id]) || ! is_array($data[$heartbeat_id])) {
 			return $response;
 		}
 
 		$statuses = [];
 
-		foreach ( $data[ $heartbeat_id ] as $item ) {
-			if ( empty( $statuses[ $item['context'] ] ) ) {
-				$statuses[ $item['context'] ] = [];
+		foreach ($data[$heartbeat_id] as $item) {
+			if (empty($statuses[$item['context']])) {
+				$statuses[$item['context']] = [];
 			}
 
-			$statuses[ $item['context'] ][ '_' . $item['mediaID'] ] = 1;
+			$statuses[$item['context']]['_' . $item['mediaID']] = 1;
 		}
 
-		$results = imagify_get_modified_optimization_statusses( $statuses );
+		$results = imagify_get_modified_optimization_statusses($statuses);
 
-		if ( ! $results ) {
+		if (! $results) {
 			return $response;
 		}
 
-		$response[ $heartbeat_id ] = [];
+		$response[$heartbeat_id] = [];
 
-		foreach ( $results as $result ) {
-			$response[ $heartbeat_id ][] = [
+		foreach ($results as $result) {
+			$response[$heartbeat_id][] = [
 				'mediaID' => $result['media_id'],
 				'context' => $result['context'],
 			];
@@ -1521,27 +1572,28 @@ if ( is_admin() ) :
 	 * @param  array $data     The $_POST data sent.
 	 * @return array
 	 */
-	function imagify_heartbeat_optimization_status_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_library_optimization_status_to_response()' );
+	function imagify_heartbeat_optimization_status_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_library_optimization_status_to_response()');
 
-		$heartbeat_id = get_imagify_localize_script_translations( 'media-modal' );
+		$heartbeat_id = get_imagify_localize_script_translations('media-modal');
 		$heartbeat_id = $heartbeat_id['heartbeatId'];
 
-		if ( empty( $data[ $heartbeat_id ] ) || ! is_array( $data[ $heartbeat_id ] ) ) {
+		if (empty($data[$heartbeat_id]) || ! is_array($data[$heartbeat_id])) {
 			return $response;
 		}
 
-		$response[ $heartbeat_id ] = imagify_get_modified_optimization_statusses( $data[ $heartbeat_id ] );
+		$response[$heartbeat_id] = imagify_get_modified_optimization_statusses($data[$heartbeat_id]);
 
-		if ( ! $response[ $heartbeat_id ] ) {
+		if (! $response[$heartbeat_id]) {
 			return $response;
 		}
 
 		// Sanitize received data and grab some other info.
-		foreach ( $response[ $heartbeat_id ] as $context_id => $media_atts ) {
-			$process = imagify_get_optimization_process( $media_atts['media_id'], $media_atts['context'] );
+		foreach ($response[$heartbeat_id] as $context_id => $media_atts) {
+			$process = imagify_get_optimization_process($media_atts['media_id'], $media_atts['context']);
 
-			$response[ $heartbeat_id ][ $context_id ] = get_imagify_media_column_content( $process, false );
+			$response[$heartbeat_id][$context_id] = get_imagify_media_column_content($process, false);
 		}
 
 		return $response;
@@ -1560,32 +1612,33 @@ if ( is_admin() ) :
 	 * @param  array $data     The $_POST data sent.
 	 * @return array
 	 */
-	function imagify_heartbeat_custom_folders_optimization_status_received( $response, $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_custom_folders_optimization_status_to_response()' );
+	function imagify_heartbeat_custom_folders_optimization_status_received($response, $data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->add_custom_folders_optimization_status_to_response()');
 
-		$heartbeat_id = get_imagify_localize_script_translations( 'files-list' );
+		$heartbeat_id = get_imagify_localize_script_translations('files-list');
 		$heartbeat_id = $heartbeat_id['heartbeatId'];
 
-		if ( empty( $data[ $heartbeat_id ] ) || ! is_array( $data[ $heartbeat_id ] ) ) {
+		if (empty($data[$heartbeat_id]) || ! is_array($data[$heartbeat_id])) {
 			return $response;
 		}
 
-		$response[ $heartbeat_id ] = imagify_get_modified_optimization_statusses( $data[ $heartbeat_id ] );
+		$response[$heartbeat_id] = imagify_get_modified_optimization_statusses($data[$heartbeat_id]);
 
-		if ( ! $response[ $heartbeat_id ] ) {
+		if (! $response[$heartbeat_id]) {
 			return $response;
 		}
 
 		$admin_ajax_post = Imagify_Admin_Ajax_Post::get_instance();
-		$list_table      = new Imagify_Files_List_Table( [
+		$list_table      = new Imagify_Files_List_Table([
 			'screen' => 'imagify-files',
-		] );
+		]);
 
 		// Sanitize received data and grab some other info.
-		foreach ( $response[ $heartbeat_id ] as $context_id => $media_atts ) {
-			$process = imagify_get_optimization_process( $media_atts['media_id'], $media_atts['context'] );
+		foreach ($response[$heartbeat_id] as $context_id => $media_atts) {
+			$process = imagify_get_optimization_process($media_atts['media_id'], $media_atts['context']);
 
-			$response[ $heartbeat_id ][ $context_id ] = $admin_ajax_post->get_media_columns( $process, $list_table );
+			$response[$heartbeat_id][$context_id] = $admin_ajax_post->get_media_columns($process, $list_table);
 		}
 
 		return $response;
@@ -1602,57 +1655,58 @@ if ( is_admin() ) :
 	 * @param  array $data The data received.
 	 * @return array
 	 */
-	function imagify_get_modified_optimization_statusses( $data ) {
-		_deprecated_function( __FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->get_modified_optimization_statuses()' );
+	function imagify_get_modified_optimization_statusses($data)
+	{
+		_deprecated_function(__FUNCTION__ . '()', '1.9.3', '\\Imagify\\Imagifybeat\\Actions::get_instance()->get_modified_optimization_statuses()');
 
-		if ( ! $data ) {
+		if (! $data) {
 			return [];
 		}
 
 		$output = [];
 
 		// Sanitize received data and grab some other info.
-		foreach ( $data as $context => $media_statuses ) {
-			if ( ! $context || ! $media_statuses || ! is_array( $media_statuses ) ) {
+		foreach ($data as $context => $media_statuses) {
+			if (! $context || ! $media_statuses || ! is_array($media_statuses)) {
 				continue;
 			}
 
 			// Sanitize the IDs: IDs come as strings, prefixed with an undescore character (to prevent JavaScript from screwing everything).
-			$media_ids = array_keys( $media_statuses );
-			$media_ids = array_map( function( $media_id ) {
-				return (int) substr( $media_id, 1 );
-			}, $media_ids );
-			$media_ids = array_filter( $media_ids );
+			$media_ids = array_keys($media_statuses);
+			$media_ids = array_map(function ($media_id) {
+				return (int) substr($media_id, 1);
+			}, $media_ids);
+			$media_ids = array_filter($media_ids);
 
-			if ( ! $media_ids ) {
+			if (! $media_ids) {
 				continue;
 			}
 
 			// Sanitize the context.
-			$context_instance   = imagify_get_context( $context );
+			$context_instance   = imagify_get_context($context);
 			$context            = $context_instance->get_name();
-			$process_class_name = imagify_get_optimization_process_class_name( $context );
-			$transient_name     = sprintf( $process_class_name::LOCK_NAME, $context, '%' );
+			$process_class_name = imagify_get_optimization_process_class_name($context);
+			$transient_name     = sprintf($process_class_name::LOCK_NAME, $context, '%');
 			$is_network_wide    = $context_instance->is_network_wide();
 
-			Imagify_DB::cache_process_locks( $context, $media_ids );
+			Imagify_DB::cache_process_locks($context, $media_ids);
 
 			// Now that everything is cached for this context, we can get the transients without hitting the DB.
-			foreach ( $media_ids as $id ) {
-				$is_locked   = (bool) $media_statuses[ '_' . $id ];
-				$option_name = str_replace( '%', $id, $transient_name );
+			foreach ($media_ids as $id) {
+				$is_locked   = (bool) $media_statuses['_' . $id];
+				$option_name = str_replace('%', $id, $transient_name);
 
-				if ( $is_network_wide ) {
-					$in_db = (bool) get_site_transient( $option_name );
+				if ($is_network_wide) {
+					$in_db = (bool) get_site_transient($option_name);
 				} else {
-					$in_db = (bool) get_transient( $option_name );
+					$in_db = (bool) get_transient($option_name);
 				}
 
-				if ( $is_locked === $in_db ) {
+				if ($is_locked === $in_db) {
 					continue;
 				}
 
-				$output[ $context . '_' . $id ] = [
+				$output[$context . '_' . $id] = [
 					'media_id' => $id,
 					'context'  => $context,
 				];
@@ -1681,26 +1735,27 @@ endif;
  *     @type array  $plugins Array of the basename paths of the plugins' main files.
  * }
  */
-function imagify_maybe_reset_opcache( $wp_upgrader, $hook_extra ) {
-	_deprecated_function( __FUNCTION__ . '()', '2.0' );
+function imagify_maybe_reset_opcache($wp_upgrader, $hook_extra)
+{
+	_deprecated_function(__FUNCTION__ . '()', '2.0');
 
 	static $imagify_path;
 
-	if ( ! isset( $hook_extra['action'], $hook_extra['type'], $hook_extra['plugins'] ) ) {
+	if (! isset($hook_extra['action'], $hook_extra['type'], $hook_extra['plugins'])) {
 		return;
 	}
 
-	if ( 'update' !== $hook_extra['action'] || 'plugin' !== $hook_extra['type'] || ! is_array( $hook_extra['plugins'] ) ) {
+	if ('update' !== $hook_extra['action'] || 'plugin' !== $hook_extra['type'] || ! is_array($hook_extra['plugins'])) {
 		return;
 	}
 
-	$plugins = array_flip( $hook_extra['plugins'] );
+	$plugins = array_flip($hook_extra['plugins']);
 
-	if ( ! isset( $imagify_path ) ) {
-		$imagify_path = plugin_basename( IMAGIFY_FILE );
+	if (! isset($imagify_path)) {
+		$imagify_path = plugin_basename(IMAGIFY_FILE);
 	}
 
-	if ( ! isset( $plugins[ $imagify_path ] ) ) {
+	if (! isset($plugins[$imagify_path])) {
 		return;
 	}
 
@@ -1718,27 +1773,28 @@ function imagify_maybe_reset_opcache( $wp_upgrader, $hook_extra ) {
  * @param  bool $reset_function_cache Set to true to bypass the cache.
  * @return bool                       Return true if the opcode cache was reset (or reset in a previous call), or false if the opcode cache is disabled.
  */
-function imagify_reset_opcache( $reset_function_cache = false ) {
-	_deprecated_function( __FUNCTION__ . '()', '2.0' );
+function imagify_reset_opcache($reset_function_cache = false)
+{
+	_deprecated_function(__FUNCTION__ . '()', '2.0');
 
 	static $can_reset;
 
-	if ( $reset_function_cache || ! isset( $can_reset ) ) {
-		if ( ! function_exists( 'opcache_reset' ) ) {
+	if ($reset_function_cache || ! isset($can_reset)) {
+		if (! function_exists('opcache_reset')) {
 			$can_reset = false;
 			return false;
 		}
 
-		$opcache_enabled = filter_var( ini_get( 'opcache.enable' ), FILTER_VALIDATE_BOOLEAN ); // phpcs:ignore PHPCompatibility.IniDirectives.NewIniDirectives.opcache_enableFound
+		$opcache_enabled = filter_var(ini_get('opcache.enable'), FILTER_VALIDATE_BOOLEAN); // phpcs:ignore PHPCompatibility.IniDirectives.NewIniDirectives.opcache_enableFound
 
-		if ( ! $opcache_enabled ) {
+		if (! $opcache_enabled) {
 			$can_reset = false;
 			return false;
 		}
 
-		$restrict_api = ini_get( 'opcache.restrict_api' ); // phpcs:ignore PHPCompatibility.IniDirectives.NewIniDirectives.opcache_restrict_apiFound
+		$restrict_api = ini_get('opcache.restrict_api'); // phpcs:ignore PHPCompatibility.IniDirectives.NewIniDirectives.opcache_restrict_apiFound
 
-		if ( $restrict_api && strpos( __FILE__, $restrict_api ) !== 0 ) {
+		if ($restrict_api && strpos(__FILE__, $restrict_api) !== 0) {
 			$can_reset = false;
 			return false;
 		}
@@ -1746,7 +1802,7 @@ function imagify_reset_opcache( $reset_function_cache = false ) {
 		$can_reset = true;
 	}
 
-	if ( ! $can_reset ) {
+	if (! $can_reset) {
 		return false;
 	}
 

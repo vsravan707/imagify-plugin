@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Traits;
 
 /**
@@ -8,7 +9,8 @@ namespace Imagify\Traits;
  *
  * @since  1.9
  */
-trait MediaRowTrait {
+trait MediaRowTrait
+{
 
 	/**
 	 * The media SQL data row.
@@ -33,18 +35,19 @@ trait MediaRowTrait {
 	 *
 	 * @return array
 	 */
-	public function get_row() {
-		if ( isset( $this->row ) ) {
+	public function get_row()
+	{
+		if (isset($this->row)) {
 			return $this->row;
 		}
 
-		if ( ! $this->db_class_name || $this->id <= 0 ) {
+		if (! $this->db_class_name || $this->id <= 0) {
 			return $this->invalidate_row();
 		}
 
-		$this->row = $this->get_row_db_instance()->get( $this->id );
+		$this->row = $this->get_row_db_instance()->get($this->id);
 
-		if ( ! $this->row ) {
+		if (! $this->row) {
 			return $this->invalidate_row();
 		}
 
@@ -58,12 +61,13 @@ trait MediaRowTrait {
 	 *
 	 * @param array $data The data to update.
 	 */
-	public function update_row( $data ) {
-		if ( ! $this->db_class_name || $this->id <= 0 ) {
+	public function update_row($data)
+	{
+		if (! $this->db_class_name || $this->id <= 0) {
 			return;
 		}
 
-		$this->get_row_db_instance()->update( $this->id, $data );
+		$this->get_row_db_instance()->update($this->id, $data);
 
 		$this->reset_row_cache();
 	}
@@ -73,12 +77,13 @@ trait MediaRowTrait {
 	 *
 	 * @since 1.9
 	 */
-	public function delete_row() {
-		if ( ! $this->db_class_name || $this->id <= 0 ) {
+	public function delete_row()
+	{
+		if (! $this->db_class_name || $this->id <= 0) {
 			return;
 		}
 
-		$this->get_row_db_instance()->delete( $this->id );
+		$this->get_row_db_instance()->delete($this->id);
 
 		$this->invalidate_row();
 	}
@@ -90,8 +95,9 @@ trait MediaRowTrait {
 	 *
 	 * @return \Imagify\DB\DBInterface The DB table instance.
 	 */
-	public function get_row_db_instance() {
-		return call_user_func( [ $this->db_class_name, 'get_instance' ] );
+	public function get_row_db_instance()
+	{
+		return call_user_func([$this->db_class_name, 'get_instance']);
 	}
 
 	/**
@@ -101,7 +107,8 @@ trait MediaRowTrait {
 	 *
 	 * @return array The row.
 	 */
-	public function invalidate_row() {
+	public function invalidate_row()
+	{
 		$this->row = [];
 		return $this->row;
 	}
@@ -113,7 +120,8 @@ trait MediaRowTrait {
 	 *
 	 * @return null The row.
 	 */
-	public function reset_row_cache() {
+	public function reset_row_cache()
+	{
 		$this->row = null;
 		return $this->row;
 	}

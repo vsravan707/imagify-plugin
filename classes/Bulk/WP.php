@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Bulk;
 
 use Imagify_DB;
@@ -8,7 +9,8 @@ use Imagify_DB;
  *
  * @since 1.9
  */
-class WP extends AbstractBulk {
+class WP extends AbstractBulk
+{
 	/**
 	 * Context "short name".
 	 *
@@ -26,7 +28,8 @@ class WP extends AbstractBulk {
 	 *
 	 * @return array A list of unoptimized media IDs.
 	 */
-	public function get_unoptimized_media_ids( $optimization_level ) {
+	public function get_unoptimized_media_ids($optimization_level)
+	{
 		global $wpdb;
 
 		$this->set_no_time_limit();
@@ -74,10 +77,10 @@ class WP extends AbstractBulk {
 		);
 
 		$wpdb->flush();
-		unset( $mime_types );
-		$ids = array_filter( array_map( 'absint', $ids ) );
+		unset($mime_types);
+		$ids = array_filter(array_map('absint', $ids));
 
-		if ( ! $ids ) {
+		if (! $ids) {
 			return [];
 		}
 
@@ -96,40 +99,40 @@ class WP extends AbstractBulk {
 		);
 
 		// First run.
-		foreach ( $ids as $i => $id ) {
-			$attachment_status             = isset( $metas['statuses'][ $id ] ) ? $metas['statuses'][ $id ] : false;
-			$attachment_optimization_level = isset( $metas['optimization_levels'][ $id ] ) ? $metas['optimization_levels'][ $id ] : false;
+		foreach ($ids as $i => $id) {
+			$attachment_status             = isset($metas['statuses'][$id]) ? $metas['statuses'][$id] : false;
+			$attachment_optimization_level = isset($metas['optimization_levels'][$id]) ? $metas['optimization_levels'][$id] : false;
 			$attachment_error              = '';
 
-			if ( isset( $metas['data'][ $id ]['sizes']['full']['error'] ) ) {
-				$attachment_error = $metas['data'][ $id ]['sizes']['full']['error'];
+			if (isset($metas['data'][$id]['sizes']['full']['error'])) {
+				$attachment_error = $metas['data'][$id]['sizes']['full']['error'];
 			}
 
 			// Don't try to re-optimize if the optimization level is still the same.
-			if ( $optimization_level === $attachment_optimization_level && is_string( $attachment_error ) ) {
-				unset( $ids[ $i ] );
+			if ($optimization_level === $attachment_optimization_level && is_string($attachment_error)) {
+				unset($ids[$i]);
 				continue;
 			}
 
 			// Don't try to re-optimize images already compressed.
-			if ( 'already_optimized' === $attachment_status && $attachment_optimization_level >= $optimization_level ) {
-				unset( $ids[ $i ] );
+			if ('already_optimized' === $attachment_status && $attachment_optimization_level >= $optimization_level) {
+				unset($ids[$i]);
 				continue;
 			}
 
-			$attachment_error = trim( $attachment_error );
+			$attachment_error = trim($attachment_error);
 
 			// Don't try to re-optimize images with an empty error message.
-			if ( 'error' === $attachment_status && empty( $attachment_error ) ) {
-				unset( $ids[ $i ] );
+			if ('error' === $attachment_status && empty($attachment_error)) {
+				unset($ids[$i]);
 			}
 		}
 
-		if ( ! $ids ) {
+		if (! $ids) {
 			return [];
 		}
 
-		$ids = array_values( $ids );
+		$ids = array_values($ids);
 
 		/**
 		 * Fires before testing for file existence.
@@ -140,28 +143,28 @@ class WP extends AbstractBulk {
 		 * @param array $metas              An array of the data fetched from the database.
 		 * @param int   $optimization_level The optimization level that will be used for the optimization.
 		 */
-		do_action( 'imagify_bulk_optimize_before_file_existence_tests', $ids, $metas, $optimization_level );
+		do_action('imagify_bulk_optimize_before_file_existence_tests', $ids, $metas, $optimization_level);
 
 		$data = [];
 
-		foreach ( $ids as $i => $id ) {
-			if ( empty( $metas['filenames'][ $id ] ) ) {
+		foreach ($ids as $i => $id) {
+			if (empty($metas['filenames'][$id])) {
 				// Problem.
 				continue;
 			}
 
-			$file_path = get_imagify_attached_file( $metas['filenames'][ $id ] );
+			$file_path = get_imagify_attached_file($metas['filenames'][$id]);
 
-			if ( ! $file_path || ! $this->filesystem->exists( $file_path ) ) {
+			if (! $file_path || ! $this->filesystem->exists($file_path)) {
 				continue;
 			}
 
-			$attachment_backup_path        = get_imagify_attachment_backup_path( $file_path );
-			$attachment_status             = isset( $metas['statuses'][ $id ] ) ? $metas['statuses'][ $id ] : false;
-			$attachment_optimization_level = isset( $metas['optimization_levels'][ $id ] ) ? $metas['optimization_levels'][ $id ] : false;
+			$attachment_backup_path        = get_imagify_attachment_backup_path($file_path);
+			$attachment_status             = isset($metas['statuses'][$id]) ? $metas['statuses'][$id] : false;
+			$attachment_optimization_level = isset($metas['optimization_levels'][$id]) ? $metas['optimization_levels'][$id] : false;
 
 			// Don't try to re-optimize if there is no backup file.
-			if ( 'success' === $attachment_status && $optimization_level !== $attachment_optimization_level && ! $this->filesystem->exists( $attachment_backup_path ) ) {
+			if ('success' === $attachment_status && $optimization_level !== $attachment_optimization_level && ! $this->filesystem->exists($attachment_backup_path)) {
 				continue;
 			}
 
@@ -186,31 +189,32 @@ class WP extends AbstractBulk {
 	 *     }
 	 * }
 	 */
-	public function get_optimized_media_ids_without_format( $format ) {
+	public function get_optimized_media_ids_without_format($format)
+	{
 		global $wpdb;
 
 		$this->set_no_time_limit();
 
-		$mime_types = Imagify_DB::get_mime_types( 'image' );
+		$mime_types = Imagify_DB::get_mime_types('image');
 
 		// Remove single quotes and explode string into array.
-		$mime_types_array = explode( ',', str_replace( "'", '', $mime_types ) );
+		$mime_types_array = explode(',', str_replace("'", '', $mime_types));
 
 		// Iterate over array and check if string contains input.
-		foreach ( $mime_types_array as $item ) {
-			if ( strpos( $item, $format ) !== false ) {
+		foreach ($mime_types_array as $item) {
+			if (strpos($item, $format) !== false) {
 				$mime = $item;
 				break;
 			}
 		}
-		if ( ! isset( $mime ) && empty( $mime ) ) {
+		if (! isset($mime) && empty($mime)) {
 			$mime = 'image/webp';
 		}
-		$mime_types   = str_replace( ",'" . $mime . "'", '', $mime_types );
+		$mime_types   = str_replace(",'" . $mime . "'", '', $mime_types);
 		$statuses     = Imagify_DB::get_post_statuses();
 		$nodata_join  = '';
 		$nodata_where = '';
-		if ( ! imagify_has_attachments_without_required_metadata() ) {
+		if (! imagify_has_attachments_without_required_metadata()) {
 			$nodata_join  = Imagify_DB::get_required_wp_metadata_join_clause();
 			$nodata_where = Imagify_DB::get_required_wp_metadata_where_clause(
 				[
@@ -219,7 +223,7 @@ class WP extends AbstractBulk {
 			);
 		}
 
-		$nextgen_suffix = constant( imagify_get_optimization_process_class_name( 'wp' ) . '::' . strtoupper( $format ) . '_SUFFIX' );
+		$nextgen_suffix = constant(imagify_get_optimization_process_class_name('wp') . '::' . strtoupper($format) . '_SUFFIX');
 
 		$ids = $wpdb->get_col(
 			$wpdb->prepare( // WPCS: unprepared SQL ok.
@@ -240,15 +244,15 @@ class WP extends AbstractBulk {
 				$nodata_where
 			ORDER BY p.ID DESC
 			LIMIT 0, %d",
-				'%' . $wpdb->esc_like( $nextgen_suffix . '";a:4:{s:7:"success";b:1;' ) . '%',
+				'%' . $wpdb->esc_like($nextgen_suffix . '";a:4:{s:7:"success";b:1;') . '%',
 				imagify_get_unoptimized_attachment_limit()
 			)
 		);
 
 		$wpdb->flush();
-		unset( $mime_types, $statuses, $nextgen_suffix, $mime );
+		unset($mime_types, $statuses, $nextgen_suffix, $mime);
 
-		$ids = array_filter( array_map( 'absint', $ids ) );
+		$ids = array_filter(array_map('absint', $ids));
 
 		$data = [
 			'ids'    => [],
@@ -258,7 +262,7 @@ class WP extends AbstractBulk {
 			],
 		];
 
-		if ( ! $ids ) {
+		if (! $ids) {
 			return $data;
 		}
 
@@ -279,26 +283,26 @@ class WP extends AbstractBulk {
 		 * @param array  $metas An array of the data fetched from the database.
 		 * @param string $context The context.
 		 */
-		do_action( 'imagify_bulk_generate_nextgen_before_file_existence_tests', $ids, $metas, 'wp' );
+		do_action('imagify_bulk_generate_nextgen_before_file_existence_tests', $ids, $metas, 'wp');
 
-		foreach ( $ids as $i => $id ) {
-			if ( empty( $metas['filenames'][ $id ] ) ) {
+		foreach ($ids as $i => $id) {
+			if (empty($metas['filenames'][$id])) {
 				// Problem. Should not happen, thanks to the wpdb query.
 				$data['errors']['no_file_path'][] = $id;
 				continue;
 			}
 
-			$file_path = get_imagify_attached_file( $metas['filenames'][ $id ] );
+			$file_path = get_imagify_attached_file($metas['filenames'][$id]);
 
-			if ( ! $file_path ) {
+			if (! $file_path) {
 				// Main file not found.
 				$data['errors']['no_file_path'][] = $id;
 				continue;
 			}
 
-			$backup_path = get_imagify_attachment_backup_path( $file_path );
+			$backup_path = get_imagify_attachment_backup_path($file_path);
 
-			if ( ! $this->filesystem->exists( $backup_path ) ) {
+			if (! $this->filesystem->exists($backup_path)) {
 				// No backup, no WebP.
 				$data['errors']['no_backup'][] = $id;
 				continue;
@@ -324,16 +328,17 @@ class WP extends AbstractBulk {
 	 *     @type string $original-size   Original filesize.
 	 * }
 	 */
-	public function get_context_data() {
+	public function get_context_data()
+	{
 		$total_saving_data = imagify_count_saving_data();
 		$data              = [
 			'count-optimized' => imagify_count_optimized_attachments(),
 			'count-errors'    => imagify_count_error_attachments(),
 			'optimized-size'  => $total_saving_data['optimized_size'],
 			'original-size'   => $total_saving_data['original_size'],
-			'errors_url'      => get_imagify_admin_url( 'folder-errors', $this->context ),
+			'errors_url'      => get_imagify_admin_url('folder-errors', $this->context),
 		];
 
-		return $this->format_context_data( $data );
+		return $this->format_context_data($data);
 	}
 }

@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\CLI;
 
-interface CommandInterface {
+interface CommandInterface
+{
 	/**
 	 * Get the command name.
 	 *
@@ -17,7 +19,7 @@ interface CommandInterface {
 	 * @param array $arguments Positional argument.
 	 * @param array $options Optional arguments.
 	 */
-	public function __invoke( $arguments, $options );
+	public function __invoke($arguments, $options);
 
 	/**
 	 * Get the positional and associative arguments a command accepts.

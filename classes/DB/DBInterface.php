@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\DB;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Interface to interact with the database.
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.9
  * @author Grégory Viguier
  */
-interface DBInterface {
+interface DBInterface
+{
 
 	/**
 	 * Get the main Instance.
@@ -32,7 +34,7 @@ interface DBInterface {
 	 * @param  int $row_id A primary key.
 	 * @return array
 	 */
-	public function get( $row_id );
+	public function get($row_id);
 
 	/**
 	 * Update a row.
@@ -46,7 +48,7 @@ interface DBInterface {
 	 * @param  string $where  A column name.
 	 * @return bool
 	 */
-	public function update( $row_id, $data = [], $where = '' );
+	public function update($row_id, $data = [], $where = '');
 
 	/**
 	 * Delete a row identified by the primary key.
@@ -58,7 +60,7 @@ interface DBInterface {
 	 * @param  int $row_id A primary key.
 	 * @return bool
 	 */
-	public function delete( $row_id );
+	public function delete($row_id);
 
 	/**
 	 * Default column values.

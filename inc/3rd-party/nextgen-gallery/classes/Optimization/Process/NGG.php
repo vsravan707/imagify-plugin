@@ -1,9 +1,10 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG\Optimization\Process;
 
 use Imagify\Optimization\File;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Optimization class for NextGen Gallery.
@@ -18,7 +19,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @see    Imagify\ThirdParty\NGG\Media\NGG
  * @author Grégory Viguier
  */
-class NGG extends \Imagify\Optimization\Process\AbstractProcess {
+class NGG extends \Imagify\Optimization\Process\AbstractProcess
+{
 
 	/** ----------------------------------------------------------------------------------------- */
 	/** MISSING THUMBNAILS ====================================================================== */
@@ -35,30 +37,31 @@ class NGG extends \Imagify\Optimization\Process\AbstractProcess {
 	 * @return array|WP_Error A WP_Error object on failure. An empty array on success: this context has no thumbnails.
 	 *                        The tests are kept for consistency.
 	 */
-	public function get_missing_sizes() {
+	public function get_missing_sizes()
+	{
 		// The media must have been optimized once and have a backup.
-		if ( ! $this->is_valid() ) {
-			return new \WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+		if (! $this->is_valid()) {
+			return new \WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
 		$media = $this->get_media();
 
-		if ( ! $media->is_supported() ) {
-			return new \WP_Error( 'media_not_supported', __( 'This media is not supported.', 'imagify' ) );
+		if (! $media->is_supported()) {
+			return new \WP_Error('media_not_supported', __('This media is not supported.', 'imagify'));
 		}
 
 		$data = $this->get_data();
 
-		if ( ! $data->is_optimized() ) {
-			return new \WP_Error( 'media_not_optimized', __( 'This media is not optimized yet.', 'imagify' ) );
+		if (! $data->is_optimized()) {
+			return new \WP_Error('media_not_optimized', __('This media is not optimized yet.', 'imagify'));
 		}
 
-		if ( ! $media->has_backup() ) {
-			return new \WP_Error( 'no_backup', __( 'This file has no backup file.', 'imagify' ) );
+		if (! $media->has_backup()) {
+			return new \WP_Error('no_backup', __('This file has no backup file.', 'imagify'));
 		}
 
-		if ( ! $media->is_image() ) {
-			return new \WP_Error( 'media_not_an_image', __( 'This media is not an image.', 'imagify' ) );
+		if (! $media->is_image()) {
+			return new \WP_Error('media_not_an_image', __('This media is not an image.', 'imagify'));
 		}
 
 		return [];
@@ -74,15 +77,16 @@ class NGG extends \Imagify\Optimization\Process\AbstractProcess {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A \WP_Error instance on failure.
 	 */
-	public function optimize_missing_thumbnails() {
-		if ( ! $this->is_valid() ) {
-			return new \WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function optimize_missing_thumbnails()
+	{
+		if (! $this->is_valid()) {
+			return new \WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
-		if ( ! $this->get_media()->is_supported() ) {
-			return new \WP_Error( 'media_not_supported', __( 'This media is not supported.', 'imagify' ) );
+		if (! $this->get_media()->is_supported()) {
+			return new \WP_Error('media_not_supported', __('This media is not supported.', 'imagify'));
 		}
 
-		return new \WP_Error( 'no_sizes', __( 'No thumbnails seem to be missing.', 'imagify' ) );
+		return new \WP_Error('no_sizes', __('No thumbnails seem to be missing.', 'imagify'));
 	}
 }

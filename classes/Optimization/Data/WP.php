@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Optimization\Data;
 
 /**
@@ -11,7 +12,8 @@ namespace Imagify\Optimization\Data;
  * @since  1.9
  * @author Grégory Viguier
  */
-class WP extends AbstractData {
+class WP extends AbstractData
+{
 
 	/**
 	 * Get the whole media optimization data.
@@ -22,31 +24,32 @@ class WP extends AbstractData {
 	 *
 	 * @return array The data. See parent method for details.
 	 */
-	public function get_optimization_data() {
-		if ( ! $this->is_valid() ) {
+	public function get_optimization_data()
+	{
+		if (! $this->is_valid()) {
 			return $this->default_optimization_data;
 		}
 
 		$id = $this->get_media()->get_id();
 
-		$data = get_post_meta( $id, '_imagify_data', true );
-		$data = is_array( $data ) ? $data : [];
+		$data = get_post_meta($id, '_imagify_data', true);
+		$data = is_array($data) ? $data : [];
 
-		if ( isset( $data['sizes'] ) && ! is_array( $data['sizes'] ) ) {
+		if (isset($data['sizes']) && ! is_array($data['sizes'])) {
 			$data['sizes'] = [];
 		}
 
-		if ( isset( $data['stats'] ) && ! is_array( $data['stats'] ) ) {
+		if (isset($data['stats']) && ! is_array($data['stats'])) {
 			$data['stats'] = [];
 		}
 
-		$data = array_merge( $this->default_optimization_data, $data );
+		$data = array_merge($this->default_optimization_data, $data);
 
-		$data['status'] = get_post_meta( $id, '_imagify_status', true );
-		$data['status'] = is_string( $data['status'] ) ? $data['status'] : '';
+		$data['status'] = get_post_meta($id, '_imagify_status', true);
+		$data['status'] = is_string($data['status']) ? $data['status'] : '';
 
-		$data['level'] = get_post_meta( $id, '_imagify_optimization_level', true );
-		$data['level'] = is_numeric( $data['level'] ) ? (int) $data['level'] : false;
+		$data['level'] = get_post_meta($id, '_imagify_optimization_level', true);
+		$data['level'] = is_numeric($data['level']) ? (int) $data['level'] : false;
 
 		return $data;
 	}
@@ -61,29 +64,30 @@ class WP extends AbstractData {
 	 * @param string $size The size name.
 	 * @param array  $data The optimization data. See parent method for details.
 	 */
-	public function update_size_optimization_data( $size, array $data ) {
-		if ( ! $this->is_valid() ) {
+	public function update_size_optimization_data($size, array $data)
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
 		$id = $this->get_media()->get_id();
 
-		if ( 'full' === $size ) {
+		if ('full' === $size) {
 			// Optimization level.
-			update_post_meta( $id, '_imagify_optimization_level', $data['level'] );
+			update_post_meta($id, '_imagify_optimization_level', $data['level']);
 			// Optimization status.
-			update_post_meta( $id, '_imagify_status', $data['status'] );
+			update_post_meta($id, '_imagify_status', $data['status']);
 		}
 
 		// Size data and stats.
-		$old_data = get_post_meta( $id, '_imagify_data', true );
-		$old_data = is_array( $old_data ) ? $old_data : [];
+		$old_data = get_post_meta($id, '_imagify_data', true);
+		$old_data = is_array($old_data) ? $old_data : [];
 
-		if ( ! isset( $old_data['sizes'] ) || ! is_array( $old_data['sizes'] ) ) {
+		if (! isset($old_data['sizes']) || ! is_array($old_data['sizes'])) {
 			$old_data['sizes'] = [];
 		}
 
-		if ( ! isset( $old_data['stats'] ) || ! is_array( $old_data['stats'] ) ) {
+		if (! isset($old_data['stats']) || ! is_array($old_data['stats'])) {
 			$old_data['stats'] = [];
 		}
 
@@ -97,15 +101,15 @@ class WP extends AbstractData {
 			$old_data['stats']
 		);
 
-		if ( key_exists( 'message', $data ) ) {
+		if (key_exists('message', $data)) {
 			$old_data['message'] = $data['message'];
 		}
 
-		if ( ! $data['success'] ) {
+		if (! $data['success']) {
 			/**
 			 * Error.
 			 */
-			$old_data['sizes'][ $size ] = [
+			$old_data['sizes'][$size] = [
 				'success' => false,
 				'error'   => $data['error'],
 			];
@@ -113,19 +117,19 @@ class WP extends AbstractData {
 			/**
 			 * Success.
 			 */
-			$old_data['sizes'][ $size ] = [
+			$old_data['sizes'][$size] = [
 				'success'        => true,
 				'original_size'  => $data['original_size'],
 				'optimized_size' => $data['optimized_size'],
-				'percent'        => round( ( ( $data['original_size'] - $data['optimized_size'] ) / $data['original_size'] ) * 100, 2 ),
+				'percent'        => round((($data['original_size'] - $data['optimized_size']) / $data['original_size']) * 100, 2),
 			];
 
 			$old_data['stats']['original_size']  += $data['original_size'];
 			$old_data['stats']['optimized_size'] += $data['optimized_size'];
-			$old_data['stats']['percent']         = round( ( ( $old_data['stats']['original_size'] - $old_data['stats']['optimized_size'] ) / $old_data['stats']['original_size'] ) * 100, 2 );
+			$old_data['stats']['percent']         = round((($old_data['stats']['original_size'] - $old_data['stats']['optimized_size']) / $old_data['stats']['original_size']) * 100, 2);
 		}
 
-		update_post_meta( $id, '_imagify_data', $old_data );
+		update_post_meta($id, '_imagify_data', $old_data);
 	}
 
 	/**
@@ -135,16 +139,17 @@ class WP extends AbstractData {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function delete_optimization_data() {
-		if ( ! $this->is_valid() ) {
+	public function delete_optimization_data()
+	{
+		if (! $this->is_valid()) {
 			return;
 		}
 
 		$id = $this->get_media()->get_id();
 
-		delete_post_meta( $id, '_imagify_data' );
-		delete_post_meta( $id, '_imagify_status' );
-		delete_post_meta( $id, '_imagify_optimization_level' );
+		delete_post_meta($id, '_imagify_data');
+		delete_post_meta($id, '_imagify_status');
+		delete_post_meta($id, '_imagify_optimization_level');
 	}
 
 	/**
@@ -158,27 +163,28 @@ class WP extends AbstractData {
 	 *
 	 * @param array $sizes A list of sizes to remove.
 	 */
-	public function delete_sizes_optimization_data( array $sizes ) {
-		if ( ! $sizes || ! $this->is_valid() ) {
+	public function delete_sizes_optimization_data(array $sizes)
+	{
+		if (! $sizes || ! $this->is_valid()) {
 			return;
 		}
 
 		$media_id = $this->get_media()->get_id();
-		$data     = get_post_meta( $media_id, '_imagify_data', true );
+		$data     = get_post_meta($media_id, '_imagify_data', true);
 
-		if ( empty( $data['sizes'] ) || ! is_array( $data['sizes'] ) ) {
+		if (empty($data['sizes']) || ! is_array($data['sizes'])) {
 			return;
 		}
 
-		$remaining_sizes_data = array_diff_key( $data['sizes'], array_flip( $sizes ) );
+		$remaining_sizes_data = array_diff_key($data['sizes'], array_flip($sizes));
 
-		if ( ! $remaining_sizes_data ) {
+		if (! $remaining_sizes_data) {
 			// All sizes have been removed: delete everything.
 			$this->delete_optimization_data();
 			return;
 		}
 
-		if ( count( $remaining_sizes_data ) === count( $data['sizes'] ) ) {
+		if (count($remaining_sizes_data) === count($data['sizes'])) {
 			// Nothing has been removed.
 			return;
 		}
@@ -192,8 +198,8 @@ class WP extends AbstractData {
 			'percent'        => 0,
 		];
 
-		foreach ( $data['sizes'] as $size_data ) {
-			if ( empty( $size_data['success'] ) ) {
+		foreach ($data['sizes'] as $size_data) {
+			if (empty($size_data['success'])) {
 				continue;
 			}
 
@@ -201,8 +207,8 @@ class WP extends AbstractData {
 			$data['stats']['optimized_size'] += $size_data['optimized_size'];
 		}
 
-		$data['stats']['percent'] = round( ( ( $data['stats']['original_size'] - $data['stats']['optimized_size'] ) / $data['stats']['original_size'] ) * 100, 2 );
+		$data['stats']['percent'] = round((($data['stats']['original_size'] - $data['stats']['optimized_size']) / $data['stats']['original_size']) * 100, 2);
 
-		update_post_meta( $media_id, '_imagify_data', $data );
+		update_post_meta($media_id, '_imagify_data', $data);
 	}
 }

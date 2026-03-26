@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Optimization\Process;
@@ -11,7 +12,8 @@ use WP_Error;
 /**
  * Fallback class to optimize medias.
  */
-class Noop implements ProcessInterface {
+class Noop implements ProcessInterface
+{
 	/**
 	 * The suffix used in the thumbnail size name.
 	 *
@@ -55,7 +57,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
+	public static function constructor_accepts($id)
+	{
 		return false;
 	}
 
@@ -66,7 +69,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return DataInterface|false
 	 */
-	public function get_data() {
+	public function get_data()
+	{
 		return false;
 	}
 
@@ -77,7 +81,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return MediaInterface|false
 	 */
-	public function get_media() {
+	public function get_media()
+	{
 		return false;
 	}
 
@@ -88,7 +93,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return File|false
 	 */
-	public function get_original_file() {
+	public function get_original_file()
+	{
 		return false;
 	}
 
@@ -99,7 +105,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return File|false
 	 */
-	public function get_fullsize_file() {
+	public function get_fullsize_file()
+	{
 		return false;
 	}
 
@@ -110,7 +117,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return File|false
 	 */
-	public function get_file() {
+	public function get_file()
+	{
 		return false;
 	}
 
@@ -121,7 +129,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_valid() {
+	public function is_valid()
+	{
 		return false;
 	}
 
@@ -134,7 +143,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function current_user_can( $describer ) {
+	public function current_user_can($describer)
+	{
 		return false;
 	}
 
@@ -147,8 +157,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A WP_Error instance on failure.
 	 */
-	public function optimize( $optimization_level = null ) {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function optimize($optimization_level = null)
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -160,8 +171,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A WP_Error instance on failure.
 	 */
-	public function reoptimize( $optimization_level = null ) {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function reoptimize($optimization_level = null)
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -174,8 +186,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A WP_Error instance on failure.
 	 */
-	public function optimize_sizes( $sizes, $optimization_level = null ) {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function optimize_sizes($sizes, $optimization_level = null)
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -188,8 +201,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return array|WP_Error The optimization data. A WP_Error instance on failure.
 	 */
-	public function optimize_size( $size, $optimization_level = null ) {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function optimize_size($size, $optimization_level = null)
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -199,8 +213,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool|WP_Error True on success. A WP_Error instance on failure.
 	 */
-	public function restore() {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function restore()
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -222,7 +237,8 @@ class Noop implements ProcessInterface {
 	 *     @type string $file   The name the thumbnail "should" have.
 	 * }
 	 */
-	public function get_missing_sizes() {
+	public function get_missing_sizes()
+	{
 		return [];
 	}
 
@@ -233,8 +249,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A WP_Error instance on failure.
 	 */
-	public function optimize_missing_thumbnails() {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function optimize_missing_thumbnails()
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -258,7 +275,8 @@ class Noop implements ProcessInterface {
 	 *     @type int  $file_size The file size in bytes.
 	 * }
 	 */
-	public function maybe_resize( $size, $file ) {
+	public function maybe_resize($size, $file)
+	{
 		return [
 			'resized'   => false,
 			'backuped'  => false,
@@ -273,8 +291,9 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool|WP_Error True if successfully launched. A WP_Error instance on failure.
 	 */
-	public function generate_nextgen_versions() {
-		return new WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function generate_nextgen_versions()
+	{
+		return new WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 	}
 
 	/**
@@ -286,7 +305,8 @@ class Noop implements ProcessInterface {
 	 * @param  bool $keep_full Set to true to keep the full size.
 	 * @return bool|WP_Error  True on success. A WP_Error object on failure.
 	 */
-	public function delete_nextgen_files( $keep_full = false ) {
+	public function delete_nextgen_files($keep_full = false)
+	{
 		return false;
 	}
 
@@ -299,7 +319,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return string|bool The unsuffixed name of the size if Next-Gen. False if not a Next-Gen.
 	 */
-	public function is_size_next_gen( $size_name ) {
+	public function is_size_next_gen($size_name)
+	{
 		return false;
 	}
 
@@ -308,7 +329,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_full_next_gen() {
+	public function is_full_next_gen()
+	{
 		return false;
 	}
 
@@ -319,7 +341,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function has_next_gen() {
+	public function has_next_gen()
+	{
 		return false;
 	}
 
@@ -330,7 +353,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_locked() {
+	public function is_locked()
+	{
 		return false;
 	}
 
@@ -357,7 +381,8 @@ class Noop implements ProcessInterface {
 	 *
 	 * @return bool
 	 */
-	public function size_has_optimization_data( $size ) {
+	public function size_has_optimization_data($size)
+	{
 		return false;
 	}
 
@@ -382,7 +407,8 @@ class Noop implements ProcessInterface {
 	 *     @type int    $optimized_size The weight of the file, once optimized.
 	 * }
 	 */
-	public function update_size_optimization_data( $response, $size, $level ) {
+	public function update_size_optimization_data($response, $size, $level)
+	{
 		return [
 			'size'           => 'noop',
 			'level'          => false,

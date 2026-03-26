@@ -7,17 +7,17 @@ return [
 				'plan_id'     => 2,
 			],
 			'expected' => [
-                'Documentation'
-            ],
+				'Documentation'
+			],
 		],
 		'testShouldReturnUpgradeLinkAmongPluginLinksIfPlanLabelIsStarter' => [
 			'config'   => [
 				'plan_id'     => 1,
 			],
 			'expected' => [
-                'Upgrade',
-                'class="imagify-plugin-upgrade"'
-            ],
+				'Upgrade',
+				'class="imagify-plugin-upgrade"'
+			],
 		],
 	]
 ];

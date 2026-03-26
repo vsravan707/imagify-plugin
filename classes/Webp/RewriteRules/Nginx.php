@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Webp\RewriteRules;
@@ -10,7 +11,8 @@ use Imagify\WriteFile\AbstractNginxDirConfFile;
  *
  * @since 1.9
  */
-class Nginx extends AbstractNginxDirConfFile {
+class Nginx extends AbstractNginxDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delemiter.
@@ -27,9 +29,10 @@ class Nginx extends AbstractNginxDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		$extensions = $this->get_extensions_pattern() . '|avif';
-		$home_root  = wp_parse_url( home_url( '/' ) );
+		$home_root  = wp_parse_url(home_url('/'));
 		$home_root  = $home_root['path'];
 
 		return trim(

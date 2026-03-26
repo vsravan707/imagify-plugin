@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\CDN;
@@ -8,7 +9,8 @@ use Imagify\Dependencies\League\Container\ServiceProvider\AbstractServiceProvide
 /**
  * Service provider for CDN compatibility
  */
-class ServiceProvider extends AbstractServiceProvider {
+class ServiceProvider extends AbstractServiceProvider
+{
 	/**
 	 * Services provided by this provider
 	 *
@@ -34,8 +36,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return bool
 	 */
-	public function provides( string $id ): bool {
-		return in_array( $id, $this->provides, true );
+	public function provides(string $id): bool
+	{
+		return in_array($id, $this->provides, true);
 	}
 
 	/**
@@ -43,8 +46,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register(): void {
-		$this->getContainer()->addShared( CDN::class );
+	public function register(): void
+	{
+		$this->getContainer()->addShared(CDN::class);
 	}
 
 	/**
@@ -52,7 +56,8 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function get_subscribers() {
+	public function get_subscribers()
+	{
 		return $this->subscribers;
 	}
 }

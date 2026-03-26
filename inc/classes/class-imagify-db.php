@@ -6,7 +6,8 @@
  * @since  1.6.13
  * @author Grégory Viguier
  */
-class Imagify_DB {
+class Imagify_DB
+{
 
 	/**
 	 * Class version.
@@ -22,11 +23,12 @@ class Imagify_DB {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public static function unlimit_joins() {
+	public static function unlimit_joins()
+	{
 		global $wpdb;
 		static $done = false;
 
-		if ( $done ) {
+		if ($done) {
 			return;
 		}
 
@@ -41,10 +43,10 @@ class Imagify_DB {
 		 *
 		 * @param string|bool $query The query. False to prevent any query.
 		 */
-		$query = apply_filters( 'imagify_db_unlimit_joins_query', $query );
+		$query = apply_filters('imagify_db_unlimit_joins_query', $query);
 
-		if ( $query && is_string( $query ) ) {
-			$wpdb->query( $query ); // WPCS: unprepared SQL ok.
+		if ($query && is_string($query)) {
+			$wpdb->query($query); // WPCS: unprepared SQL ok.
 		}
 	}
 
@@ -58,10 +60,11 @@ class Imagify_DB {
 	 * @param  array $values An array of values.
 	 * @return string        A comma separated list of values.
 	 */
-	public static function prepare_values_list( $values ) {
-		$values = esc_sql( (array) $values );
-		$values = array_map( [ __CLASS__, 'quote_string' ], $values );
-		return implode( ',', $values );
+	public static function prepare_values_list($values)
+	{
+		$values = esc_sql((array) $values);
+		$values = array_map([__CLASS__, 'quote_string'], $values);
+		return implode(',', $values);
 	}
 
 	/**
@@ -74,8 +77,9 @@ class Imagify_DB {
 	 * @param  int|string $value A value.
 	 * @return int|string
 	 */
-	public static function quote_string( $value ) {
-		return is_numeric( $value ) ? $value : "'" . addcslashes( $value, "'" ) . "'";
+	public static function quote_string($value)
+	{
+		return is_numeric($value) ? $value : "'" . addcslashes($value, "'") . "'";
 	}
 
 	/**
@@ -98,15 +102,16 @@ class Imagify_DB {
 	 * @param  string $text The raw text to be escaped. The input typed by the user should have no extra or deleted slashes.
 	 * @return string       Text in the form of a LIKE phrase. The output is not SQL safe. Call $wpdb::prepare() or real_escape next.
 	 */
-	public static function esc_like( $text ) {
+	public static function esc_like($text)
+	{
 		global $wpdb;
 
-		if ( method_exists( $wpdb, 'esc_like' ) ) {
+		if (method_exists($wpdb, 'esc_like')) {
 			// Introduced in WP 4.0.0.
-			return $wpdb->esc_like( $text );
+			return $wpdb->esc_like($text);
 		}
 
-		return addcslashes( $text, '_%\\' );
+		return addcslashes($text, '_%\\');
 	}
 
 	/**
@@ -120,18 +125,19 @@ class Imagify_DB {
 	 * @param  string $type One of 'image', 'not-image'. Any other value will return all mime types.
 	 * @return string       A comma separated list of mime types.
 	 */
-	public static function get_mime_types( $type = null ) {
+	public static function get_mime_types($type = null)
+	{
 		static $mime_types = [];
 
-		if ( empty( $type ) ) {
+		if (empty($type)) {
 			$type = 'all';
 		}
 
-		if ( ! isset( $mime_types[ $type ] ) ) {
-			$mime_types[ $type ] = self::prepare_values_list( imagify_get_mime_types( $type ) );
+		if (! isset($mime_types[$type])) {
+			$mime_types[$type] = self::prepare_values_list(imagify_get_mime_types($type));
 		}
 
-		return $mime_types[ $type ];
+		return $mime_types[$type];
 	}
 
 	/**
@@ -143,11 +149,12 @@ class Imagify_DB {
 	 *
 	 * @return string A comma separated list of post statuses.
 	 */
-	public static function get_post_statuses() {
+	public static function get_post_statuses()
+	{
 		static $statuses;
 
-		if ( ! isset( $statuses ) ) {
-			$statuses = self::prepare_values_list( imagify_get_post_statuses() );
+		if (! isset($statuses)) {
+			$statuses = self::prepare_values_list(imagify_get_post_statuses());
 		}
 
 		return $statuses;
@@ -171,17 +178,18 @@ class Imagify_DB {
 	 * @since  1.7
 	 * @access public
 	 */
-	public static function get_required_wp_metadata_join_clause( $id_field = 'p.ID', $matching = true, $test = true, $special_join_conditions = '' ) {
+	public static function get_required_wp_metadata_join_clause($id_field = 'p.ID', $matching = true, $test = true, $special_join_conditions = '')
+	{
 		global $wpdb;
 
-		if ( $test && ! imagify_has_attachments_without_required_metadata() ) {
+		if ($test && ! imagify_has_attachments_without_required_metadata()) {
 			return '';
 		}
 
 		self::unlimit_joins();
 		$clause = '';
 
-		if ( ! $id_field || ! is_string( $id_field ) ) {
+		if (! $id_field || ! is_string($id_field)) {
 			$id_field = "$wpdb->posts.ID";
 		}
 
@@ -189,8 +197,8 @@ class Imagify_DB {
 
 		$first = true;
 
-		foreach ( self::get_required_wp_metadata_aliases() as $meta_name => $alias ) {
-			if ( $first ) {
+		foreach (self::get_required_wp_metadata_aliases() as $meta_name => $alias) {
+			if ($first) {
 				$first   = false;
 				$clause .= "
 			$join JOIN $wpdb->postmeta AS $alias
@@ -216,17 +224,18 @@ class Imagify_DB {
 	 *
 	 * @return string
 	 */
-	public static function get_required_wp_metadata_exist_clause( $id_field = 'p.ID', $test = true ) {
+	public static function get_required_wp_metadata_exist_clause($id_field = 'p.ID', $test = true)
+	{
 		global $wpdb;
 
-		if ( $test && ! imagify_has_attachments_without_required_metadata() ) {
+		if ($test && ! imagify_has_attachments_without_required_metadata()) {
 			return '';
 		}
 
 		self::unlimit_joins();
 		$clause = '';
 
-		if ( ! $id_field || ! is_string( $id_field ) ) {
+		if (! $id_field || ! is_string($id_field)) {
 			$id_field = "$wpdb->posts.ID";
 		}
 		$additional_clause = self::get_required_exist_wp_metadata_where_clause(
@@ -238,8 +247,8 @@ class Imagify_DB {
 
 		$first = true;
 
-		foreach ( self::get_required_wp_metadata_aliases() as $meta_name => $alias ) {
-			if ( $first ) {
+		foreach (self::get_required_wp_metadata_aliases() as $meta_name => $alias) {
+			if ($first) {
 				$first   = false;
 				$clause .= "
                     EXISTS(
@@ -279,7 +288,8 @@ class Imagify_DB {
 	 * }.
 	 * @return string A query.
 	 */
-	public static function get_required_wp_metadata_where_clause( $args = [] ) {
+	public static function get_required_wp_metadata_where_clause($args = [])
+	{
 		static $query = [];
 
 		$args = imagify_merge_intersect(
@@ -292,39 +302,39 @@ class Imagify_DB {
 			]
 		);
 
-		list( $aliases, $matching, $test, $prepared ) = array_values( $args );
+		list($aliases, $matching, $test, $prepared) = array_values($args);
 
-		if ( $test && ! imagify_has_attachments_without_required_metadata() ) {
+		if ($test && ! imagify_has_attachments_without_required_metadata()) {
 			return '';
 		}
 
-		if ( $aliases && is_string( $aliases ) ) {
+		if ($aliases && is_string($aliases)) {
 			$aliases = [
 				'_wp_attached_file' => $aliases,
 			];
-		} elseif ( ! is_array( $aliases ) ) {
+		} elseif (! is_array($aliases)) {
 			$aliases = [];
 		}
 
-		$aliases = imagify_merge_intersect( $aliases, self::get_required_wp_metadata_aliases() );
-		$key     = implode( '|', $aliases ) . '|' . (int) $matching;
+		$aliases = imagify_merge_intersect($aliases, self::get_required_wp_metadata_aliases());
+		$key     = implode('|', $aliases) . '|' . (int) $matching;
 
-		if ( isset( $query[ $key ] ) ) {
-			return $prepared ? str_replace( '%', '%%', $query[ $key ] ) : $query[ $key ];
+		if (isset($query[$key])) {
+			return $prepared ? str_replace('%', '%%', $query[$key]) : $query[$key];
 		}
 
-		unset( $args['prepared'] );
+		unset($args['prepared']);
 		$alias_1    = $aliases['_wp_attached_file'];
 		$alias_2    = $aliases['_wp_attachment_metadata'];
-		$extensions = self::get_extensions_where_clause( $args );
+		$extensions = self::get_extensions_where_clause($args);
 
-		if ( $matching ) {
-			$query[ $key ] = "AND $alias_1.meta_value NOT LIKE '%://%' AND $alias_1.meta_value NOT LIKE '_:\\\\\%' AND $extensions";
+		if ($matching) {
+			$query[$key] = "AND $alias_1.meta_value NOT LIKE '%://%' AND $alias_1.meta_value NOT LIKE '_:\\\\\%' AND $extensions";
 		} else {
-			$query[ $key ] = "AND ( $alias_2.meta_value IS NULL OR $alias_1.meta_value IS NULL OR $alias_1.meta_value LIKE '%://%' OR $alias_1.meta_value LIKE '_:\\\\\%' AND $extensions )";
+			$query[$key] = "AND ( $alias_2.meta_value IS NULL OR $alias_1.meta_value IS NULL OR $alias_1.meta_value LIKE '%://%' OR $alias_1.meta_value LIKE '_:\\\\\%' AND $extensions )";
 		}
 
-		return $prepared ? str_replace( '%', '%%', $query[ $key ] ) : $query[ $key ];
+		return $prepared ? str_replace('%', '%%', $query[$key]) : $query[$key];
 	}
 
 	/**
@@ -341,7 +351,8 @@ class Imagify_DB {
 	 *  }.
 	 * @return string A query.
 	 */
-	public static function get_required_exist_wp_metadata_where_clause( $args = [] ) {
+	public static function get_required_exist_wp_metadata_where_clause($args = [])
+	{
 		static $query = [];
 
 		$args = imagify_merge_intersect(
@@ -354,38 +365,38 @@ class Imagify_DB {
 			]
 		);
 
-		list( $aliases, $matching, $test, $prepared ) = array_values( $args );
+		list($aliases, $matching, $test, $prepared) = array_values($args);
 
-		if ( $test && ! imagify_has_attachments_without_required_metadata() ) {
+		if ($test && ! imagify_has_attachments_without_required_metadata()) {
 			return '';
 		}
 
-		if ( $aliases && is_string( $aliases ) ) {
+		if ($aliases && is_string($aliases)) {
 			$aliases = [
 				'_wp_attached_file' => $aliases,
 			];
-		} elseif ( ! is_array( $aliases ) ) {
+		} elseif (! is_array($aliases)) {
 			$aliases = [];
 		}
 
-		$aliases = imagify_merge_intersect( $aliases, self::get_required_wp_metadata_aliases() );
-		$key     = implode( '|', $aliases ) . '|' . (int) $matching;
+		$aliases = imagify_merge_intersect($aliases, self::get_required_wp_metadata_aliases());
+		$key     = implode('|', $aliases) . '|' . (int) $matching;
 
-		if ( isset( $query[ $key ] ) ) {
-			return $prepared ? str_replace( '%', '%%', $query[ $key ] ) : $query[ $key ];
+		if (isset($query[$key])) {
+			return $prepared ? str_replace('%', '%%', $query[$key]) : $query[$key];
 		}
 
-		unset( $args['prepared'] );
+		unset($args['prepared']);
 		$alias_1    = $aliases['_wp_attached_file'];
-		$extensions = self::get_extensions_where_clause( $args );
+		$extensions = self::get_extensions_where_clause($args);
 
-		if ( $matching ) {
-			$query[ $key ] = "AND $alias_1.meta_value NOT LIKE '%://%' AND $alias_1.meta_value NOT LIKE '_:\\\\\%' OR NOT ( $extensions )";
+		if ($matching) {
+			$query[$key] = "AND $alias_1.meta_value NOT LIKE '%://%' AND $alias_1.meta_value NOT LIKE '_:\\\\\%' OR NOT ( $extensions )";
 		} else {
-			$query[ $key ] = "AND ( $alias_1.meta_value LIKE '%://%' OR $alias_1.meta_value LIKE '_:\\\\\%' OR NOT ( $extensions ) )";
+			$query[$key] = "AND ( $alias_1.meta_value LIKE '%://%' OR $alias_1.meta_value LIKE '_:\\\\\%' OR NOT ( $extensions ) )";
 		}
 
-		return $prepared ? str_replace( '%', '%%', $query[ $key ] ) : $query[ $key ];
+		return $prepared ? str_replace('%', '%%', $query[$key]) : $query[$key];
 	}
 
 	/**
@@ -402,7 +413,8 @@ class Imagify_DB {
 	 *
 	 * @return array
 	 */
-	private function prepare_query_args( $args ) {
+	private function prepare_query_args($args)
+	{
 		return imagify_merge_intersect(
 			$args,
 			[
@@ -423,8 +435,9 @@ class Imagify_DB {
 	 *
 	 * @return string
 	 */
-	private function generate_query( $matching, $alias, $regex ) {
-		if ( $matching ) {
+	private function generate_query($matching, $alias, $regex)
+	{
+		if ($matching) {
 			return "REVERSE (LOWER( $alias.meta_value )) REGEXP '$regex'";
 		}
 
@@ -450,48 +463,49 @@ class Imagify_DB {
 	 * }.
 	 * @return string A query.
 	 */
-	public static function get_extensions_where_clause( $args = false ) {
+	public static function get_extensions_where_clause($args = false)
+	{
 		static $extensions;
 		static $query = [];
 
 		$instance = new self();
 
-		$args = $instance->prepare_query_args( $args );
+		$args = $instance->prepare_query_args($args);
 
-		list( $alias, $matching, $test, $prepared ) = array_values( $args );
+		list($alias, $matching, $test, $prepared) = array_values($args);
 
-		if ( $test && ! imagify_has_attachments_without_required_metadata() ) {
+		if ($test && ! imagify_has_attachments_without_required_metadata()) {
 			return '';
 		}
 
-		if ( ! isset( $extensions ) ) {
-			$extensions = array_keys( imagify_get_mime_types() );
-			$extensions = implode( '|', $extensions );
-			$extensions = explode( '|', $extensions );
+		if (! isset($extensions)) {
+			$extensions = array_keys(imagify_get_mime_types());
+			$extensions = implode('|', $extensions);
+			$extensions = explode('|', $extensions);
 			$extensions = array_map(
-				function ( $ex ) {
-					return strrev( $ex );
+				function ($ex) {
+					return strrev($ex);
 				},
 				$extensions
 			);
 		}
 
-		if ( ! $alias ) {
+		if (! $alias) {
 			$alias = self::get_required_wp_metadata_aliases();
 			$alias = $alias['_wp_attached_file'];
 		}
 
 		$key = $alias . '|' . (int) $matching;
 
-		if ( isset( $query[ $key ] ) ) {
-			return $prepared ? str_replace( '%', '%%', $query[ $key ] ) : $query[ $key ];
+		if (isset($query[$key])) {
+			return $prepared ? str_replace('%', '%%', $query[$key]) : $query[$key];
 		}
 
-		$regex = '^' . implode( '\..*|^', $extensions ) . '\..*';
+		$regex = '^' . implode('\..*|^', $extensions) . '\..*';
 
-		$query[ $key ] = $instance->generate_query( $matching, $alias, $regex );
+		$query[$key] = $instance->generate_query($matching, $alias, $regex);
 
-		return $prepared ? str_replace( '%', '%%', $query[ $key ] ) : $query[ $key ];
+		return $prepared ? str_replace('%', '%%', $query[$key]) : $query[$key];
 	}
 
 	/**
@@ -503,7 +517,8 @@ class Imagify_DB {
 	 *
 	 * @return array An array with the meta name as key and its alias as value.
 	 */
-	public static function get_required_wp_metadata_aliases() {
+	public static function get_required_wp_metadata_aliases()
+	{
 		return [
 			'_wp_attached_file'       => 'imrwpmt1',
 			'_wp_attachment_metadata' => 'imrwpmt2',
@@ -523,23 +538,24 @@ class Imagify_DB {
 	 * @param  int   $keep_keys_order Set to true to return an array ordered like $keys instead of $values.
 	 * @return array                  The combined arrays.
 	 */
-	public static function combine_query_results( $keys, $values, $keep_keys_order = false ) {
-		if ( ! $keys || ! $values ) {
+	public static function combine_query_results($keys, $values, $keep_keys_order = false)
+	{
+		if (! $keys || ! $values) {
 			return [];
 		}
 
 		$result = [];
-		$keys   = array_flip( $keys );
+		$keys   = array_flip($keys);
 
-		foreach ( $values as $v ) {
-			if ( isset( $keys[ $v['id'] ] ) ) {
-				$result[ $v['id'] ] = $v['value'];
+		foreach ($values as $v) {
+			if (isset($keys[$v['id']])) {
+				$result[$v['id']] = $v['value'];
 			}
 		}
 
-		if ( $keep_keys_order ) {
-			$keys = array_intersect_key( $keys, $result );
-			return array_replace( $keys, $result );
+		if ($keep_keys_order) {
+			$keys = array_intersect_key($keys, $result);
+			return array_replace($keys, $result);
 		}
 
 		return $result;
@@ -568,17 +584,18 @@ class Imagify_DB {
 	 *                          'key3' => array( post_id_1 => 'result_6', post_id_2 => 'result_7' ),
 	 *                      )
 	 */
-	public static function get_metas( $metas, $ids ) {
+	public static function get_metas($metas, $ids)
+	{
 		global $wpdb;
 
-		if ( ! $ids ) {
-			return array_fill_keys( array_keys( $metas ), [] );
+		if (! $ids) {
+			return array_fill_keys(array_keys($metas), []);
 		}
 
-		$sql_ids = implode( ',', $ids );
+		$sql_ids = implode(',', $ids);
 
-		foreach ( $metas as $result_name => $meta_name ) {
-			$metas[ $result_name ] = $wpdb->get_results( // WPCS: unprepared SQL ok.
+		foreach ($metas as $result_name => $meta_name) {
+			$metas[$result_name] = $wpdb->get_results( // WPCS: unprepared SQL ok.
 				"SELECT pm.post_id as id, pm.meta_value as value
 				FROM $wpdb->postmeta as pm
 				WHERE pm.meta_key = '$meta_name'
@@ -588,10 +605,10 @@ class Imagify_DB {
 			);
 
 			$wpdb->flush();
-			$metas[ $result_name ] = self::combine_query_results( $ids, $metas[ $result_name ], true );
+			$metas[$result_name] = self::combine_query_results($ids, $metas[$result_name], true);
 
-			if ( strpos( $result_name, 'data' ) !== false ) {
-				$metas[ $result_name ] = array_map( 'maybe_unserialize', $metas[ $result_name ] );
+			if (strpos($result_name, 'data') !== false) {
+				$metas[$result_name] = array_map('maybe_unserialize', $metas[$result_name]);
 			}
 		}
 
@@ -609,19 +626,20 @@ class Imagify_DB {
 	 * @param  string $schema_query Query representing the table schema.
 	 * @return bool                 True on success. False otherwise.
 	 */
-	public static function create_table( $table_name, $schema_query ) {
+	public static function create_table($table_name, $schema_query)
+	{
 		global $wpdb;
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$wpdb->hide_errors();
 
-		$schema_query    = trim( $schema_query );
+		$schema_query    = trim($schema_query);
 		$charset_collate = $wpdb->get_charset_collate();
 
-		dbDelta( "CREATE TABLE $table_name ($schema_query) $charset_collate;" );
+		dbDelta("CREATE TABLE $table_name ($schema_query) $charset_collate;");
 
-		return empty( $wpdb->last_error ) && self::table_exists( $table_name );
+		return empty($wpdb->last_error) && self::table_exists($table_name);
 	}
 
 	/**
@@ -634,11 +652,12 @@ class Imagify_DB {
 	 * @param  string $table_name Full name of the table (with DB prefix).
 	 * @return bool
 	 */
-	public static function table_exists( $table_name ) {
+	public static function table_exists($table_name)
+	{
 		global $wpdb;
 
-		$escaped_table = self::esc_like( $table_name );
-		$result        = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $escaped_table ) );
+		$escaped_table = self::esc_like($table_name);
+		$result        = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $escaped_table));
 
 		return $result === $table_name;
 	}
@@ -653,32 +672,33 @@ class Imagify_DB {
 	 * @param string $context   The context.
 	 * @param array  $media_ids The media IDs.
 	 */
-	public static function cache_process_locks( $context, $media_ids ) {
+	public static function cache_process_locks($context, $media_ids)
+	{
 		global $wpdb;
 
-		if ( ! $context || ! $media_ids || wp_using_ext_object_cache() ) {
+		if (! $context || ! $media_ids || wp_using_ext_object_cache()) {
 			return;
 		}
 
 		// Sanitize the IDs.
-		$media_ids = array_filter( $media_ids );
-		$media_ids = array_unique( $media_ids );
+		$media_ids = array_filter($media_ids);
+		$media_ids = array_unique($media_ids);
 
-		if ( ! $media_ids ) {
+		if (! $media_ids) {
 			return;
 		}
 
-		$context_instance   = imagify_get_context( $context );
+		$context_instance   = imagify_get_context($context);
 		$context            = $context_instance->get_name();
-		$process_class_name = imagify_get_optimization_process_class_name( $context );
-		$transient_name     = sprintf( $process_class_name::LOCK_NAME, $context, '%' );
+		$process_class_name = imagify_get_optimization_process_class_name($context);
+		$transient_name     = sprintf($process_class_name::LOCK_NAME, $context, '%');
 		$is_network_wide    = $context_instance->is_network_wide();
 
 		// Do 1 DB query per context (and cache results) before doing 1 get_transient() (2 DB queries) per media ID.
 		$prefix = $is_network_wide ? '_site_transient_' : '_transient_';
 
-		if ( $is_network_wide && is_multisite() ) {
-			$network_id     = function_exists( 'get_current_network_id' ) ? get_current_network_id() : (int) $wpdb->siteid;
+		if ($is_network_wide && is_multisite()) {
+			$network_id     = function_exists('get_current_network_id') ? get_current_network_id() : (int) $wpdb->siteid;
 			$cache_prefix   = "$network_id:";
 			$notoptions_key = "$network_id:notoptions";
 			$cache_group    = 'site-options';
@@ -707,31 +727,31 @@ class Imagify_DB {
 
 		$not_exist = [];
 
-		foreach ( [ '', 'timeout_' ] as $maybe_timeout ) {
-			foreach ( $media_ids as $id ) {
-				$option_name = $prefix . $maybe_timeout . str_replace( '%', $id, $transient_name );
+		foreach (['', 'timeout_'] as $maybe_timeout) {
+			foreach ($media_ids as $id) {
+				$option_name = $prefix . $maybe_timeout . str_replace('%', $id, $transient_name);
 
-				if ( isset( $results[ $option_name ] ) ) {
+				if (isset($results[$option_name])) {
 					// Cache the value.
-					$value = $results[ $option_name ]->value;
-					$value = maybe_unserialize( $value );
-					wp_cache_set( "$cache_prefix$option_name", $value, $cache_group );
+					$value = $results[$option_name]->value;
+					$value = maybe_unserialize($value);
+					wp_cache_set("$cache_prefix$option_name", $value, $cache_group);
 				} else {
 					// No value.
-					$not_exist[ $option_name ] = true;
+					$not_exist[$option_name] = true;
 				}
 			}
 		}
 
-		if ( ! $not_exist ) {
+		if (! $not_exist) {
 			return;
 		}
 
 		// Cache the options that don't exist in the DB.
-		$notoptions = wp_cache_get( $notoptions_key, $cache_group );
-		$notoptions = is_array( $notoptions ) ? $notoptions : [];
-		$notoptions = array_merge( $notoptions, $not_exist );
+		$notoptions = wp_cache_get($notoptions_key, $cache_group);
+		$notoptions = is_array($notoptions) ? $notoptions : [];
+		$notoptions = array_merge($notoptions, $not_exist);
 
-		wp_cache_set( $notoptions_key, $notoptions, $cache_group );
+		wp_cache_set($notoptions_key, $notoptions, $cache_group);
 	}
 }

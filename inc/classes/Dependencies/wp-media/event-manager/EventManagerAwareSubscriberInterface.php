@@ -1,7 +1,9 @@
 <?php
+
 namespace Imagify\EventManagement;
 
-interface EventManagerAwareSubscriberInterface extends SubscriberInterface {
+interface EventManagerAwareSubscriberInterface extends SubscriberInterface
+{
 	/**
 	 * Set the WordPress event manager for the subscriber.
 	 *
@@ -10,5 +12,5 @@ interface EventManagerAwareSubscriberInterface extends SubscriberInterface {
 	 *
 	 * @param EventManager $event_manager EventManager instance.
 	 */
-	public function set_event_manager( EventManager $event_manager );
+	public function set_event_manager(EventManager $event_manager);
 }

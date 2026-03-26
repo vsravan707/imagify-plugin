@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Media;
@@ -9,7 +10,8 @@ use Imagify\Media\Upload\Upload;
 /**
  * Service provider for Media
  */
-class ServiceProvider extends AbstractServiceProvider {
+class ServiceProvider extends AbstractServiceProvider
+{
 	/**
 	 * Services provided by this provider
 	 *
@@ -36,8 +38,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return bool
 	 */
-	public function provides( string $id ): bool {
-		return in_array( $id, $this->provides, true );
+	public function provides(string $id): bool
+	{
+		return in_array($id, $this->provides, true);
 	}
 
 	/**
@@ -45,7 +48,8 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function get_subscribers(): array {
+	public function get_subscribers(): array
+	{
 		return $this->subscribers;
 	}
 
@@ -54,10 +58,11 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register(): void {
-		$this->getContainer()->add( Upload::class );
+	public function register(): void
+	{
+		$this->getContainer()->add(Upload::class);
 
-		$this->getContainer()->addShared( Subscriber::class )
-			->addArgument( Upload::class );
+		$this->getContainer()->addShared(Subscriber::class)
+			->addArgument(Upload::class);
 	}
 }

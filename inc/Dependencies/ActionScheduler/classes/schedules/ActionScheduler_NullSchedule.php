@@ -3,7 +3,8 @@
 /**
  * Class ActionScheduler_NullSchedule
  */
-class ActionScheduler_NullSchedule extends ActionScheduler_SimpleSchedule {
+class ActionScheduler_NullSchedule extends ActionScheduler_SimpleSchedule
+{
 
 	/**
 	 * DateTime instance.
@@ -17,7 +18,8 @@ class ActionScheduler_NullSchedule extends ActionScheduler_SimpleSchedule {
 	 *
 	 * @param null|DateTime $date The date & time to run the action.
 	 */
-	public function __construct( ?DateTime $date = null ) {
+	public function __construct(?DateTime $date = null)
+	{
 		$this->scheduled_date = null;
 	}
 
@@ -26,14 +28,16 @@ class ActionScheduler_NullSchedule extends ActionScheduler_SimpleSchedule {
 	 *
 	 * @return array
 	 */
-	public function __sleep() {
+	public function __sleep()
+	{
 		return array();
 	}
 
 	/**
 	 * Wakeup.
 	 */
-	public function __wakeup() {
+	public function __wakeup()
+	{
 		$this->scheduled_date = null;
 	}
 }

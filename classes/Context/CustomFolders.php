@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Context;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -9,7 +10,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.9
  * @author Grégory Viguier
  */
-final class CustomFolders extends AbstractContext {
+final class CustomFolders extends AbstractContext
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -47,7 +49,8 @@ final class CustomFolders extends AbstractContext {
 	 *
 	 * @return int
 	 */
-	public function get_resizing_threshold() {
+	public function get_resizing_threshold()
+	{
 		return 0;
 	}
 
@@ -59,8 +62,9 @@ final class CustomFolders extends AbstractContext {
 	 *
 	 * @return bool
 	 */
-	public function can_backup() {
-		$this->can_backup = get_imagify_option( 'backup' );
+	public function can_backup()
+	{
+		$this->can_backup = get_imagify_option('backup');
 
 		return $this->can_backup;
 	}
@@ -74,8 +78,9 @@ final class CustomFolders extends AbstractContext {
 	 * @param  string $describer Capacity describer. Possible values are like 'manage', 'bulk-optimize', 'manual-optimize', 'auto-optimize'.
 	 * @return string
 	 */
-	public function get_capacity( $describer ) {
-		switch ( $describer ) {
+	public function get_capacity($describer)
+	{
+		switch ($describer) {
 			case 'manage':
 				$capacity = imagify_is_active_for_network() ? 'manage_network_options' : 'manage_options';
 				break;
@@ -93,6 +98,6 @@ final class CustomFolders extends AbstractContext {
 				$capacity = $describer;
 		}
 
-		return $this->filter_capacity( $capacity, $describer );
+		return $this->filter_capacity($capacity, $describer);
 	}
 }

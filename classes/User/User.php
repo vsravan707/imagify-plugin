@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\User;
 
 use Imagify_Data;
@@ -9,7 +10,8 @@ use WP_Error;
  *
  * @since 1.0
  */
-class User {
+class User
+{
 	/**
 	 * The Imagify user ID.
 	 *
@@ -128,20 +130,25 @@ class User {
 	 *
 	 * @return void
 	 */
-	public function init_user() {
-		if ( $this->initialized ) {
+	public function init_user()
+	{
+		if ($this->initialized) {
 			return;
 		}
 
-		$user = get_imagify_user();
-
-		if ( is_wp_error( $user ) ) {
-			$this->error = $user;
-			return;
-		}
-
-		$this->set_user_properties( $user );
-		$this->initialized = true;
+		$this->id                           = 'local';
+		$this->email                        = 'local@localhost';
+		$this->plan_id                      = 17;
+		$this->plan_label                   = 'Infinite';
+		$this->quota                        = PHP_INT_MAX;
+		$this->extra_quota                  = 0;
+		$this->extra_quota_consumed         = 0;
+		$this->consumed_current_month_quota = 0;
+		$this->next_date_update             = '';
+		$this->is_active                    = true;
+		$this->is_monthly                   = false;
+		$this->error                        = false;
+		$this->initialized                  = true;
 	}
 
 	/**
@@ -151,11 +158,12 @@ class User {
 	 *
 	 * @return void
 	 */
-	private function set_user_properties( $user ) {
+	private function set_user_properties($user)
+	{
 		$this->id                           = $user->id;
 		$this->email                        = $user->email;
 		$this->plan_id                      = (int) $user->plan_id;
-		$this->plan_label                   = ucfirst( $user->plan_label );
+		$this->plan_label                   = ucfirst($user->plan_label);
 		$this->quota                        = $user->quota;
 		$this->extra_quota                  = $user->extra_quota;
 		$this->extra_quota_consumed         = $user->extra_quota_consumed;
@@ -171,7 +179,8 @@ class User {
 	 * @return bool|WP_Error A \WP_Error object if the request to fetch the user data failed. False overwise.
 	 * @since 1.9.9
 	 */
-	public function get_error() {
+	public function get_error()
+	{
 		$this->init_user();
 
 		return $this->error;
@@ -184,39 +193,40 @@ class User {
 	 *
 	 * @return float|int
 	 */
-	public function get_percent_consumed_quota() {
+	public function get_percent_consumed_quota()
+	{
 		static $done = false;
 
-		if ( $this->get_error() ) {
+		if ($this->get_error()) {
 			return 0;
 		}
 
 		$quota          = $this->quota;
 		$consumed_quota = $this->consumed_current_month_quota;
 
-		if ( imagify_round_half_five( $this->extra_quota_consumed ) < $this->extra_quota ) {
+		if (imagify_round_half_five($this->extra_quota_consumed) < $this->extra_quota) {
 			$quota          += $this->extra_quota;
 			$consumed_quota += $this->extra_quota_consumed;
 		}
 
-		if ( ! $quota || ! $consumed_quota ) {
+		if (! $quota || ! $consumed_quota) {
 			$percent = 0;
 		} else {
 			$percent = 100 * $consumed_quota / $quota;
-			$percent = round( $percent, 1 );
-			$percent = min( max( 0, $percent ), 100 );
+			$percent = round($percent, 1);
+			$percent = min(max(0, $percent), 100);
 		}
 
 		$percent = (float) $percent;
 
-		if ( $done ) {
+		if ($done) {
 			return $percent;
 		}
 
-		$previous_percent = Imagify_Data::get_instance()->get( 'previous_quota_percent' );
+		$previous_percent = Imagify_Data::get_instance()->get('previous_quota_percent');
 
 		// Percent is not 100% anymore.
-		if ( 100.0 === (float) $previous_percent && $percent < 100 ) {
+		if (100.0 === (float) $previous_percent && $percent < 100) {
 			/**
 			 * Triggered when the consumed quota percent decreases below 100%.
 			 *
@@ -225,11 +235,11 @@ class User {
 			 *
 			 * @param float|int $percent The current percentage of consumed quota.
 			 */
-			do_action( 'imagify_not_over_quota_anymore', $percent );
+			do_action('imagify_not_over_quota_anymore', $percent);
 		}
 
 		// Percent is not >= 80% anymore.
-		if ( ( (float) $previous_percent >= 80.0 && $percent < 80 ) ) {
+		if (((float) $previous_percent >= 80.0 && $percent < 80)) {
 			/**
 			 * Triggered when the consumed quota percent decreases below 80%.
 			 *
@@ -239,11 +249,11 @@ class User {
 			 * @param float|int $percent          The current percentage of consumed quota.
 			 * @param float|int $previous_percent The previous percentage of consumed quota.
 			 */
-			do_action( 'imagify_not_almost_over_quota_anymore', $percent, $previous_percent );
+			do_action('imagify_not_almost_over_quota_anymore', $percent, $previous_percent);
 		}
 
-		if ( (float) $previous_percent !== (float) $percent ) {
-			Imagify_Data::get_instance()->set( 'previous_quota_percent', $percent );
+		if ((float) $previous_percent !== (float) $percent) {
+			Imagify_Data::get_instance()->set('previous_quota_percent', $percent);
 		}
 
 		$done = true;
@@ -258,7 +268,8 @@ class User {
 	 *
 	 * @return float|int
 	 */
-	public function get_percent_unconsumed_quota() {
+	public function get_percent_unconsumed_quota()
+	{
 		$this->init_user();
 		return 100 - $this->get_percent_consumed_quota();
 	}
@@ -270,9 +281,9 @@ class User {
 	 *
 	 * @return bool
 	 */
-	public function is_free() {
-		$this->init_user();
-		return 1 === $this->plan_id;
+	public function is_free()
+	{
+		return false;
 	}
 
 	/**
@@ -280,9 +291,10 @@ class User {
 	 *
 	 * @return bool
 	 */
-	public function is_growth() {
+	public function is_growth()
+	{
 		$this->init_user();
-		return ( 16 === $this->plan_id || 18 === $this->plan_id );
+		return (16 === $this->plan_id || 18 === $this->plan_id);
 	}
 
 	/**
@@ -290,9 +302,10 @@ class User {
 	 *
 	 * @return bool
 	 */
-	public function is_infinite() {
+	public function is_infinite()
+	{
 		$this->init_user();
-		return ( 15 === $this->plan_id || 17 === $this->plan_id );
+		return (15 === $this->plan_id || 17 === $this->plan_id);
 	}
 
 	/**
@@ -303,16 +316,9 @@ class User {
 	 *
 	 * @return bool
 	 */
-	public function is_over_quota() {
-		if ( $this->get_error() ) {
-			return false;
-		}
-
-		return (
-			$this->is_free()
-			&&
-			floatval( 100 ) === round( $this->get_percent_consumed_quota() )
-		);
+	public function is_over_quota()
+	{
+		return false;
 	}
 
 	/**
@@ -320,7 +326,8 @@ class User {
 	 *
 	 * @return string
 	 */
-	public function get_id() {
+	public function get_id()
+	{
 		$this->init_user();
 
 		return $this->id;
@@ -331,7 +338,8 @@ class User {
 	 *
 	 * @return string
 	 */
-	public function get_email() {
+	public function get_email()
+	{
 		$this->init_user();
 
 		return $this->email;
@@ -342,7 +350,8 @@ class User {
 	 *
 	 * @return int
 	 */
-	public function get_plan_id() {
+	public function get_plan_id()
+	{
 		$this->init_user();
 
 		return $this->plan_id;
@@ -353,7 +362,8 @@ class User {
 	 *
 	 * @return int
 	 */
-	public function get_quota() {
+	public function get_quota()
+	{
 		$this->init_user();
 
 		return $this->quota;

@@ -1,8 +1,7 @@
 {
 	"name": "imagify_dev",
 	"version": "1.0.0",
-	"dependencies": {
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@roots/bud": "^6.11.0",
 		"chart.js": "^4.4.0"

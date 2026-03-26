@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Media;
 
 use WP_Error;
@@ -9,7 +10,8 @@ use WP_Error;
  * @since  1.9
  * @author Grégory Viguier
  */
-class WP extends AbstractMedia {
+class WP extends AbstractMedia
+{
 	use \Imagify\Deprecated\Traits\Media\WPDeprecatedTrait;
 
 	/**
@@ -31,22 +33,23 @@ class WP extends AbstractMedia {
 	 *
 	 * @param int|\WP_Post $id The attachment ID, or \WP_Post object.
 	 */
-	public function __construct( $id ) {
-		if ( ! static::constructor_accepts( $id ) ) {
-			parent::__construct( 0 );
+	public function __construct($id)
+	{
+		if (! static::constructor_accepts($id)) {
+			parent::__construct(0);
 			return;
 		}
 
-		if ( is_numeric( $id ) ) {
-			$id = get_post( (int) $id );
+		if (is_numeric($id)) {
+			$id = get_post((int) $id);
 		}
 
-		if ( ! $id || 'attachment' !== $id->post_type ) {
-			parent::__construct( 0 );
+		if (! $id || 'attachment' !== $id->post_type) {
+			parent::__construct(0);
 			return;
 		}
 
-		parent::__construct( $id->ID );
+		parent::__construct($id->ID);
 	}
 
 	/**
@@ -59,8 +62,9 @@ class WP extends AbstractMedia {
 	 * @param  mixed $id Whatever.
 	 * @return bool
 	 */
-	public static function constructor_accepts( $id ) {
-		return $id && ( is_numeric( $id ) || $id instanceof \WP_Post );
+	public static function constructor_accepts($id)
+	{
+		return $id && (is_numeric($id) || $id instanceof \WP_Post);
 	}
 
 
@@ -77,24 +81,25 @@ class WP extends AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_original_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_original_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
-			return $this->get_cdn()->get_file_path( 'original' );
+		if ($this->get_cdn()) {
+			return $this->get_cdn()->get_file_path('original');
 		}
 
-		if ( $this->is_wp_53() ) {
+		if ($this->is_wp_53()) {
 			// `wp_get_original_image_path()` may return false.
-			$path = wp_get_original_image_path( $this->id );
+			$path = wp_get_original_image_path($this->id);
 		} else {
 			$path = false;
 		}
 
-		if ( ! $path ) {
-			$path = get_attached_file( $this->id );
+		if (! $path) {
+			$path = get_attached_file($this->id);
 		}
 
 		return $path ? $path : false;
@@ -114,16 +119,17 @@ class WP extends AbstractMedia {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_fullsize_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_fullsize_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_url();
 		}
 
-		$url = wp_get_attachment_url( $this->id );
+		$url = wp_get_attachment_url($this->id);
 
 		return $url ? $url : false;
 	}
@@ -137,16 +143,17 @@ class WP extends AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_fullsize_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_fullsize_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_path();
 		}
 
-		$path = get_attached_file( $this->id );
+		$path = get_attached_file($this->id);
 
 		return $path ? $path : false;
 	}
@@ -165,12 +172,13 @@ class WP extends AbstractMedia {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_backup_url() {
-		if ( ! $this->is_valid() ) {
+	public function get_backup_url()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return get_imagify_attachment_url( $this->get_raw_backup_path() );
+		return get_imagify_attachment_url($this->get_raw_backup_path());
 	}
 
 	/**
@@ -182,12 +190,13 @@ class WP extends AbstractMedia {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	public function get_raw_backup_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_raw_backup_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		return get_imagify_attachment_backup_path( $this->get_raw_original_path() );
+		return get_imagify_attachment_backup_path($this->get_raw_original_path());
 	}
 
 
@@ -205,21 +214,22 @@ class WP extends AbstractMedia {
 	 *
 	 * @return bool|WP_Error True on success. A \WP_Error instance on failure.
 	 */
-	public function generate_thumbnails() {
-		if ( ! $this->is_valid() ) {
-			return new \WP_Error( 'invalid_media', __( 'This media is not valid.', 'imagify' ) );
+	public function generate_thumbnails()
+	{
+		if (! $this->is_valid()) {
+			return new \WP_Error('invalid_media', __('This media is not valid.', 'imagify'));
 		}
 
-		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+		if (! function_exists('wp_generate_attachment_metadata')) {
 			require_once ABSPATH . 'wp-admin/includes/image.php'; // @phpstan-ignore-line
 		}
 
 		// Store the path to the current full size file before generating the thumbnails.
 		$old_full_size_path = $this->get_raw_fullsize_path();
-		$metadata           = wp_generate_attachment_metadata( $this->get_id(), $this->get_raw_original_path() );
+		$metadata           = wp_generate_attachment_metadata($this->get_id(), $this->get_raw_original_path());
 
-		if ( empty( $metadata['file'] ) ) {
-			update_post_meta( $this->get_id(), '_wp_attachment_metadata', $metadata );
+		if (empty($metadata['file'])) {
+			update_post_meta($this->get_id(), '_wp_attachment_metadata', $metadata);
 
 			return true;
 		}
@@ -229,21 +239,21 @@ class WP extends AbstractMedia {
 		 * WP 5.3+ will rename the full size file if the resizing threshold has changed (not the same as the one used to generate it previously).
 		 * This will force WP to keep the previous file name.
 		 */
-		$old_full_size_file_name = $this->filesystem->file_name( $old_full_size_path );
-		$new_full_size_file_name = $this->filesystem->file_name( $metadata['file'] );
+		$old_full_size_file_name = $this->filesystem->file_name($old_full_size_path);
+		$new_full_size_file_name = $this->filesystem->file_name($metadata['file']);
 
-		if ( $new_full_size_file_name !== $old_full_size_file_name ) {
-			$new_full_size_path = $this->filesystem->dir_path( $old_full_size_path ) . $new_full_size_file_name;
+		if ($new_full_size_file_name !== $old_full_size_file_name) {
+			$new_full_size_path = $this->filesystem->dir_path($old_full_size_path) . $new_full_size_file_name;
 
-			$moved = $this->filesystem->move( $new_full_size_path, $old_full_size_path, true );
+			$moved = $this->filesystem->move($new_full_size_path, $old_full_size_path, true);
 
-			if ( $moved ) {
-				$metadata['file'] = $this->filesystem->dir_path( $metadata['file'] ) . $old_full_size_file_name;
-				update_post_meta( $this->get_id(), '_wp_attached_file', $metadata['file'] );
+			if ($moved) {
+				$metadata['file'] = $this->filesystem->dir_path($metadata['file']) . $old_full_size_file_name;
+				update_post_meta($this->get_id(), '_wp_attached_file', $metadata['file']);
 			}
 		}
 
-		update_post_meta( $this->get_id(), '_wp_attachment_metadata', $metadata );
+		update_post_meta($this->get_id(), '_wp_attachment_metadata', $metadata);
 
 		return true;
 	}
@@ -262,18 +272,19 @@ class WP extends AbstractMedia {
 	 *
 	 * @return bool
 	 */
-	public function has_required_media_data() {
-		if ( ! $this->is_valid() ) {
+	public function has_required_media_data()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		$file = get_post_meta( $this->id, '_wp_attached_file', true );
+		$file = get_post_meta($this->id, '_wp_attached_file', true);
 
-		if ( ! $file || preg_match( '@://@', $file ) || preg_match( '@^.:\\\@', $file ) ) {
+		if (! $file || preg_match('@://@', $file) || preg_match('@^.:\\\@', $file)) {
 			return false;
 		}
 
-		return (bool) wp_get_attachment_metadata( $this->id, true );
+		return (bool) wp_get_attachment_metadata($this->id, true);
 	}
 
 	/**
@@ -294,14 +305,15 @@ class WP extends AbstractMedia {
 	 *     @type bool   $disabled  True if the size is disabled in the plugin’s settings.
 	 * }
 	 */
-	public function get_media_files() {
-		if ( ! $this->is_valid() ) {
+	public function get_media_files()
+	{
+		if (! $this->is_valid()) {
 			return [];
 		}
 
 		$fullsize_path = $this->get_raw_fullsize_path();
 
-		if ( ! $fullsize_path ) {
+		if (! $fullsize_path) {
 			return [];
 		}
 
@@ -317,34 +329,34 @@ class WP extends AbstractMedia {
 			],
 		];
 
-		if ( $this->is_image() ) {
-			$sizes = wp_get_attachment_metadata( $this->id, true );
-			$sizes = ! empty( $sizes['sizes'] ) && is_array( $sizes['sizes'] ) ? $sizes['sizes'] : [];
-			$sizes = array_intersect_key( $sizes, $this->get_context_instance()->get_thumbnail_sizes() );
+		if ($this->is_image()) {
+			$sizes = wp_get_attachment_metadata($this->id, true);
+			$sizes = ! empty($sizes['sizes']) && is_array($sizes['sizes']) ? $sizes['sizes'] : [];
+			$sizes = array_intersect_key($sizes, $this->get_context_instance()->get_thumbnail_sizes());
 		} else {
 			$sizes = [];
 		}
 
-		if ( ! $sizes ) {
+		if (! $sizes) {
 			return $all_sizes;
 		}
 
-		$dir_path              = $this->filesystem->dir_path( $fullsize_path );
-		$disallowed_sizes      = get_imagify_option( 'disallowed-sizes' );
+		$dir_path              = $this->filesystem->dir_path($fullsize_path);
+		$disallowed_sizes      = get_imagify_option('disallowed-sizes');
 		$is_active_for_network = imagify_is_active_for_network();
 
-		foreach ( $sizes as $size => $size_data ) {
-			$all_sizes[ $size ] = [
+		foreach ($sizes as $size => $size_data) {
+			$all_sizes[$size] = [
 				'size'      => $size,
 				'path'      => $dir_path . $size_data['file'],
 				'width'     => $size_data['width'],
 				'height'    => $size_data['height'],
 				'mime-type' => $size_data['mime-type'],
-				'disabled'  => ! $is_active_for_network && isset( $disallowed_sizes[ $size ] ),
+				'disabled'  => ! $is_active_for_network && isset($disallowed_sizes[$size]),
 			];
 		}
 
-		return $this->filter_media_files( $all_sizes );
+		return $this->filter_media_files($all_sizes);
 	}
 
 	/**
@@ -356,15 +368,16 @@ class WP extends AbstractMedia {
 	 *
 	 * @return array
 	 */
-	public function get_dimensions() {
-		if ( ! $this->is_image() ) {
+	public function get_dimensions()
+	{
+		if (! $this->is_image()) {
 			return [
 				'width'  => 0,
 				'height' => 0,
 			];
 		}
 
-		$values = wp_get_attachment_image_src( $this->id, 'full' );
+		$values = wp_get_attachment_image_src($this->id, 'full');
 
 		return [
 			'width'  => $values[1],
@@ -386,21 +399,22 @@ class WP extends AbstractMedia {
 	 *     @type int $height The image height.
 	 * }
 	 */
-	protected function update_media_data_dimensions( $dimensions ) {
-		$metadata = wp_get_attachment_metadata( $this->id );
+	protected function update_media_data_dimensions($dimensions)
+	{
+		$metadata = wp_get_attachment_metadata($this->id);
 
-		if ( ! is_array( $metadata ) ) {
+		if (! is_array($metadata)) {
 			$row = [];
 		}
 
-		if ( isset( $metadata['width'], $metadata['height'] ) && $metadata['width'] === $dimensions['width'] && $metadata['height'] === $dimensions['height'] ) {
+		if (isset($metadata['width'], $metadata['height']) && $metadata['width'] === $dimensions['width'] && $metadata['height'] === $dimensions['height']) {
 			return;
 		}
 
 		$metadata['width']  = $dimensions['width'];
 		$metadata['height'] = $dimensions['height'];
 
-		update_post_meta( $this->get_id(), '_wp_attachment_metadata', $metadata );
+		update_post_meta($this->get_id(), '_wp_attachment_metadata', $metadata);
 	}
 
 
@@ -417,8 +431,9 @@ class WP extends AbstractMedia {
 	 *
 	 * @return bool
 	 */
-	protected function is_wp_53() {
-		$this->is_wp53 = function_exists( 'wp_get_original_image_path' );
+	protected function is_wp_53()
+	{
+		$this->is_wp53 = function_exists('wp_get_original_image_path');
 
 		return $this->is_wp53;
 	}

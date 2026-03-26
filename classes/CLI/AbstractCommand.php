@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\CLI;
@@ -6,12 +7,14 @@ namespace Imagify\CLI;
 /**
  * Abstrat class for CLI Command
  */
-abstract class AbstractCommand implements CommandInterface {
+abstract class AbstractCommand implements CommandInterface
+{
 	/**
 	 * {@inheritdoc}
 	 */
-	final public function get_name(): string {
-		return sprintf( 'imagify %s', $this->get_command_name() );
+	final public function get_name(): string
+	{
+		return sprintf('imagify %s', $this->get_command_name());
 	}
 
 	/**
@@ -24,7 +27,8 @@ abstract class AbstractCommand implements CommandInterface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_synopsis(): array {
+	public function get_synopsis(): array
+	{
 		return [];
 	}
 }

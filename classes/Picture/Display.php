@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Picture;
@@ -11,7 +12,8 @@ use Imagify_Filesystem;
  *
  * @since  1.9
  */
-class Display implements SubscriberInterface {
+class Display implements SubscriberInterface
+{
 	/**
 	 * Option value.
 	 *
@@ -31,7 +33,8 @@ class Display implements SubscriberInterface {
 	 *
 	 * @param Imagify_Filesystem $filesystem Filesystem instance.
 	 */
-	public function __construct( Imagify_Filesystem $filesystem ) {
+	public function __construct(Imagify_Filesystem $filesystem)
+	{
 		$this->filesystem = $filesystem;
 	}
 
@@ -40,7 +43,8 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events() {
+	public static function get_subscribed_events()
+	{
 		return [
 			'template_redirect'            => 'start_content_process',
 			'imagify_process_webp_content' => 'process_content',
@@ -58,16 +62,17 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return void
 	 */
-	public function start_content_process() {
-		if ( ! get_imagify_option( 'display_nextgen' ) ) {
+	public function start_content_process()
+	{
+		if (! get_imagify_option('display_nextgen')) {
 			return;
 		}
 
-		if ( self::OPTION_VALUE !== get_imagify_option( 'display_nextgen_method' ) ) {
+		if (self::OPTION_VALUE !== get_imagify_option('display_nextgen_method')) {
 			return;
 		}
 
-		$allow = apply_filters_deprecated( 'imagify_allow_picture_tags_for_webp', [ true ], '2.2', 'imagify_allow_picture_tags_for_nextgen' );
+		$allow = apply_filters_deprecated('imagify_allow_picture_tags_for_webp', [true], '2.2', 'imagify_allow_picture_tags_for_nextgen');
 
 		/**
 		 * Prevent the replacement of <img> tags into <picture> tags.
@@ -76,13 +81,13 @@ class Display implements SubscriberInterface {
 		 *
 		 * @param bool $allow True to allow the use of <picture> tags (default). False to prevent their use.
 		 */
-		$allow = apply_filters( 'imagify_allow_picture_tags_for_nextgen', true );
+		$allow = apply_filters('imagify_allow_picture_tags_for_nextgen', true);
 
-		if ( ! $allow ) {
+		if (! $allow) {
 			return;
 		}
 
-		ob_start( [ $this, 'maybe_process_buffer' ] );
+		ob_start([$this, 'maybe_process_buffer']);
 	}
 
 	/**
@@ -94,17 +99,18 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string
 	 */
-	public function maybe_process_buffer( $buffer ) {
-		if ( ! $this->is_html( $buffer ) ) {
+	public function maybe_process_buffer($buffer)
+	{
+		if (! $this->is_html($buffer)) {
 			return $buffer;
 		}
 
-		if ( strlen( $buffer ) <= 255 ) {
+		if (strlen($buffer) <= 255) {
 			// Buffer length must be > 255 (IE does not read pages under 255 c).
 			return $buffer;
 		}
 
-		$buffer = $this->process_content( $buffer );
+		$buffer = $this->process_content($buffer);
 
 		/**
 		 * Filter the page content after Imagify.
@@ -113,7 +119,7 @@ class Display implements SubscriberInterface {
 		 *
 		 * @param string $buffer The page content.
 		 */
-		$buffer = (string) apply_filters( 'imagify_buffer', $buffer );
+		$buffer = (string) apply_filters('imagify_buffer', $buffer);
 
 		return $buffer;
 	}
@@ -127,17 +133,18 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string
 	 */
-	public function process_content( $content ) {
-		$html_no_picture_tags = $this->remove_picture_tags( $content );
-		$images               = $this->get_images( $html_no_picture_tags );
+	public function process_content($content)
+	{
+		$html_no_picture_tags = $this->remove_picture_tags($content);
+		$images               = $this->get_images($html_no_picture_tags);
 
-		if ( ! $images ) {
+		if (! $images) {
 			return $content;
 		}
 
-		foreach ( $images as $image ) {
-			$tag     = $this->build_picture_tag( $image );
-			$content = str_replace( $image['tag'], $tag, $content );
+		foreach ($images as $image) {
+			$tag     = $this->build_picture_tag($image);
+			$content = str_replace($image['tag'], $tag, $content);
 		}
 
 		return $content;
@@ -155,10 +162,11 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string HTML content without pre-existing <picture> tags.
 	 */
-	private function remove_picture_tags( $html ) {
-		$replace = preg_replace( '#<picture[^>]*>.*?<\/picture\s*>#mis', '', $html );
+	private function remove_picture_tags($html)
+	{
+		$replace = preg_replace('#<picture[^>]*>.*?<\/picture\s*>#mis', '', $html);
 
-		if ( null === $replace ) {
+		if (null === $replace) {
 			return $html;
 		}
 
@@ -179,7 +187,8 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string A <picture> tag.
 	 */
-	protected function build_picture_tag( $image ) {
+	protected function build_picture_tag($image)
+	{
 		$to_remove = [
 			'alt'              => '',
 			'height'           => '',
@@ -195,7 +204,7 @@ class Display implements SubscriberInterface {
 			'sizes'            => '',
 		];
 
-		$attributes = array_diff_key( $image['attributes'], $to_remove );
+		$attributes = array_diff_key($image['attributes'], $to_remove);
 
 		/**
 		 * Filter the attributes to be added to the <picture> tag.
@@ -205,20 +214,20 @@ class Display implements SubscriberInterface {
 		 * @param array $attributes A list of attributes to be added to the <picture> tag.
 		 * @param array $data       Data built from the originale <img> tag. See $this->process_image().
 		 */
-		$attributes = apply_filters( 'imagify_picture_attributes', $attributes, $image );
+		$attributes = apply_filters('imagify_picture_attributes', $attributes, $image);
 
 		/**
 		 * Remove Gutenberg specific attributes from picture tag, leave them on img tag.
 		 * Optional: $attributes['class'] = 'imagify-webp-cover-wrapper'; for website admin styling ease.
 		 */
-		if ( ! empty( $image['attributes']['class'] ) && strpos( $image['attributes']['class'], 'wp-block-cover__image-background' ) !== false ) {
-			unset( $attributes['style'] );
-			unset( $attributes['class'] );
-			unset( $attributes['data-object-fit'] );
-			unset( $attributes['data-object-position'] );
+		if (! empty($image['attributes']['class']) && strpos($image['attributes']['class'], 'wp-block-cover__image-background') !== false) {
+			unset($attributes['style']);
+			unset($attributes['class']);
+			unset($attributes['data-object-fit']);
+			unset($attributes['data-object-position']);
 		}
 
-		$output = '<picture' . $this->build_attributes( $attributes ) . ">\n";
+		$output = '<picture' . $this->build_attributes($attributes) . ">\n";
 		/**
 		 * Allow to add more <source> tags to the <picture> tag.
 		 *
@@ -227,9 +236,9 @@ class Display implements SubscriberInterface {
 		 * @param string $more_source_tags Additional <source> tags.
 		 * @param array  $data             Data built from the originale <img> tag. See $this->process_image().
 		 */
-		$output .= apply_filters( 'imagify_additional_source_tags', '', $image );
-		$output .= $this->build_source_tag( $image );
-		$output .= $this->build_img_tag( $image );
+		$output .= apply_filters('imagify_additional_source_tags', '', $image);
+		$output .= $this->build_source_tag($image);
+		$output .= $this->build_img_tag($image);
 		$output .= "</picture>\n";
 
 		return $output;
@@ -245,17 +254,18 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string A <source> tag.
 	 */
-	protected function build_source_tag( $image ) {
+	protected function build_source_tag($image)
+	{
 		$source = '';
 
-		foreach ( [ 'avif', 'webp' ] as $image_type ) {
-			$attributes = $this->build_source_attributes( $image, $image_type );
+		foreach (['avif', 'webp'] as $image_type) {
+			$attributes = $this->build_source_attributes($image, $image_type);
 
-			if ( empty( $attributes ) ) {
+			if (empty($attributes)) {
 				continue;
 			}
 
-			$source .= '<source' . $this->build_attributes( $attributes ) . "/>\n";
+			$source .= '<source' . $this->build_attributes($attributes) . "/>\n";
 		}
 
 		return $source;
@@ -269,11 +279,12 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	protected function build_source_attributes( array $image, string $image_type ): array {
+	protected function build_source_attributes(array $image, string $image_type): array
+	{
 		$mime_type = '';
 		$url       = '';
 
-		switch ( $image_type ) {
+		switch ($image_type) {
 			case 'webp':
 				$mime_type = 'image/webp';
 				$url       = 'webp_url';
@@ -284,46 +295,46 @@ class Display implements SubscriberInterface {
 				break;
 		}
 
-		$srcset_source = ! empty( $image['srcset_attribute'] ) ? $image['srcset_attribute'] : $image['src_attribute'] . 'set';
+		$srcset_source = ! empty($image['srcset_attribute']) ? $image['srcset_attribute'] : $image['src_attribute'] . 'set';
 		$attributes    = [
 			'type'         => $mime_type,
 			$srcset_source => [],
 		];
 
-		if ( ! empty( $image['srcset'] ) ) {
-			foreach ( $image['srcset'] as $srcset ) {
-				if ( empty( $srcset[ $url ] ) ) {
+		if (! empty($image['srcset'])) {
+			foreach ($image['srcset'] as $srcset) {
+				if (empty($srcset[$url])) {
 					continue;
 				}
 
-				$attributes[ $srcset_source ][] = $srcset[ $url ] . ' ' . $srcset['descriptor'];
+				$attributes[$srcset_source][] = $srcset[$url] . ' ' . $srcset['descriptor'];
 			}
 		}
 
-		if ( empty( $attributes[ $srcset_source ] ) && empty( $image['src'][ $url ] ) ) {
+		if (empty($attributes[$srcset_source]) && empty($image['src'][$url])) {
 			return [];
 		}
 
-		if ( empty( $attributes[ $srcset_source ] ) ) {
-			$attributes[ $srcset_source ][] = $image['src'][ $url ];
+		if (empty($attributes[$srcset_source])) {
+			$attributes[$srcset_source][] = $image['src'][$url];
 		}
 
-		$attributes[ $srcset_source ] = implode( ', ', $attributes[ $srcset_source ] );
+		$attributes[$srcset_source] = implode(', ', $attributes[$srcset_source]);
 
-		foreach ( [ 'data-lazy-srcset', 'data-srcset', 'srcset' ] as $srcset_attr ) {
-			if ( ! empty( $image['attributes'][ $srcset_attr ] ) && $srcset_attr !== $srcset_source ) {
-				$attributes[ $srcset_attr ] = $image['attributes'][ $srcset_attr ];
+		foreach (['data-lazy-srcset', 'data-srcset', 'srcset'] as $srcset_attr) {
+			if (! empty($image['attributes'][$srcset_attr]) && $srcset_attr !== $srcset_source) {
+				$attributes[$srcset_attr] = $image['attributes'][$srcset_attr];
 			}
 		}
 
-		if ( 'srcset' !== $srcset_source && empty( $attributes['srcset'] ) && ! empty( $image['attributes']['src'] ) ) {
+		if ('srcset' !== $srcset_source && empty($attributes['srcset']) && ! empty($image['attributes']['src'])) {
 			// Lazyload: the "src" attr should contain a placeholder (a data image or a blank.gif ).
 			$attributes['srcset'] = $image['attributes']['src'];
 		}
 
-		foreach ( [ 'data-lazy-sizes', 'data-sizes', 'sizes' ] as $sizes_attr ) {
-			if ( ! empty( $image['attributes'][ $sizes_attr ] ) ) {
-				$attributes[ $sizes_attr ] = $image['attributes'][ $sizes_attr ];
+		foreach (['data-lazy-sizes', 'data-sizes', 'sizes'] as $sizes_attr) {
+			if (! empty($image['attributes'][$sizes_attr])) {
+				$attributes[$sizes_attr] = $image['attributes'][$sizes_attr];
 			}
 		}
 
@@ -335,7 +346,7 @@ class Display implements SubscriberInterface {
 		 * @param array $attributes A list of attributes to be added to the <source> tag.
 		 * @param array $data       Data built from the original <img> tag. See $this->process_image().
 		 */
-		$attributes = apply_filters( 'imagify_picture_source_attributes', $attributes, $image );
+		$attributes = apply_filters('imagify_picture_source_attributes', $attributes, $image);
 
 		return $attributes;
 	}
@@ -350,18 +361,19 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string A <img> tag.
 	 */
-	protected function build_img_tag( $image ) {
+	protected function build_img_tag($image)
+	{
 		/**
 		 * Gutenberg fix.
 		 * Check for the 'wp-block-cover__image-background' class on the original image, and leave that class and style attributes if found.
 		 */
-		if ( ! empty( $image['attributes']['class'] ) && strpos( $image['attributes']['class'], 'wp-block-cover__image-background' ) !== false ) {
+		if (! empty($image['attributes']['class']) && strpos($image['attributes']['class'], 'wp-block-cover__image-background') !== false) {
 			$to_remove = [
 				'id'    => '',
 				'title' => '',
 			];
 
-			$attributes = array_diff_key( $image['attributes'], $to_remove );
+			$attributes = array_diff_key($image['attributes'], $to_remove);
 		} else {
 			$to_remove = [
 				'class' => '',
@@ -370,7 +382,7 @@ class Display implements SubscriberInterface {
 				'title' => '',
 			];
 
-			$attributes = array_diff_key( $image['attributes'], $to_remove );
+			$attributes = array_diff_key($image['attributes'], $to_remove);
 		}
 
 		/**
@@ -381,9 +393,9 @@ class Display implements SubscriberInterface {
 		 * @param array $attributes A list of attributes to be added to the <img> tag.
 		 * @param array $data       Data built from the originale <img> tag. See $this->process_image().
 		 */
-		$attributes = apply_filters( 'imagify_picture_img_attributes', $attributes, $image );
+		$attributes = apply_filters('imagify_picture_img_attributes', $attributes, $image);
 
-		return '<img' . $this->build_attributes( $attributes ) . "/>\n";
+		return '<img' . $this->build_attributes($attributes) . "/>\n";
 	}
 
 	/**
@@ -395,15 +407,16 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string HTML attributes.
 	 */
-	protected function build_attributes( $attributes ) {
-		if ( ! $attributes || ! is_array( $attributes ) ) {
+	protected function build_attributes($attributes)
+	{
+		if (! $attributes || ! is_array($attributes)) {
 			return '';
 		}
 
 		$out = '';
 
-		foreach ( $attributes as $attribute => $value ) {
-			$out .= ' ' . $attribute . '="' . esc_attr( $value ) . '"';
+		foreach ($attributes as $attribute => $value) {
+			$out .= ' ' . $attribute . '="' . esc_attr($value) . '"';
 		}
 
 		return $out;
@@ -422,16 +435,17 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	protected function get_images( $content ) {
+	protected function get_images($content)
+	{
 		// Remove comments.
-		$content = preg_replace( '/<!--(.*)-->/Uis', '', $content );
+		$content = preg_replace('/<!--(.*)-->/Uis', '', $content);
 
-		if ( ! preg_match_all( '/<img\s.*>/isU', $content, $matches ) ) {
+		if (! preg_match_all('/<img\s.*>/isU', $content, $matches)) {
 			return [];
 		}
 
-		$images = array_map( [ $this, 'process_image' ], $matches[0] );
-		$images = array_filter( $images );
+		$images = array_map([$this, 'process_image'], $matches[0]);
+		$images = array_filter($images);
 
 		/**
 		 * Filter the images to display with a <picture> tag.
@@ -442,57 +456,59 @@ class Display implements SubscriberInterface {
 		 * @param array  $images A list of arrays.
 		 * @param string $content The page content.
 		 */
-		$images = apply_filters( 'imagify_webp_picture_images_to_display', $images, $content );
+		$images = apply_filters('imagify_webp_picture_images_to_display', $images, $content);
 
-		if ( ! $images || ! is_array( $images ) ) {
+		if (! $images || ! is_array($images)) {
 			return [];
 		}
 
-		foreach ( $images as $i => $image ) {
-			if ( ( empty( $image['src']['webp_exists'] ) || empty( $image['src']['webp_url'] ) ) &&
-			( empty( $image['src']['avif_exists'] ) || empty( $image['src']['avif_url'] ) ) ) {
+		foreach ($images as $i => $image) {
+			if ((empty($image['src']['webp_exists']) || empty($image['src']['webp_url'])) &&
+				(empty($image['src']['avif_exists']) || empty($image['src']['avif_url']))
+			) {
 
-				unset( $images[ $i ] );
+				unset($images[$i]);
 				continue;
 			}
 
-			if ( empty( $image['src']['webp_exists'] ) || empty( $image['src']['webp_url'] ) ) {
-				unset( $images[ $i ]['src']['webp_url'] );
+			if (empty($image['src']['webp_exists']) || empty($image['src']['webp_url'])) {
+				unset($images[$i]['src']['webp_url']);
 			}
 
-			if ( empty( $image['src']['avif_exists'] ) || empty( $image['src']['avif_url'] ) ) {
-				unset( $images[ $i ]['src']['avif_url'] );
+			if (empty($image['src']['avif_exists']) || empty($image['src']['avif_url'])) {
+				unset($images[$i]['src']['avif_url']);
 			}
 
-			unset( $images[ $i ]['src']['webp_path'], $images[ $i ]['src']['webp_exists'] );
-			unset( $images[ $i ]['src']['avif_path'], $images[ $i ]['src']['avif_exists'] );
+			unset($images[$i]['src']['webp_path'], $images[$i]['src']['webp_exists']);
+			unset($images[$i]['src']['avif_path'], $images[$i]['src']['avif_exists']);
 
-			if ( empty( $image['srcset'] ) || ! is_array( $image['srcset'] ) ) {
-				unset( $images[ $i ]['srcset'] );
+			if (empty($image['srcset']) || ! is_array($image['srcset'])) {
+				unset($images[$i]['srcset']);
 				continue;
 			}
 
-			foreach ( $image['srcset'] as $j => $srcset ) {
-				if ( ! is_array( $srcset ) ) {
+			foreach ($image['srcset'] as $j => $srcset) {
+				if (! is_array($srcset)) {
 					continue;
 				}
 
-				if ( ( empty( $srcset['webp_exists'] ) || empty( $srcset['webp_url'] ) ) &&
-				( empty( $srcset['avif_exists'] ) || empty( $srcset['avif_url'] ) ) ) {
-					unset( $images[ $i ]['srcset'][ $j ]['webp_url'] );
-					unset( $images[ $i ]['srcset'][ $j ]['avif_url'] );
+				if ((empty($srcset['webp_exists']) || empty($srcset['webp_url'])) &&
+					(empty($srcset['avif_exists']) || empty($srcset['avif_url']))
+				) {
+					unset($images[$i]['srcset'][$j]['webp_url']);
+					unset($images[$i]['srcset'][$j]['avif_url']);
 				}
 
-				if ( empty( $srcset['webp_exists'] ) || empty( $srcset['webp_url'] ) ) {
-					unset( $images[ $i ]['srcset'][ $j ]['webp_url'] );
+				if (empty($srcset['webp_exists']) || empty($srcset['webp_url'])) {
+					unset($images[$i]['srcset'][$j]['webp_url']);
 				}
 
-				if ( empty( $srcset['avif_exists'] ) || empty( $srcset['avif_url'] ) ) {
-					unset( $images[ $i ]['srcset'][ $j ]['avif_url'] );
+				if (empty($srcset['avif_exists']) || empty($srcset['avif_url'])) {
+					unset($images[$i]['srcset'][$j]['avif_url']);
 				}
 
-				unset( $images[ $i ]['srcset'][ $j ]['webp_path'], $images[ $i ]['srcset'][ $j ]['webp_exists'] );
-				unset( $images[ $i ]['srcset'][ $j ]['avif_path'], $images[ $i ]['srcset'][ $j ]['avif_exists'] );
+				unset($images[$i]['srcset'][$j]['webp_path'], $images[$i]['srcset'][$j]['webp_exists']);
+				unset($images[$i]['srcset'][$j]['avif_path'], $images[$i]['srcset'][$j]['avif_exists']);
 			}
 		}
 
@@ -523,23 +539,24 @@ class Display implements SubscriberInterface {
 	 *     }
 	 * }
 	 */
-	protected function process_image( $image ) {
+	protected function process_image($image)
+	{
 		static $extensions;
 
 		$atts_pattern = '/(?<name>[^\s"\']+)\s*=\s*(["\'])\s*(?<value>.*?)\s*\2/s';
 
-		if ( ! preg_match_all( $atts_pattern, $image, $tmp_attributes, PREG_SET_ORDER ) ) {
+		if (! preg_match_all($atts_pattern, $image, $tmp_attributes, PREG_SET_ORDER)) {
 			// No attributes?
 			return false;
 		}
 
 		$attributes = [];
 
-		foreach ( $tmp_attributes as $attribute ) {
-			$attributes[ $attribute['name'] ] = $attribute['value'];
+		foreach ($tmp_attributes as $attribute) {
+			$attributes[$attribute['name']] = $attribute['value'];
 		}
 
-		if ( ! empty( $attributes['class'] ) && strpos( $attributes['class'], 'imagify-no-webp' ) !== false ) {
+		if (! empty($attributes['class']) && strpos($attributes['class'], 'imagify-no-webp') !== false) {
 			// Has the 'imagify-no-webp' class.
 			return false;
 		}
@@ -547,25 +564,25 @@ class Display implements SubscriberInterface {
 		// Deal with the src attribute.
 		$src_source = false;
 
-		foreach ( [ 'data-lazy-src', 'data-src', 'src' ] as $src_attr ) {
-			if ( ! empty( $attributes[ $src_attr ] ) ) {
+		foreach (['data-lazy-src', 'data-src', 'src'] as $src_attr) {
+			if (! empty($attributes[$src_attr])) {
 				$src_source = $src_attr;
 				break;
 			}
 		}
 
-		if ( ! $src_source ) {
+		if (! $src_source) {
 			// No src attribute.
 			return false;
 		}
 
-		if ( ! isset( $extensions ) ) {
-			$extensions = imagify_get_mime_types( 'image' );
-			$extensions = array_keys( $extensions );
-			$extensions = implode( '|', $extensions );
+		if (! isset($extensions)) {
+			$extensions = imagify_get_mime_types('image');
+			$extensions = array_keys($extensions);
+			$extensions = implode('|', $extensions);
 		}
 
-		if ( ! preg_match( '@^(?<src>(?:(?:https?:)?//|/).+\.(?<extension>' . $extensions . '))(?<query>\?.*)?$@i', $attributes[ $src_source ], $src ) ) {
+		if (! preg_match('@^(?<src>(?:(?:https?:)?//|/).+\.(?<extension>' . $extensions . '))(?<query>\?.*)?$@i', $attributes[$src_source], $src)) {
 			// Not a supported image format.
 			return false;
 		}
@@ -575,47 +592,47 @@ class Display implements SubscriberInterface {
 			'attributes'       => $attributes,
 			'src_attribute'    => $src_source,
 			'src'              => [
-				'url' => $attributes[ $src_source ],
+				'url' => $attributes[$src_source],
 			],
 			'srcset_attribute' => false,
 			'srcset'           => [],
 		];
 
-		foreach ( $this->get_nextgen_image_data_set( $src ) as $key => $value ) {
-			$data['src'][ $key ] = $value;
+		foreach ($this->get_nextgen_image_data_set($src) as $key => $value) {
+			$data['src'][$key] = $value;
 		}
 
 		// Deal with the srcset attribute.
 		$srcset_source = false;
 
-		foreach ( [ 'data-lazy-srcset', 'data-srcset', 'srcset' ] as $srcset_attr ) {
-			if ( ! empty( $attributes[ $srcset_attr ] ) ) {
+		foreach (['data-lazy-srcset', 'data-srcset', 'srcset'] as $srcset_attr) {
+			if (! empty($attributes[$srcset_attr])) {
 				$srcset_source = $srcset_attr;
 				break;
 			}
 		}
 
-		if ( $srcset_source ) {
+		if ($srcset_source) {
 			$srcset_data = [];
 
 			$data['srcset_attribute'] = $srcset_source;
 
-			$srcset = explode( ',', $attributes[ $srcset_source ] );
+			$srcset = explode(',', $attributes[$srcset_source]);
 
-			foreach ( $srcset as $srcs ) {
-				$srcs = preg_split( '/\s+/', trim( $srcs ) );
+			foreach ($srcset as $srcs) {
+				$srcs = preg_split('/\s+/', trim($srcs));
 
-				if ( count( $srcs ) > 2 ) {
+				if (count($srcs) > 2) {
 					// Not a good idea to have space characters in file name.
-					$descriptor = array_pop( $srcs );
-					$srcs       = [ implode( ' ', $srcs ), $descriptor ];
+					$descriptor = array_pop($srcs);
+					$srcs       = [implode(' ', $srcs), $descriptor];
 				}
 
-				if ( empty( $srcs[1] ) ) {
+				if (empty($srcs[1])) {
 					$srcs[1] = '1x';
 				}
 
-				if ( ! preg_match( '@^(?<src>(?:https?:)?//.+\.(?<extension>' . $extensions . '))(?<query>\?.*)?$@i', $srcs[0], $src ) ) {
+				if (! preg_match('@^(?<src>(?:https?:)?//.+\.(?<extension>' . $extensions . '))(?<query>\?.*)?$@i', $srcs[0], $src)) {
 					// Not a supported image format.
 					$data['srcset'][] = [
 						'url'        => $srcs[0],
@@ -629,8 +646,8 @@ class Display implements SubscriberInterface {
 					'descriptor' => $srcs[1],
 				];
 
-				foreach ( $this->get_nextgen_image_data_set( $src ) as $key => $value ) {
-					$srcset_data[ $key ] = $value;
+				foreach ($this->get_nextgen_image_data_set($src) as $key => $value) {
+					$srcset_data[$key] = $value;
 				}
 
 				$data['srcset'][] = $srcset_data;
@@ -645,13 +662,13 @@ class Display implements SubscriberInterface {
 		 * @param array  $data  An array of data for this image.
 		 * @param string $image An image html tag.
 		 */
-		$data = apply_filters( 'imagify_webp_picture_process_image', $data, $image );
+		$data = apply_filters('imagify_webp_picture_process_image', $data, $image);
 
-		if ( ! $data || ! is_array( $data ) ) {
+		if (! $data || ! is_array($data)) {
 			return false;
 		}
 
-		if ( ! isset( $data['tag'], $data['attributes'], $data['src_attribute'], $data['src'], $data['srcset_attribute'], $data['srcset'] ) ) {
+		if (! isset($data['tag'], $data['attributes'], $data['src_attribute'], $data['src'], $data['srcset_attribute'], $data['srcset'])) {
 			return false;
 		}
 
@@ -665,24 +682,25 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	protected function get_nextgen_image_data_set( array $src ): array {
-		$webp_url  = imagify_path_to_nextgen( $src['src'], 'webp' );
-		$webp_path = $this->url_to_path( $webp_url );
+	protected function get_nextgen_image_data_set(array $src): array
+	{
+		$webp_url  = imagify_path_to_nextgen($src['src'], 'webp');
+		$webp_path = $this->url_to_path($webp_url);
 
-		$avif_url     = imagify_path_to_nextgen( $src['src'], 'avif' );
-		$avif_path    = $this->url_to_path( $avif_url );
-		$query_string = ! empty( $src['query'] ) ? $src['query'] : '';
+		$avif_url     = imagify_path_to_nextgen($src['src'], 'avif');
+		$avif_path    = $this->url_to_path($avif_url);
+		$query_string = ! empty($src['query']) ? $src['query'] : '';
 
 		return [
 			// WebP data set.
 			'webp_url'    => $webp_url . $query_string,
 			'webp_path'   => $webp_path,
-			'webp_exists' => $webp_path && $this->filesystem->exists( $webp_path ),
+			'webp_exists' => $webp_path && $this->filesystem->exists($webp_path),
 
 			// Avif data set.
 			'avif_url'    => $avif_url . $query_string,
 			'avif_path'   => $avif_path,
-			'avif_exists' => $avif_path && $this->filesystem->exists( $avif_path ),
+			'avif_exists' => $avif_path && $this->filesystem->exists($avif_path),
 		];
 	}
 
@@ -695,8 +713,9 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return bool
 	 */
-	protected function is_html( $content ) {
-		return preg_match( '/<\/html>/i', $content );
+	protected function is_html($content)
+	{
+		return preg_match('/<\/html>/i', $content);
 	}
 
 	/**
@@ -708,7 +727,8 @@ class Display implements SubscriberInterface {
 	 *
 	 * @return string|bool The file path. False on failure.
 	 */
-	protected function url_to_path( $url ) {
+	protected function url_to_path($url)
+	{
 		static $uploads_url;
 		static $uploads_dir;
 		static $root_url;
@@ -719,16 +739,16 @@ class Display implements SubscriberInterface {
 		/**
 		 * $url, $uploads_url, $root_url, and $cdn_url are passed through `set_url_scheme()` only to make sure `stripos()` doesn't fail over a stupid http/https difference.
 		 */
-		if ( ! isset( $uploads_url ) ) {
-			$uploads_url = set_url_scheme( $this->filesystem->get_upload_baseurl() );
-			$uploads_dir = $this->filesystem->get_upload_basedir( true );
-			$root_url    = set_url_scheme( $this->filesystem->get_site_root_url() );
+		if (! isset($uploads_url)) {
+			$uploads_url = set_url_scheme($this->filesystem->get_upload_baseurl());
+			$uploads_dir = $this->filesystem->get_upload_basedir(true);
+			$root_url    = set_url_scheme($this->filesystem->get_site_root_url());
 			$root_dir    = $this->filesystem->get_site_root();
-			$cdn_url     = apply_filters( 'imagify_cdn_source_url', '' );
-			$cdn_url     = $cdn_url['url'] ? set_url_scheme( $cdn_url['url'] ) : false;
-			$domain_url  = wp_parse_url( $root_url );
+			$cdn_url     = apply_filters('imagify_cdn_source_url', '');
+			$cdn_url     = $cdn_url['url'] ? set_url_scheme($cdn_url['url']) : false;
+			$domain_url  = wp_parse_url($root_url);
 
-			if ( ! empty( $domain_url['scheme'] ) && ! empty( $domain_url['host'] ) ) {
+			if (! empty($domain_url['scheme']) && ! empty($domain_url['host'])) {
 				$domain_url = $domain_url['scheme'] . '://' . $domain_url['host'] . '/';
 			} else {
 				$domain_url = false;
@@ -736,25 +756,25 @@ class Display implements SubscriberInterface {
 		}
 
 		// Get the right URL format.
-		if ( $domain_url && strpos( $url, '/' ) === 0 ) {
+		if ($domain_url && strpos($url, '/') === 0) {
 			// URL like `/path/to/image.jpg.webp`.
-			$url = $domain_url . ltrim( $url, '/' );
+			$url = $domain_url . ltrim($url, '/');
 		}
 
-		$url = set_url_scheme( $url );
+		$url = set_url_scheme($url);
 
-		if ( $cdn_url && $domain_url && stripos( $url, $cdn_url ) === 0 ) {
+		if ($cdn_url && $domain_url && stripos($url, $cdn_url) === 0) {
 			// CDN.
-			$url = str_ireplace( $cdn_url, $domain_url, $url );
+			$url = str_ireplace($cdn_url, $domain_url, $url);
 		}
 
 		// Return the path.
-		if ( stripos( $url, $uploads_url ) === 0 ) {
-			return str_ireplace( $uploads_url, $uploads_dir, $url );
+		if (stripos($url, $uploads_url) === 0) {
+			return str_ireplace($uploads_url, $uploads_dir, $url);
 		}
 
-		if ( stripos( $url, $root_url ) === 0 ) {
-			return str_ireplace( $root_url, $root_dir, $url );
+		if (stripos($url, $root_url) === 0) {
+			return str_ireplace($root_url, $root_dir, $url);
 		}
 
 		return false;

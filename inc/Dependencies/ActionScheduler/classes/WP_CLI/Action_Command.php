@@ -5,7 +5,8 @@ namespace Action_Scheduler\WP_CLI;
 /**
  * Action command for Action Scheduler.
  */
-class Action_Command extends \WP_CLI_Command {
+class Action_Command extends \WP_CLI_Command
+{
 
 	/**
 	 * Cancel the next occurrence or all occurrences of a scheduled action.
@@ -31,9 +32,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function cancel( array $args, array $assoc_args ) {
+	public function cancel(array $args, array $assoc_args)
+	{
 		require_once 'Action/Cancel_Command.php';
-		$command = new Action\Cancel_Command( $args, $assoc_args );
+		$command = new Action\Cancel_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -83,9 +85,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function create( array $args, array $assoc_args ) {
+	public function create(array $args, array $assoc_args)
+	{
 		require_once 'Action/Create_Command.php';
-		$command = new Action\Create_Command( $args, $assoc_args );
+		$command = new Action\Create_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -115,9 +118,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function delete( array $args, array $assoc_args ) {
+	public function delete(array $args, array $assoc_args)
+	{
 		require_once 'Action/Delete_Command.php';
-		$command = new Action\Delete_Command( $args, $assoc_args );
+		$command = new Action\Delete_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -164,9 +168,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function generate( array $args, array $assoc_args ) {
+	public function generate(array $args, array $assoc_args)
+	{
 		require_once 'Action/Generate_Command.php';
-		$command = new Action\Generate_Command( $args, $assoc_args );
+		$command = new Action\Generate_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -202,9 +207,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function get( array $args, array $assoc_args ) {
+	public function get(array $args, array $assoc_args)
+	{
 		require_once 'Action/Get_Command.php';
-		$command = new Action\Get_Command( $args, $assoc_args );
+		$command = new Action\Get_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -260,9 +266,10 @@ class Action_Command extends \WP_CLI_Command {
 	 *
 	 * @subcommand list
 	 */
-	public function subcommand_list( array $args, array $assoc_args ) {
+	public function subcommand_list(array $args, array $assoc_args)
+	{
 		require_once 'Action/List_Command.php';
-		$command = new Action\List_Command( $args, $assoc_args );
+		$command = new Action\List_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -280,9 +287,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $args Positional arguments.
 	 * @return void
 	 */
-	public function logs( array $args ) {
-		$command = sprintf( 'action-scheduler action get %d --field=log_entries', $args[0] );
-		WP_CLI::runcommand( $command );
+	public function logs(array $args)
+	{
+		$command = sprintf('action-scheduler action get %d --field=log_entries', $args[0]);
+		WP_CLI::runcommand($command);
 	}
 
 	/**
@@ -312,9 +320,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function next( array $args, array $assoc_args ) {
+	public function next(array $args, array $assoc_args)
+	{
 		require_once 'Action/Next_Command.php';
-		$command = new Action\Next_Command( $args, $assoc_args );
+		$command = new Action\Next_Command($args, $assoc_args);
 		$command->execute();
 	}
 
@@ -344,10 +353,10 @@ class Action_Command extends \WP_CLI_Command {
 	 * @param array $assoc_args Keyed arguments.
 	 * @return void
 	 */
-	public function run( array $args, array $assoc_args ) {
+	public function run(array $args, array $assoc_args)
+	{
 		require_once 'Action/Run_Command.php';
-		$command = new Action\Run_Command( $args, $assoc_args );
+		$command = new Action\Run_Command($args, $assoc_args);
 		$command->execute();
 	}
-
 }

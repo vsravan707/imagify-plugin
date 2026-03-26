@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Imagifybeat;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -9,7 +10,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.9.3
  * @author Grégory Viguier
  */
-final class Core {
+final class Core
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -19,9 +21,10 @@ final class Core {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function init() {
-		add_action( 'wp_ajax_imagifybeat', [ $this, 'core_handler' ], 1 );
-		add_filter( 'imagifybeat_refresh_nonces', [ $this, 'refresh_imagifybeat_nonces' ] );
+	public function init()
+	{
+		add_action('wp_ajax_imagifybeat', [$this, 'core_handler'], 1);
+		add_filter('imagifybeat_refresh_nonces', [$this, 'refresh_imagifybeat_nonces']);
 	}
 
 	/**
@@ -33,27 +36,28 @@ final class Core {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function core_handler() {
-		if ( empty( $_POST['_nonce'] ) ) {
+	public function core_handler()
+	{
+		if (empty($_POST['_nonce'])) {
 			wp_send_json_error();
 		}
 
 		$data        = [];
 		$response    = [];
-		$nonce_state = wp_verify_nonce( sanitize_key( wp_unslash( $_POST['_nonce'] ) ), 'imagifybeat-nonce' );
+		$nonce_state = wp_verify_nonce(sanitize_key(wp_unslash($_POST['_nonce'])), 'imagifybeat-nonce');
 
 		// Screen_id is the same as $current_screen->id and the JS global 'pagenow'.
-		if ( ! empty( $_POST['screen_id'] ) ) {
-			$screen_id = sanitize_key( $_POST['screen_id'] );
+		if (! empty($_POST['screen_id'])) {
+			$screen_id = sanitize_key($_POST['screen_id']);
 		} else {
 			$screen_id = 'front';
 		}
 
-		if ( ! empty( $_POST['data'] ) ) {
-			$data = wp_unslash( (array) $_POST['data'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if (! empty($_POST['data'])) {
+			$data = wp_unslash((array) $_POST['data']); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
-		if ( 1 !== $nonce_state ) {
+		if (1 !== $nonce_state) {
 			/**
 			 * Filters the nonces to send.
 			 *
@@ -63,16 +67,16 @@ final class Core {
 			 * @param array  $data      The $_POST data sent.
 			 * @param string $screen_id The screen id.
 			 */
-			$response = wpm_apply_filters_typed( 'array', 'imagifybeat_refresh_nonces', $response, $data, $screen_id );
+			$response = wpm_apply_filters_typed('array', 'imagifybeat_refresh_nonces', $response, $data, $screen_id);
 
-			if ( false === $nonce_state ) {
+			if (false === $nonce_state) {
 				// User is logged in but nonces have expired.
 				$response['nonces_expired'] = true;
-				wp_send_json( $response );
+				wp_send_json($response);
 			}
 		}
 
-		if ( ! empty( $data ) ) {
+		if (! empty($data)) {
 			/**
 			 * Filters the Imagifybeat response received.
 			 *
@@ -82,7 +86,7 @@ final class Core {
 			 * @param array  $data      The $_POST data sent.
 			 * @param string $screen_id The screen id.
 			 */
-			$response = wpm_apply_filters_typed( 'array', 'imagifybeat_received', $response, $data, $screen_id );
+			$response = wpm_apply_filters_typed('array', 'imagifybeat_received', $response, $data, $screen_id);
 		}
 
 		/**
@@ -93,7 +97,7 @@ final class Core {
 		 * @param array  $response  The Imagifybeat response.
 		 * @param string $screen_id The screen id.
 		 */
-		$response = wpm_apply_filters_typed( 'array', 'imagifybeat_send', $response, $screen_id );
+		$response = wpm_apply_filters_typed('array', 'imagifybeat_send', $response, $screen_id);
 
 		/**
 		 * Fires when Imagifybeat ticks in logged-in environments.
@@ -106,12 +110,12 @@ final class Core {
 		 * @param array  $response  The Imagifybeat response.
 		 * @param string $screen_id The screen id.
 		 */
-		do_action( 'imagifybeat_tick', $response, $screen_id );
+		do_action('imagifybeat_tick', $response, $screen_id);
 
 		// Send the current time according to the server.
 		$response['server_time'] = time();
 
-		wp_send_json( $response );
+		wp_send_json($response);
 	}
 
 	/**
@@ -124,9 +128,10 @@ final class Core {
 	 * @param  array $response  The Imagifybeat response.
 	 * @return array            The Imagifybeat response.
 	 */
-	public function refresh_imagifybeat_nonces( $response ) {
+	public function refresh_imagifybeat_nonces($response)
+	{
 		// Refresh the Imagifybeat nonce.
-		$response['imagifybeat_nonce'] = wp_create_nonce( 'imagifybeat-nonce' );
+		$response['imagifybeat_nonce'] = wp_create_nonce('imagifybeat-nonce');
 		return $response;
 	}
 
@@ -139,20 +144,21 @@ final class Core {
 	 *
 	 * @return array
 	 */
-	public function get_settings() {
+	public function get_settings()
+	{
 		global $pagenow;
 
 		$settings = [];
 
-		if ( ! is_admin() ) {
-			$settings['ajaxurl'] = admin_url( 'admin-ajax.php', 'relative' );
+		if (! is_admin()) {
+			$settings['ajaxurl'] = admin_url('admin-ajax.php', 'relative');
 		}
 
-		if ( is_user_logged_in() ) {
-			$settings['nonce'] = wp_create_nonce( 'imagifybeat-nonce' );
+		if (is_user_logged_in()) {
+			$settings['nonce'] = wp_create_nonce('imagifybeat-nonce');
 		}
 
-		if ( 'customize.php' === $pagenow ) {
+		if ('customize.php' === $pagenow) {
 			$settings['screenId'] = 'customize';
 		}
 
@@ -163,6 +169,6 @@ final class Core {
 		 *
 		 * @param array $settings Imagifybeat settings array.
 		 */
-		return (array) wpm_apply_filters_typed( 'array', 'imagifybeat_settings', $settings );
+		return (array) wpm_apply_filters_typed('array', 'imagifybeat_settings', $settings);
 	}
 }

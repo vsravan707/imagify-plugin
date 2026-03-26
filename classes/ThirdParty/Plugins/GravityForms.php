@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\ThirdParty\Plugins;
@@ -9,14 +10,16 @@ use Imagify\EventManagement\SubscriberInterface;
 /**
  * Subscriber for compatibility with GravityForms
  */
-class GravityForms implements SubscriberInterface {
+class GravityForms implements SubscriberInterface
+{
 	/**
 	 * Returns an array of events that this subscriber wants to listen to.
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events(): array {
-		if ( ! class_exists( 'GFCommon' ) ) {
+	public static function get_subscribed_events(): array
+	{
+		if (! class_exists('GFCommon')) {
 			return [];
 		}
 
@@ -35,8 +38,9 @@ class GravityForms implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public function imagify_gf_noconflict_styles( $styles ): array {
-		if ( ! $this->is_gravity_forms_no_conflict_mode_enabled() ) {
+	public function imagify_gf_noconflict_styles($styles): array
+	{
+		if (! $this->is_gravity_forms_no_conflict_mode_enabled()) {
 			return $styles;
 		}
 
@@ -55,8 +59,9 @@ class GravityForms implements SubscriberInterface {
 	 *
 	 * @return array
 	 */
-	public function imagify_gf_noconflict_scripts( $scripts ): array {
-		if ( ! $this->is_gravity_forms_no_conflict_mode_enabled() ) {
+	public function imagify_gf_noconflict_scripts($scripts): array
+	{
+		if (! $this->is_gravity_forms_no_conflict_mode_enabled()) {
 			return $scripts;
 		}
 
@@ -74,7 +79,8 @@ class GravityForms implements SubscriberInterface {
 	 *
 	 * @return bool
 	 */
-	private function is_gravity_forms_no_conflict_mode_enabled(): bool {
-		return (bool) get_option( 'gform_enable_noconflict', false );
+	private function is_gravity_forms_no_conflict_mode_enabled(): bool
+	{
+		return (bool) get_option('gform_enable_noconflict', false);
 	}
 }

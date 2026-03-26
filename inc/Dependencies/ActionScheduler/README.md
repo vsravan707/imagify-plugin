@@ -22,11 +22,11 @@ To learn more about how to Action Scheduler works, and how to use it in your plu
 
 There you will find:
 
-* [Usage guide](https://actionscheduler.org/usage/): instructions on installing and using Action Scheduler
-* [WP CLI guide](https://actionscheduler.org/wp-cli/): instructions on running Action Scheduler at scale via WP CLI
-* [API Reference](https://actionscheduler.org/api/): complete reference guide for all API functions
-* [Administration Guide](https://actionscheduler.org/admin/): guide to managing scheduled actions via the administration screen
-* [Guide to Background Processing at Scale](https://actionscheduler.org/perf/): instructions for running Action Scheduler at scale via the default WP Cron queue runner
+- [Usage guide](https://actionscheduler.org/usage/): instructions on installing and using Action Scheduler
+- [WP CLI guide](https://actionscheduler.org/wp-cli/): instructions on running Action Scheduler at scale via WP CLI
+- [API Reference](https://actionscheduler.org/api/): complete reference guide for all API functions
+- [Administration Guide](https://actionscheduler.org/admin/): guide to managing scheduled actions via the administration screen
+- [Guide to Background Processing at Scale](https://actionscheduler.org/perf/): instructions for running Action Scheduler at scale via the default WP Cron queue runner
 
 ## Credits
 

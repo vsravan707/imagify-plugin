@@ -7,7 +7,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since  1.8.1
  */
-abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background_Process {
+abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background_Process
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -41,8 +42,9 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 	 *
 	 * @since 1.8.1
 	 */
-	public function init() {
-		$this->query_url = admin_url( 'admin-ajax.php' );
+	public function init()
+	{
+		$this->query_url = admin_url('admin-ajax.php');
 
 		/**
 		 * Filter the URL to use for background processes.
@@ -52,21 +54,21 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 		 * @param string $query_url An URL.
 		 * @param object $this      This class instance.
 		 */
-		$this->query_url = apply_filters( 'imagify_background_process_url', $this->query_url, $this );
+		$this->query_url = apply_filters('imagify_background_process_url', $this->query_url, $this);
 
-		if ( ! $this->query_url || ! is_string( $this->query_url ) || ! preg_match( '@^https?://@', $this->query_url ) ) {
-			$this->query_url = admin_url( 'admin-ajax.php' );
+		if (! $this->query_url || ! is_string($this->query_url) || ! preg_match('@^https?://@', $this->query_url)) {
+			$this->query_url = admin_url('admin-ajax.php');
 		}
 
 		// Deactivation hook.
-		if ( did_action( static::get_deactivation_hook_name() ) ) {
+		if (did_action(static::get_deactivation_hook_name())) {
 			$this->cancel_process();
 		} else {
-			add_action( static::get_deactivation_hook_name(), [ $this, 'cancel_process' ] );
+			add_action(static::get_deactivation_hook_name(), [$this, 'cancel_process']);
 		}
 
 		// Automatically save and dispatch at the end of the page if the queue is not empty.
-		add_action( 'shutdown', [ $this, 'maybe_save_and_dispatch' ], 666 ); // Evil magic number.
+		add_action('shutdown', [$this, 'maybe_save_and_dispatch'], 666); // Evil magic number.
 	}
 
 
@@ -81,18 +83,19 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 	 *
 	 * @since 1.8.1
 	 */
-	public function cancel_process() {
-		if ( method_exists( $this, 'cancel_process' ) ) {
+	public function cancel_process()
+	{
+		if (method_exists($this, 'cancel_process')) {
 			parent::cancel_process();
 			return;
 		}
 
-		if ( ! $this->is_queue_empty() ) {
+		if (! $this->is_queue_empty()) {
 			$batch = $this->get_batch();
 
-			$this->delete( $batch->key );
+			$this->delete($batch->key);
 
-			wp_clear_scheduled_hook( $this->get_event_name() );
+			wp_clear_scheduled_hook($this->get_event_name());
 		}
 	}
 
@@ -104,8 +107,9 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 	 *
 	 * @return $this
 	 */
-	public function save() {
-		if ( empty( $this->data ) ) {
+	public function save()
+	{
+		if (empty($this->data)) {
 			return $this;
 		}
 
@@ -127,10 +131,11 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 	 *
 	 * @since 1.9
 	 */
-	public function maybe_save_and_dispatch() {
+	public function maybe_save_and_dispatch()
+	{
 		$this->save();
 
-		if ( $this->auto_dispatch ) {
+		if ($this->auto_dispatch) {
 			$this->dispatch();
 		}
 	}
@@ -142,7 +147,8 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 	 *
 	 * @return string
 	 */
-	public function get_event_name() {
+	public function get_event_name()
+	{
 		return $this->cron_hook_identifier;
 	}
 
@@ -153,11 +159,12 @@ abstract class Imagify_Abstract_Background_Process extends Imagify_WP_Background
 	 *
 	 * @return string
 	 */
-	public static function get_deactivation_hook_name() {
+	public static function get_deactivation_hook_name()
+	{
 		static $deactivation_hook;
 
-		if ( ! isset( $deactivation_hook ) ) {
-			$deactivation_hook = 'deactivate_' . plugin_basename( IMAGIFY_FILE );
+		if (! isset($deactivation_hook)) {
+			$deactivation_hook = 'deactivate_' . plugin_basename(IMAGIFY_FILE);
 		}
 
 		return $deactivation_hook;

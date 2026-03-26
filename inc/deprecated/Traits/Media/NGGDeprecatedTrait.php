@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\Deprecated\Traits\Media;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Trait containing deprecated methods of the class \Imagify\Media\NGG.
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since
  * @author Grégory Viguier
  */
-trait NGGDeprecatedTrait {
+trait NGGDeprecatedTrait
+{
 
 	/**
 	 * Get the original media's URL.
@@ -22,17 +24,18 @@ trait NGGDeprecatedTrait {
 	 *
 	 * @return string|bool The file URL. False on failure.
 	 */
-	public function get_original_url() {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '', '( new \Imagify\Media\NGG( $id ) )->get_fullsize_url()' );
+	public function get_original_url()
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '', '( new \Imagify\Media\NGG( $id ) )->get_fullsize_url()');
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			return false;
 		}
 
-		if ( $this->get_cdn() ) {
+		if ($this->get_cdn()) {
 			return $this->get_cdn()->get_file_url();
 		}
 
-		return ! empty( $this->image->imageURL ) ? $this->image->imageURL : false;
+		return ! empty($this->image->imageURL) ? $this->image->imageURL : false;
 	}
 }

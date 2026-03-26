@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Webp;
@@ -10,7 +11,8 @@ use Imagify\WriteFile\AbstractApacheDirConfFile;
  *
  * @since 1.9
  */
-class Apache extends AbstractApacheDirConfFile {
+class Apache extends AbstractApacheDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delemiter.
@@ -27,7 +29,8 @@ class Apache extends AbstractApacheDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		return trim(
 			'
 <IfModule mod_mime.c>

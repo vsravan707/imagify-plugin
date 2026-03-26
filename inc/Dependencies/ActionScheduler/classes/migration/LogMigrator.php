@@ -14,7 +14,8 @@ use ActionScheduler_Logger;
  *
  * @codeCoverageIgnore
  */
-class LogMigrator {
+class LogMigrator
+{
 	/**
 	 * Source logger instance.
 	 *
@@ -35,7 +36,8 @@ class LogMigrator {
 	 * @param ActionScheduler_Logger $source_logger Source logger object.
 	 * @param ActionScheduler_Logger $destination_logger Destination logger object.
 	 */
-	public function __construct( ActionScheduler_Logger $source_logger, ActionScheduler_Logger $destination_logger ) {
+	public function __construct(ActionScheduler_Logger $source_logger, ActionScheduler_Logger $destination_logger)
+	{
 		$this->source      = $source_logger;
 		$this->destination = $destination_logger;
 	}
@@ -46,12 +48,13 @@ class LogMigrator {
 	 * @param int $source_action_id Source logger object.
 	 * @param int $destination_action_id Destination logger object.
 	 */
-	public function migrate( $source_action_id, $destination_action_id ) {
-		$logs = $this->source->get_logs( $source_action_id );
+	public function migrate($source_action_id, $destination_action_id)
+	{
+		$logs = $this->source->get_logs($source_action_id);
 
-		foreach ( $logs as $log ) {
-			if ( absint( $log->get_action_id() ) === absint( $source_action_id ) ) {
-				$this->destination->log( $destination_action_id, $log->get_message(), $log->get_date() );
+		foreach ($logs as $log) {
+			if (absint($log->get_action_id()) === absint($source_action_id)) {
+				$this->destination->log($destination_action_id, $log->get_message(), $log->get_date());
 			}
 		}
 	}

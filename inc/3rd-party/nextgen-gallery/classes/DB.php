@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\ThirdParty\NGG;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -9,7 +10,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.5
  * @author Jonathan Buttigieg
  */
-class DB extends \Imagify_Abstract_DB {
+class DB extends \Imagify_Abstract_DB
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -66,7 +68,8 @@ class DB extends \Imagify_Abstract_DB {
 	 *
 	 * @return array
 	 */
-	public function get_columns() {
+	public function get_columns()
+	{
 		return [
 			'data_id'            => '%d',
 			'pid'                => '%d',
@@ -85,7 +88,8 @@ class DB extends \Imagify_Abstract_DB {
 	 *
 	 * @return array
 	 */
-	public function get_column_defaults() {
+	public function get_column_defaults()
+	{
 		return [
 			'data_id'            => 0,
 			'pid'                => 0,
@@ -104,7 +108,8 @@ class DB extends \Imagify_Abstract_DB {
 	 *
 	 * @return string
 	 */
-	protected function get_table_schema() {
+	protected function get_table_schema()
+	{
 		return "
 			data_id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			pid int(11) unsigned NOT NULL default 0,

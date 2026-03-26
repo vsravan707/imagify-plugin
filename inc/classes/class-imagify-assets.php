@@ -1,4 +1,5 @@
 <?php
+
 use Imagify\Notices\Notices;
 use Imagify\Traits\InstanceGetterTrait;
 
@@ -7,7 +8,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since 1.6.10
  */
-class Imagify_Assets extends Imagify_Assets_Deprecated {
+class Imagify_Assets extends Imagify_Assets_Deprecated
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -78,8 +80,9 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @return void
 	 */
-	protected function __construct() {
-		if ( ! isset( self::$version ) ) {
+	protected function __construct()
+	{
+		if (! isset(self::$version)) {
 			self::$version = time();
 		}
 	}
@@ -94,14 +97,15 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @since 1.6.10
 	 */
-	public function init() {
-		if ( ! is_admin() ) {
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles_and_scripts_frontend' ] );
+	public function init()
+	{
+		if (! is_admin()) {
+			add_action('wp_enqueue_scripts', [$this, 'enqueue_styles_and_scripts_frontend']);
 			return;
 		}
 
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles_and_scripts' ], IMAGIFY_INT_MAX );
-		add_action( 'wp_enqueue_media', [ $this, 'enqueue_media_modal' ] );
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_styles_and_scripts'], IMAGIFY_INT_MAX);
+		add_action('wp_enqueue_media', [$this, 'enqueue_media_modal']);
 	}
 
 	/**
@@ -109,15 +113,16 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @since 1.6.10
 	 */
-	public function enqueue_styles_and_scripts_frontend() {
-		if ( ! $this->is_admin_bar_item_showing() ) {
+	public function enqueue_styles_and_scripts_frontend()
+	{
+		if (! $this->is_admin_bar_item_showing()) {
 			return;
 		}
 
-		$this->register_style( 'admin-bar' );
-		$this->register_script( 'admin-bar', 'admin-bar', [ 'jquery' ] );
+		$this->register_style('admin-bar');
+		$this->register_script('admin-bar', 'admin-bar', ['jquery']);
 
-		$this->enqueue_assets( 'admin-bar' )->localize( 'imagifyAdminBar' );
+		$this->enqueue_assets('admin-bar')->localize('imagifyAdminBar');
 	}
 
 	/**
@@ -125,10 +130,11 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @since 1.6.10
 	 */
-	public function register_styles_and_scripts() {
+	public function register_styles_and_scripts()
+	{
 		static $done = false;
 
-		if ( $done ) {
+		if ($done) {
 			return;
 		}
 		$done = true;
@@ -136,67 +142,67 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		/**
 		 * 3rd Party Styles.
 		 */
-		$this->register_style( 'sweetalert-core', 'sweetalert2', [], '4.6.6' );
+		$this->register_style('sweetalert-core', 'sweetalert2', [], '4.6.6');
 
 		/**
 		 * Imagify Styles.
 		 */
-		$this->register_style( 'sweetalert', 'sweetalert-custom', [ 'sweetalert-core' ] );
+		$this->register_style('sweetalert', 'sweetalert-custom', ['sweetalert-core']);
 
-		$this->register_style( 'admin-bar' );
+		$this->register_style('admin-bar');
 
-		$this->register_style( 'admin' );
+		$this->register_style('admin');
 
-		$this->register_style( 'notices', 'notices', [ 'admin' ] ); // Needs SweetAlert on some cases.
+		$this->register_style('notices', 'notices', ['admin']); // Needs SweetAlert on some cases.
 
-		$this->register_style( 'twentytwenty', 'twentytwenty', [ 'admin' ] );
+		$this->register_style('twentytwenty', 'twentytwenty', ['admin']);
 
-		$this->register_style( 'pricing-modal', 'pricing-modal', [ 'admin' ] );
+		$this->register_style('pricing-modal', 'pricing-modal', ['admin']);
 
-		$this->register_style( 'bulk', 'bulk', [ 'sweetalert', 'admin' ] );
+		$this->register_style('bulk', 'bulk', ['sweetalert', 'admin']);
 
-		$this->register_style( 'options', 'options', [ 'sweetalert', 'admin' ] );
+		$this->register_style('options', 'options', ['sweetalert', 'admin']);
 
-		$this->register_style( 'files-list', 'files-list', [ 'admin' ] );
+		$this->register_style('files-list', 'files-list', ['admin']);
 
 		/**
 		 * 3rd Party Scripts.
 		 */
-		$this->register_script( 'promise-polyfill', 'es6-promise.auto', [], '4.1.1' );
+		$this->register_script('promise-polyfill', 'es6-promise.auto', [], '4.1.1');
 
-		$this->register_script( 'sweetalert', 'sweetalert2', [ 'promise-polyfill' ], '4.6.6' )->localize( 'imagifySwal' );
+		$this->register_script('sweetalert', 'sweetalert2', ['promise-polyfill'], '4.6.6')->localize('imagifySwal');
 
-		$this->register_bud_script( 'runtime', 'runtime' );
-		$this->register_bud_script( 'chart', 'chart', [ 'runtime' ], '4.4.0' );
+		$this->register_bud_script('runtime', 'runtime');
+		$this->register_bud_script('chart', 'chart', ['runtime'], '4.4.0');
 
-		$this->register_script( 'event-move', 'jquery.event.move', [ 'jquery' ], '2.0.1' );
+		$this->register_script('event-move', 'jquery.event.move', ['jquery'], '2.0.1');
 
 		/**
 		 * Imagify Scripts.
 		 */
-		$this->register_script( 'admin-bar', 'admin-bar', [ 'jquery' ] )->defer_localization( 'imagifyAdminBar' );
+		$this->register_script('admin-bar', 'admin-bar', ['jquery'])->defer_localization('imagifyAdminBar');
 
-		$this->register_script( 'admin', 'admin', [ 'jquery' ] );
+		$this->register_script('admin', 'admin', ['jquery']);
 
-		$this->register_script( 'notices', 'notices', [ 'jquery', 'admin' ] )->defer_localization( 'imagifyNotices' ); // Needs SweetAlert on some cases.
+		$this->register_script('notices', 'notices', ['jquery', 'admin'])->defer_localization('imagifyNotices'); // Needs SweetAlert on some cases.
 
-		$this->register_script( 'twentytwenty', 'jquery.twentytwenty', [ 'jquery', 'event-move', 'chart', 'admin' ] )->defer_localization( 'imagifyTTT' );
+		$this->register_script('twentytwenty', 'jquery.twentytwenty', ['jquery', 'event-move', 'chart', 'admin'])->defer_localization('imagifyTTT');
 
-		$this->register_script( 'beat', 'beat', [ 'jquery' ] )->localize( 'imagifybeatSettings' );
+		$this->register_script('beat', 'beat', ['jquery'])->localize('imagifybeatSettings');
 
-		$this->register_script( 'media-modal', 'media-modal', [ 'jquery', 'beat', 'underscore', 'chart', 'admin' ] )->localize( 'imagifyModal' );
+		$this->register_script('media-modal', 'media-modal', ['jquery', 'beat', 'underscore', 'chart', 'admin'])->localize('imagifyModal');
 
-		$this->register_script( 'pricing-modal', 'pricing-modal', [ 'jquery', 'admin' ] )->defer_localization( 'imagifyPricingModal' );
+		$this->register_script('pricing-modal', 'pricing-modal', ['jquery', 'admin'])->defer_localization('imagifyPricingModal');
 
-		$this->register_script( 'library', 'library', [ 'jquery', 'media-modal' ] )->defer_localization( 'imagifyLibrary' );
+		$this->register_script('library', 'library', ['jquery', 'media-modal'])->defer_localization('imagifyLibrary');
 
-		$this->register_script( 'async', 'imagify-gulp' );
+		$this->register_script('async', 'imagify-gulp');
 
-		$this->register_bud_script( 'bulk', 'bulk', [ 'jquery', 'beat', 'underscore', 'chart', 'sweetalert', 'async', 'admin' ] )->defer_localization( 'imagifyBulk' );
+		$this->register_bud_script('bulk', 'bulk', ['jquery', 'beat', 'underscore', 'chart', 'sweetalert', 'async', 'admin'])->defer_localization('imagifyBulk');
 
-		$this->register_script( 'options', 'options', [ 'jquery', 'beat', 'sweetalert', 'underscore', 'admin' ] )->defer_localization( 'imagifyOptions' );
+		$this->register_script('options', 'options', ['jquery', 'beat', 'sweetalert', 'underscore', 'admin'])->defer_localization('imagifyOptions');
 
-		$this->register_script( 'files-list', 'files-list', [ 'jquery', 'beat', 'underscore', 'chart', 'admin' ] )->defer_localization( 'imagifyFiles' );
+		$this->register_script('files-list', 'files-list', ['jquery', 'beat', 'underscore', 'chart', 'admin'])->defer_localization('imagifyFiles');
 	}
 
 	/**
@@ -204,10 +210,11 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @since 1.6.10
 	 */
-	public function enqueue_styles_and_scripts() {
+	public function enqueue_styles_and_scripts()
+	{
 		static $done = false;
 
-		if ( $done ) {
+		if ($done) {
 			return;
 		}
 		$done = true;
@@ -220,8 +227,8 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		/**
 		 * Admin bar.
 		 */
-		if ( $this->is_admin_bar_item_showing() ) {
-			$this->enqueue_assets( 'admin-bar' );
+		if ($this->is_admin_bar_item_showing()) {
+			$this->enqueue_assets('admin-bar');
 		}
 
 		/**
@@ -229,58 +236,58 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		 */
 		$notices = Notices::get_instance();
 
-		if ( $notices->has_notices() ) {
-			if ( $notices->display_welcome_steps() || $notices->display_wrong_api_key() ) {
+		if ($notices->has_notices()) {
+			if ($notices->display_welcome_steps() || $notices->display_wrong_api_key()) {
 				// This is where we display things about the API key.
-				$this->enqueue_assets( 'sweetalert' );
+				$this->enqueue_assets('sweetalert');
 			}
 
-			$this->enqueue_assets( 'notices' );
+			$this->enqueue_assets('notices');
 		}
 
 		/**
 		 * Loaded in the library and attachment edition.
 		 */
-		if ( imagify_is_screen( 'library' ) || imagify_is_screen( 'attachment' ) ) {
-			$this->enqueue_assets( 'twentytwenty' );
+		if (imagify_is_screen('library') || imagify_is_screen('attachment')) {
+			$this->enqueue_assets('twentytwenty');
 		}
 
 		/**
 		 * Loaded in the library.
 		 */
-		if ( imagify_is_screen( 'library' ) ) {
-			$this->enqueue_style( 'admin' )->enqueue_script( 'library' );
+		if (imagify_is_screen('library')) {
+			$this->enqueue_style('admin')->enqueue_script('library');
 		}
 
 		/**
 		 * Loaded in the bulk optimization page.
 		 */
-		if ( imagify_is_screen( 'bulk' ) ) {
-			$this->enqueue_assets( 'bulk' );
+		if (imagify_is_screen('bulk')) {
+			$this->enqueue_assets('bulk');
 		}
 
 		/*
 		 * Loaded in the settings page.
 		 */
-		if ( imagify_is_screen( 'imagify-settings' ) ) {
-			$this->enqueue_assets( [ 'sweetalert', 'notices', 'twentytwenty', 'options' ] );
+		if (imagify_is_screen('imagify-settings')) {
+			$this->enqueue_assets(['sweetalert', 'notices', 'twentytwenty', 'options']);
 		}
 
 		/*
 		 * Loaded in the files list page.
 		 */
-		if ( imagify_is_screen( 'files-list' ) ) {
-			$this->enqueue_assets( [ 'files-list', 'twentytwenty' ] );
+		if (imagify_is_screen('files-list')) {
+			$this->enqueue_assets(['files-list', 'twentytwenty']);
 		}
 
-		$this->enqueue_assets( 'pricing-modal' );
+		$this->enqueue_assets('pricing-modal');
 
 		/**
 		 * Triggered after Imagify CSS and JS have been enqueued.
 		 *
 		 * @since 1.6.10
 		 */
-		do_action( 'imagify_assets_enqueued' );
+		do_action('imagify_assets_enqueued');
 	}
 
 	/**
@@ -288,10 +295,11 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @since 1.6.10
 	 */
-	public function enqueue_media_modal() {
+	public function enqueue_media_modal()
+	{
 		static $done = false;
 
-		if ( $done ) {
+		if ($done) {
 			return;
 		}
 		$done = true;
@@ -301,17 +309,17 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		 */
 		$this->register_styles_and_scripts();
 
-		$this->enqueue_style( 'admin' )->enqueue_script( 'media-modal' );
+		$this->enqueue_style('admin')->enqueue_script('media-modal');
 
 		// When the optimization buttons are displayed in the media modal, they are fetched through ajax, so they can’t print the "processing" button template in the footer.
-		Imagify_Views::get_instance()->print_js_template_in_footer( 'button/processing' );
+		Imagify_Views::get_instance()->print_js_template_in_footer('button/processing');
 
 		/**
 		 * Triggered after Imagify CSS and JS have been enqueued for the media modal.
 		 *
 		 * @since 1.6.10
 		 */
-		do_action( 'imagify_media_modal_assets_enqueued' );
+		do_action('imagify_media_modal_assets_enqueued');
 	}
 
 
@@ -331,9 +339,10 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|null $version      String specifying stylesheet version number. If set to null, the plugin version is used. If SCRIPT_DEBUG is true, a random string is used.
 	 * @return object                    This class instance.
 	 */
-	public function register_style( $handle, $file_name = null, $dependencies = [], $version = null ) {
+	public function register_style($handle, $file_name = null, $dependencies = [], $version = null)
+	{
 		// If we register it, it's one of our styles.
-		$this->styles[ $handle ]   = 1;
+		$this->styles[$handle]   = 1;
 		$this->current_handle      = $handle;
 		$this->current_handle_type = 'css';
 
@@ -342,7 +351,7 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		$version      = $this->is_debug() ? self::$version : $version;
 		$extension    = $this->is_debug() ? '.css' : '.min.css';
 		$handle       = self::CSS_PREFIX . $handle;
-		$dependencies = $this->prefix_dependencies( $dependencies, 'css' );
+		$dependencies = $this->prefix_dependencies($dependencies, 'css');
 
 		wp_register_style(
 			$handle,
@@ -362,19 +371,20 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array $handles Name of the stylesheet. Should be unique. Can be an array to enqueue several stylesheets.
 	 * @return object                This class instance.
 	 */
-	public function enqueue_style( $handles ) {
+	public function enqueue_style($handles)
+	{
 		$handles = (array) $handles;
 
-		foreach ( $handles as $handle ) {
+		foreach ($handles as $handle) {
 			$this->current_handle      = $handle;
 			$this->current_handle_type = 'css';
 
-			if ( ! empty( $this->styles[ $handle ] ) ) {
+			if (! empty($this->styles[$handle])) {
 				// If we registered it, it's one of our styles.
 				$handle = self::CSS_PREFIX . $handle;
 			}
 
-			wp_enqueue_style( $handle );
+			wp_enqueue_style($handle);
 		}
 
 		return $this;
@@ -388,19 +398,20 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array $handles Name of the stylesheet. Should be unique. Can be an array to dequeue several stylesheets.
 	 * @return object                This class instance.
 	 */
-	public function dequeue_style( $handles ) {
+	public function dequeue_style($handles)
+	{
 		$handles = (array) $handles;
 
-		foreach ( $handles as $handle ) {
+		foreach ($handles as $handle) {
 			$this->current_handle      = $handle;
 			$this->current_handle_type = 'css';
 
-			if ( ! empty( $this->styles[ $handle ] ) ) {
+			if (! empty($this->styles[$handle])) {
 				// If we registered it, it's one of our styles.
 				$handle = self::CSS_PREFIX . $handle;
 			}
 
-			wp_dequeue_style( $handle );
+			wp_dequeue_style($handle);
 		}
 
 		return $this;
@@ -417,9 +428,10 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|null $version      String specifying script version number. If set to null, the plugin version is used. If SCRIPT_DEBUG is true, a random string is used.
 	 * @return object                    This class instance.
 	 */
-	public function register_script( $handle, $file_name = null, $dependencies = [], $version = null ) {
+	public function register_script($handle, $file_name = null, $dependencies = [], $version = null)
+	{
 		// If we register it, it's one of our scripts.
-		$this->scripts[ $handle ] = 1;
+		$this->scripts[$handle] = 1;
 		// Set the current handler and handler type.
 		$this->current_handle      = $handle;
 		$this->current_handle_type = 'js';
@@ -429,7 +441,7 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		$version      = $this->is_debug() ? self::$version : $version;
 		$extension    = $this->is_debug() ? '.js' : '.min.js';
 		$handle       = self::JS_PREFIX . $handle;
-		$dependencies = $this->prefix_dependencies( $dependencies );
+		$dependencies = $this->prefix_dependencies($dependencies);
 
 		wp_register_script(
 			$handle,
@@ -453,9 +465,10 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|null $version      String specifying script version number. If set to null, the plugin version is used. If SCRIPT_DEBUG is true, a random string is used.
 	 * @return object                    This class instance.
 	 */
-	public function register_bud_script( $handle, $file_name = null, $dependencies = [], $version = null ) {
+	public function register_bud_script($handle, $file_name = null, $dependencies = [], $version = null)
+	{
 		// If we register it, it's one of our scripts.
-		$this->scripts[ $handle ] = 1;
+		$this->scripts[$handle] = 1;
 		// Set the current handler and handler type.
 		$this->current_handle      = $handle;
 		$this->current_handle_type = 'js';
@@ -465,7 +478,7 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 		$version      = $this->is_debug() ? self::$version : $version;
 		$extension    = '.js';
 		$handle       = self::JS_PREFIX . $handle;
-		$dependencies = $this->prefix_dependencies( $dependencies );
+		$dependencies = $this->prefix_dependencies($dependencies);
 
 		wp_register_script(
 			$handle,
@@ -486,29 +499,30 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array $handles Name of the script. Should be unique. Can be an array to enqueue several scripts.
 	 * @return object                This class instance.
 	 */
-	public function enqueue_script( $handles ) {
+	public function enqueue_script($handles)
+	{
 		$handles = (array) $handles;
 
-		foreach ( $handles as $handle ) {
+		foreach ($handles as $handle) {
 			// Enqueue the corresponding style.
-			if ( ! empty( $this->styles[ $handle ] ) ) {
-				$this->enqueue_style( $handle );
+			if (! empty($this->styles[$handle])) {
+				$this->enqueue_style($handle);
 			}
 
 			$this->current_handle      = $handle;
 			$this->current_handle_type = 'js';
 
-			if ( ! empty( $this->scripts[ $handle ] ) ) {
+			if (! empty($this->scripts[$handle])) {
 				// If we registered it, it's one of our scripts.
 				$handle = self::JS_PREFIX . $handle;
 			}
 
-			wp_enqueue_script( $handle );
+			wp_enqueue_script($handle);
 
 			// Deferred localization.
-			if ( ! empty( $this->deferred_localizations[ $this->current_handle ] ) ) {
-				array_map( [ $this, 'localize' ], $this->deferred_localizations[ $this->current_handle ] );
-				unset( $this->deferred_localizations[ $this->current_handle ] );
+			if (! empty($this->deferred_localizations[$this->current_handle])) {
+				array_map([$this, 'localize'], $this->deferred_localizations[$this->current_handle]);
+				unset($this->deferred_localizations[$this->current_handle]);
 			}
 		}
 
@@ -523,24 +537,25 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array $handles Name of the script. Should be unique. Can be an array to dequeue several scripts.
 	 * @return object                This class instance.
 	 */
-	public function dequeue_script( $handles ) {
+	public function dequeue_script($handles)
+	{
 		$handles = (array) $handles;
 
-		foreach ( $handles as $handle ) {
+		foreach ($handles as $handle) {
 			// Enqueue the corresponding style.
-			if ( ! empty( $this->styles[ $handle ] ) ) {
-				$this->dequeue_style( $handle );
+			if (! empty($this->styles[$handle])) {
+				$this->dequeue_style($handle);
 			}
 
 			$this->current_handle      = $handle;
 			$this->current_handle_type = 'js';
 
-			if ( ! empty( $this->scripts[ $handle ] ) ) {
+			if (! empty($this->scripts[$handle])) {
 				// If we registered it, it's one of our scripts.
 				$handle = self::JS_PREFIX . $handle;
 			}
 
-			wp_dequeue_script( $handle );
+			wp_dequeue_script($handle);
 		}
 
 		return $this;
@@ -556,28 +571,29 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array|null $l10n        The data itself. The data can be either a single or multi-dimensional array. If null, $handle is used.
 	 * @return object                         This class instance.
 	 */
-	public function localize_script( $handle, $object_name, $l10n = null ) {
+	public function localize_script($handle, $object_name, $l10n = null)
+	{
 		$this->current_handle      = $handle;
 		$this->current_handle_type = 'js';
 
-		if ( ! isset( $l10n ) ) {
+		if (! isset($l10n)) {
 			$l10n = $handle;
 		}
 
-		if ( is_string( $l10n ) ) {
-			$l10n = $this->get_localization_data( $l10n );
+		if (is_string($l10n)) {
+			$l10n = $this->get_localization_data($l10n);
 		}
 
-		if ( ! $l10n ) {
+		if (! $l10n) {
 			return $this;
 		}
 
-		if ( ! empty( $this->scripts[ $handle ] ) ) {
+		if (! empty($this->scripts[$handle])) {
 			// If we registered it, it's one of our scripts.
 			$handle = self::JS_PREFIX . $handle;
 		}
 
-		wp_localize_script( $handle, $object_name, $l10n );
+		wp_localize_script($handle, $object_name, $l10n);
 
 		return $this;
 	}
@@ -590,11 +606,12 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array $handles Name of the script. Should be unique. Can be an array to enqueue several scripts.
 	 * @return object                This class instance.
 	 */
-	public function enqueue_assets( $handles ) {
+	public function enqueue_assets($handles)
+	{
 		$handles = (array) $handles;
 
-		foreach ( $handles as $handle ) {
-			$this->enqueue_script( $handle );
+		foreach ($handles as $handle) {
+			$this->enqueue_script($handle);
 		}
 
 		return $this;
@@ -608,12 +625,13 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array $handles Name of the script. Should be unique. Can be an array to dequeue several scripts.
 	 * @return object                This class instance.
 	 */
-	public function dequeue_assets( $handles ) {
+	public function dequeue_assets($handles)
+	{
 		$handles = (array) $handles;
 
-		foreach ( $handles as $handle ) {
-			$this->dequeue_style( $handle );
-			$this->dequeue_script( $handle );
+		foreach ($handles as $handle) {
+			$this->dequeue_style($handle);
+			$this->dequeue_script($handle);
 		}
 
 		return $this;
@@ -626,11 +644,12 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @return object This class instance.
 	 */
-	public function enqueue() {
-		if ( 'js' === $this->current_handle_type ) {
-			$this->enqueue_script( $this->current_handle );
-		} elseif ( 'css' === $this->current_handle_type ) {
-			$this->enqueue_style( $this->current_handle );
+	public function enqueue()
+	{
+		if ('js' === $this->current_handle_type) {
+			$this->enqueue_script($this->current_handle);
+		} elseif ('css' === $this->current_handle_type) {
+			$this->enqueue_style($this->current_handle);
 		}
 
 		return $this;
@@ -645,8 +664,9 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string|array|null $l10n        The data itself. The data can be either a single or multi-dimensional array. If null, $handle is used.
 	 * @return object                         This class instance.
 	 */
-	public function localize( $object_name, $l10n = null ) {
-		return $this->localize_script( $this->current_handle, $object_name, $l10n );
+	public function localize($object_name, $l10n = null)
+	{
+		return $this->localize_script($this->current_handle, $object_name, $l10n);
 	}
 
 	/**
@@ -659,12 +679,13 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string $object_name Name for the JavaScript object. Passed directly, so it should be qualified JS variable. Example: '/[a-zA-Z0-9_]+/'.
 	 * @return object              This class instance.
 	 */
-	public function defer_localization( $object_name ) {
-		if ( ! isset( $this->deferred_localizations[ $this->current_handle ] ) ) {
-			$this->deferred_localizations[ $this->current_handle ] = [];
+	public function defer_localization($object_name)
+	{
+		if (! isset($this->deferred_localizations[$this->current_handle])) {
+			$this->deferred_localizations[$this->current_handle] = [];
 		}
 
-		$this->deferred_localizations[ $this->current_handle ][ $object_name ] = $object_name;
+		$this->deferred_localizations[$this->current_handle][$object_name] = $object_name;
 
 		return $this;
 	}
@@ -678,15 +699,16 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string $object_name Name for the JavaScript object. Passed directly, so it should be qualified JS variable. Example: '/[a-zA-Z0-9_]+/'.
 	 * @return object              This class instance.
 	 */
-	public function remove_deferred_localization( $handle, $object_name = null ) {
-		if ( empty( $this->deferred_localizations[ $handle ] ) ) {
+	public function remove_deferred_localization($handle, $object_name = null)
+	{
+		if (empty($this->deferred_localizations[$handle])) {
 			return $this;
 		}
 
-		if ( $object_name ) {
-			unset( $this->deferred_localizations[ $handle ][ $object_name ] );
+		if ($object_name) {
+			unset($this->deferred_localizations[$handle][$object_name]);
 		} else {
-			unset( $this->deferred_localizations[ $handle ] );
+			unset($this->deferred_localizations[$handle]);
 		}
 
 		return $this;
@@ -701,11 +723,12 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  array  $more_data    More data to merge.
 	 * @return array  $translations The translations.
 	 */
-	public function get_localization_data( $context, $more_data = [] ) {
-		$data = get_imagify_localize_script_translations( $context );
+	public function get_localization_data($context, $more_data = [])
+	{
+		$data = get_imagify_localize_script_translations($context);
 
-		if ( $more_data ) {
-			return array_merge( $data, $more_data );
+		if ($more_data) {
+			return array_merge($data, $more_data);
 		}
 
 		return $data;
@@ -725,12 +748,13 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 * @param  string $type         Type of dependency: css or js.
 	 * @return array
 	 */
-	protected function prefix_dependencies( $dependencies, $type = 'js' ) {
-		if ( ! $dependencies ) {
+	protected function prefix_dependencies($dependencies, $type = 'js')
+	{
+		if (! $dependencies) {
 			return [];
 		}
 
-		if ( 'js' === $type ) {
+		if ('js' === $type) {
 			$prefix  = self::JS_PREFIX;
 			$scripts = $this->scripts;
 		} else {
@@ -740,8 +764,8 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 
 		$depts = [];
 
-		foreach ( $dependencies as $dept ) {
-			if ( ! empty( $scripts[ $dept ] ) ) {
+		foreach ($dependencies as $dept) {
+			if (! empty($scripts[$dept])) {
 				$depts[] = $prefix . $dept;
 			} else {
 				$depts[] = $dept;
@@ -758,8 +782,9 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @return bool
 	 */
-	protected function is_debug() {
-		return ( defined( 'IMAGIFY_DEBUG' ) && IMAGIFY_DEBUG ) || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG );
+	protected function is_debug()
+	{
+		return (defined('IMAGIFY_DEBUG') && IMAGIFY_DEBUG) || (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG);
 	}
 
 	/**
@@ -769,11 +794,12 @@ class Imagify_Assets extends Imagify_Assets_Deprecated {
 	 *
 	 * @return bool
 	 */
-	protected function is_admin_bar_item_showing() {
-		if ( defined( 'IMAGIFY_HIDDEN_ACCOUNT' ) && IMAGIFY_HIDDEN_ACCOUNT ) {
+	protected function is_admin_bar_item_showing()
+	{
+		if (defined('IMAGIFY_HIDDEN_ACCOUNT') && IMAGIFY_HIDDEN_ACCOUNT) {
 			return false;
 		}
 
-		return get_imagify_option( 'api_key' ) && is_admin_bar_showing() && imagify_get_context( 'wp' )->current_user_can( 'manage' ) && get_imagify_option( 'admin_bar_menu' );
+		return get_imagify_option('api_key') && is_admin_bar_showing() && imagify_get_context('wp')->current_user_can('manage') && get_imagify_option('admin_bar_menu');
 	}
 }

@@ -6,7 +6,8 @@ use Imagify;
 use ReflectionObject;
 use WPMedia\PHPUnit\Integration\TestCase as BaseTestCase;
 
-abstract class TestCase extends BaseTestCase {
+abstract class TestCase extends BaseTestCase
+{
 	protected $useApi = true;
 	protected $api_credentials_config_file = 'imagify-api.php';
 	protected $invalidApiKey = '1234567890abcdefghijklmnopqrstuvwxyz';
@@ -17,52 +18,56 @@ abstract class TestCase extends BaseTestCase {
 	/**
 	 * Prepares the test environment before each test.
 	 */
-	public function set_up() {
+	public function set_up()
+	{
 		parent::set_up();
 
-		if ( empty( $this->config ) ) {
+		if (empty($this->config)) {
 			$this->loadTestDataConfig();
 		}
 
-		if ( ! $this->useApi ) {
+		if (! $this->useApi) {
 			return;
 		}
 
 		// Store original instance and clear the static `$instance` property.
-		$this->originalImagifyInstance = $this->setSingletonInstance( Imagify::class, null );
-		$this->originalApiKeyOption    = get_imagify_option( 'api_key' );
+		$this->originalImagifyInstance = $this->setSingletonInstance(Imagify::class, null);
+		$this->originalApiKeyOption    = get_imagify_option('api_key');
 	}
 
 	/**
 	 * Cleans up the test environment after each test.
 	 */
-	public function tear_down() {
+	public function tear_down()
+	{
 		parent::tear_down();
 
-		if ( ! $this->useApi ) {
+		if (! $this->useApi) {
 			return;
 		}
 
 		// Restore the Imagify instance and API key option.
-		$this->setSingletonInstance( Imagify::class, $this->originalImagifyInstance ); // $this->originalImagifyInstance can be null.
-		update_imagify_option( 'api_key', $this->originalApiKeyOption );
+		$this->setSingletonInstance(Imagify::class, $this->originalImagifyInstance); // $this->originalImagifyInstance can be null.
+		update_imagify_option('api_key', $this->originalApiKeyOption);
 	}
 
-	public function configTestData() {
-		if ( empty( $this->config ) ) {
+	public function configTestData()
+	{
+		if (empty($this->config)) {
 			$this->loadTestDataConfig();
 		}
 
-		return isset( $this->config['test_data'] )
+		return isset($this->config['test_data'])
 			? $this->config['test_data']
 			: $this->config;
 	}
 
-	protected function loadTestDataConfig() {
-		$obj      = new ReflectionObject( $this );
+	protected function loadTestDataConfig()
+	{
+		$obj      = new ReflectionObject($this);
 		$filename = $obj->getFileName();
 
-		$this->config = $this->getTestData( dirname( $filename ), basename( $filename, '.php' ) );
+		$this->config = $this->getTestData(dirname($filename), basename($filename, '.php'));
 	}
 
 	/**
@@ -73,35 +78,36 @@ abstract class TestCase extends BaseTestCase {
 	 *
 	 * @return string       Return the value if available. An empty string otherwise.
 	 */
-	protected function getApiCredential( $name ) {
-		$var = getenv( $name );
+	protected function getApiCredential($name)
+	{
+		$var = getenv($name);
 
-		if ( ! empty( $var ) ) {
+		if (! empty($var)) {
 			return $var;
 		}
 
-		if ( defined( $name ) ) {
-			return constant( $name );
+		if (defined($name)) {
+			return constant($name);
 		}
 
-		if ( ! $this->api_credentials_config_file ) {
+		if (! $this->api_credentials_config_file) {
 			return '';
 		}
 
-		$config_file = dirname( __DIR__ ) . '/env/local/' . $this->api_credentials_config_file;
+		$config_file = dirname(__DIR__) . '/env/local/' . $this->api_credentials_config_file;
 
-		if ( ! is_readable( $config_file ) ) {
+		if (! is_readable($config_file)) {
 			return '';
 		}
 
 		// This file is local to the developer's machine and not stored in the repo.
 		require_once $config_file;
 
-		if ( ! defined( $name ) ) {
+		if (! defined($name)) {
 			return '';
 		}
 
-		return constant( $name );
+		return constant($name);
 	}
 
 	/**
@@ -114,8 +120,9 @@ abstract class TestCase extends BaseTestCase {
 	 * @throws ReflectionException Throws an exception if property does not exist.
 	 *
 	 */
-	protected function setSingletonInstance( $class, $instance ) {
-		return $this->setPropertyValue( 'instance', $class, $instance );
+	protected function setSingletonInstance($class, $instance)
+	{
+		return $this->setPropertyValue('instance', $class, $instance);
 	}
 
 	/**
@@ -129,17 +136,18 @@ abstract class TestCase extends BaseTestCase {
 	 * @throws ReflectionException Throws an exception if property does not exist.
 	 *
 	 */
-	protected function setPropertyValue( $property, $class, $value ) {
-		$ref = $this->get_reflective_property( $property, $class );
+	protected function setPropertyValue($property, $class, $value)
+	{
+		$ref = $this->get_reflective_property($property, $class);
 
-		if ( is_object( $class ) ) {
-			$previous = $ref->getValue( $class );
+		if (is_object($class)) {
+			$previous = $ref->getValue($class);
 			// Instance property.
-			$ref->setValue( $class, $value );
+			$ref->setValue($class, $value);
 		} else {
 			$previous = $ref->getValue();
 			// Static property.
-			$ref->setValue( $value );
+			$ref->setValue($value);
 		}
 
 		return $previous;
@@ -155,7 +163,8 @@ abstract class TestCase extends BaseTestCase {
 	 * @throws ReflectionException Throws an exception if property does not exist.
 	 *
 	 */
-	protected function resetPropertyValue( $property, $class ) {
-		return $this->setPropertyValue( $property, $class, null );
+	protected function resetPropertyValue($property, $class)
+	{
+		return $this->setPropertyValue($property, $class, null);
 	}
 }

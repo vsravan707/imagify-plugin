@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Avif\RewriteRules;
@@ -8,7 +9,8 @@ use Imagify\WriteFile\AbstractIISDirConfFile;
 /**
  * Add and remove rewrite rules to the web.config file to display AVIF images on the site.
  */
-class IIS extends AbstractIISDirConfFile {
+class IIS extends AbstractIISDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delemiter.
@@ -24,16 +26,17 @@ class IIS extends AbstractIISDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		$extensions = $this->get_extensions_pattern();
-		$extensions = str_replace( '|avif', '', $extensions );
-		$home_root  = wp_parse_url( home_url( '/' ) );
+		$extensions = str_replace('|avif', '', $extensions);
+		$home_root  = wp_parse_url(home_url('/'));
 		$home_root  = $home_root['path'];
 
 		return trim(
 			'
 <!-- @parent /configuration/system.webServer/rewrite/rules -->
-<rule name="' . esc_attr( static::TAG_NAME ) . ' 2">
+<rule name="' . esc_attr(static::TAG_NAME) . ' 2">
 	<match url="^(' . $home_root . '.+)\.(' . $extensions . ')$" ignoreCase="true" />
 	<conditions logicalGrouping="MatchAll">
 		<add input="{HTTP_ACCEPT}" pattern="image/avif" ignoreCase="false" />
@@ -46,11 +49,11 @@ class IIS extends AbstractIISDirConfFile {
 </rule>
 
 <!-- @parent /configuration/system.webServer/rewrite/outboundRules -->
-<rule preCondition="IsAvif" name="' . esc_attr( static::TAG_NAME ) . ' 3">
+<rule preCondition="IsAvif" name="' . esc_attr(static::TAG_NAME) . ' 3">
 	<match serverVariable="RESPONSE_Vary" pattern=".*" />
 	<action type="Rewrite" value="Accept"/>
 </rule>
-<preConditions name="' . esc_attr( static::TAG_NAME ) . ' 4">
+<preConditions name="' . esc_attr(static::TAG_NAME) . ' 4">
 	<preCondition name="IsAvif">
 		<add input="{ACCEPTS_AVIF}" pattern="true" ignoreCase="false" />
 	</preCondition>

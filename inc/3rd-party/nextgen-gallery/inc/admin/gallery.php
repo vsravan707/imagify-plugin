@@ -1,7 +1,7 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-add_filter( 'ngg_manage_images_number_of_columns', '_imagify_ngg_manage_images_number_of_columns' );
+add_filter('ngg_manage_images_number_of_columns', '_imagify_ngg_manage_images_number_of_columns');
 /**
  * Add "Imagify" column in admin.php?page=nggallery-manage-gallery.
  *
@@ -11,10 +11,11 @@ add_filter( 'ngg_manage_images_number_of_columns', '_imagify_ngg_manage_images_n
  * @param  int $count Number of columns.
  * @return int Incremented number of columns.
  */
-function _imagify_ngg_manage_images_number_of_columns( $count ) {
+function _imagify_ngg_manage_images_number_of_columns($count)
+{
 	++$count;
-	add_filter( 'ngg_manage_images_column_' . $count . '_header', '_imagify_ngg_manage_media_columns' );
-	add_filter( 'ngg_manage_images_column_' . $count . '_content', '_imagify_ngg_manage_media_custom_column', 10, 2 );
+	add_filter('ngg_manage_images_column_' . $count . '_header', '_imagify_ngg_manage_media_columns');
+	add_filter('ngg_manage_images_column_' . $count . '_content', '_imagify_ngg_manage_media_custom_column', 10, 2);
 
 	return $count;
 }
@@ -27,7 +28,8 @@ function _imagify_ngg_manage_images_number_of_columns( $count ) {
  *
  * @return string
  */
-function _imagify_ngg_manage_media_columns() {
+function _imagify_ngg_manage_media_columns()
+{
 	return 'Imagify';
 }
 
@@ -41,13 +43,14 @@ function _imagify_ngg_manage_media_columns() {
  * @param  object $image  An NGG Image object.
  * @return string
  */
-function _imagify_ngg_manage_media_custom_column( $output, $image ) {
-	$process = imagify_get_optimization_process( $image, 'ngg' );
+function _imagify_ngg_manage_media_custom_column($output, $image)
+{
+	$process = imagify_get_optimization_process($image, 'ngg');
 
-	return get_imagify_media_column_content( $process );
+	return get_imagify_media_column_content($process);
 }
 
-add_filter( 'imagify_display_missing_thumbnails_link', '_imagify_ngg_hide_missing_thumbnails_link', 10, 3 );
+add_filter('imagify_display_missing_thumbnails_link', '_imagify_ngg_hide_missing_thumbnails_link', 10, 3);
 /**
  * Hide the "Optimize missing thumbnails" link.
  *
@@ -59,6 +62,7 @@ add_filter( 'imagify_display_missing_thumbnails_link', '_imagify_ngg_hide_missin
  * @param  string $context    The context.
  * @return bool
  */
-function _imagify_ngg_hide_missing_thumbnails_link( $display, $attachment, $context ) {
+function _imagify_ngg_hide_missing_thumbnails_link($display, $attachment, $context)
+{
 	return 'ngg' === $context ? false : $display;
 }

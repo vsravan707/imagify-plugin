@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class handling stats related to "custom folders optimization".
@@ -7,7 +7,8 @@ defined( 'ABSPATH' ) || exit;
  * @since  1.7
  * @author Grégory Viguier
  */
-class Imagify_Files_Stats {
+class Imagify_Files_Stats
+{
 
 	/**
 	 * Class version.
@@ -32,7 +33,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The number of images.
 	 */
-	public static function count_all_files() {
+	public static function count_all_files()
+	{
 		/**
 		 * Filter the number of images in custom folders.
 		 *
@@ -41,13 +43,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_count Default is false. Provide an integer.
 		 */
-		$pre_count = apply_filters( 'imagify_count_files', false );
+		$pre_count = apply_filters('imagify_count_files', false);
 
-		if ( false !== $pre_count ) {
+		if (false !== $pre_count) {
 			return (int) $pre_count;
 		}
 
-		return self::count_files( 'all' );
+		return self::count_files('all');
 	}
 
 	/**
@@ -59,7 +61,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The number of images.
 	 */
-	public static function count_error_files() {
+	public static function count_error_files()
+	{
 		/**
 		 * Filter the number of images in custom folders with an error.
 		 *
@@ -68,13 +71,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_count Default is false. Provide an integer.
 		 */
-		$pre_count = apply_filters( 'imagify_count_error_files', false );
+		$pre_count = apply_filters('imagify_count_error_files', false);
 
-		if ( false !== $pre_count ) {
+		if (false !== $pre_count) {
 			return (int) $pre_count;
 		}
 
-		return self::count_files( 'error' );
+		return self::count_files('error');
 	}
 
 	/**
@@ -86,7 +89,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The number of images.
 	 */
-	public static function count_success_files() {
+	public static function count_success_files()
+	{
 		/**
 		 * Filter the number of images successfully optimized by Imagify in custom folders.
 		 *
@@ -95,13 +99,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_count Default is false. Provide an integer.
 		 */
-		$pre_count = apply_filters( 'imagify_count_success_files', false );
+		$pre_count = apply_filters('imagify_count_success_files', false);
 
-		if ( false !== $pre_count ) {
+		if (false !== $pre_count) {
 			return (int) $pre_count;
 		}
 
-		return self::count_files( 'success' );
+		return self::count_files('success');
 	}
 
 	/**
@@ -113,7 +117,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The number of images.
 	 */
-	public static function count_optimized_files() {
+	public static function count_optimized_files()
+	{
 		/**
 		 * Filter the number of optimized images in custom folders.
 		 *
@@ -122,13 +127,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_count Default is false. Provide an integer.
 		 */
-		$pre_count = apply_filters( 'imagify_count_optimized_files', false );
+		$pre_count = apply_filters('imagify_count_optimized_files', false);
 
-		if ( false !== $pre_count ) {
+		if (false !== $pre_count) {
 			return (int) $pre_count;
 		}
 
-		return self::count_files( 'optimized' );
+		return self::count_files('optimized');
 	}
 
 	/**
@@ -140,7 +145,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The number of images.
 	 */
-	public static function count_unoptimized_files() {
+	public static function count_unoptimized_files()
+	{
 		/**
 		 * Filter the number of unoptimized images in custom folders.
 		 *
@@ -149,13 +155,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_count Default is false. Provide an integer.
 		 */
-		$pre_count = apply_filters( 'imagify_count_unoptimized_files', false );
+		$pre_count = apply_filters('imagify_count_unoptimized_files', false);
 
-		if ( false !== $pre_count ) {
+		if (false !== $pre_count) {
 			return (int) $pre_count;
 		}
 
-		return self::count_files( 'unoptimized' );
+		return self::count_files('unoptimized');
 	}
 
 	/**
@@ -167,7 +173,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The number of images.
 	 */
-	public static function count_no_status_files() {
+	public static function count_no_status_files()
+	{
 		/**
 		 * Filter the number of images without status in custom folders.
 		 *
@@ -176,13 +183,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_count Default is false. Provide an integer.
 		 */
-		$pre_count = apply_filters( 'imagify_count_no_status_files', false );
+		$pre_count = apply_filters('imagify_count_no_status_files', false);
 
-		if ( false !== $pre_count ) {
+		if (false !== $pre_count) {
 			return (int) $pre_count;
 		}
 
-		return self::count_files( 'none' );
+		return self::count_files('none');
 	}
 
 	/**
@@ -198,24 +205,25 @@ class Imagify_Files_Stats {
 	 *                        "unoptimized" regroups "error" and "none".
 	 * @return int            The number of images.
 	 */
-	public static function count_files( $status = 'all' ) {
+	public static function count_files($status = 'all')
+	{
 		global $wpdb;
 		static $count = [];
 
-		$status = self::validate_status( $status );
+		$status = self::validate_status($status);
 
-		if ( isset( $count[ $status ] ) ) {
-			return $count[ $status ];
+		if (isset($count[$status])) {
+			return $count[$status];
 		}
 
 		$files_db = Imagify_Files_DB::get_instance();
 
-		if ( ! $files_db->can_operate() ) {
-			$count[ $status ] = 0;
-			return $count[ $status ];
+		if (! $files_db->can_operate()) {
+			$count[$status] = 0;
+			return $count[$status];
 		}
 
-		switch ( $status ) {
+		switch ($status) {
 			case 'all':
 				$status = '';
 				break;
@@ -240,11 +248,11 @@ class Imagify_Files_Stats {
 		$table_name = $files_db->get_table_name();
 		$status     = $status ? "WHERE $status" : '';
 
-		$count[ $status ] = (int) $wpdb->get_var( // WPCS: unprepared SQL ok.
+		$count[$status] = (int) $wpdb->get_var( // WPCS: unprepared SQL ok.
 			"SELECT COUNT( file_id ) FROM $table_name $status"
 		);
 
-		return $count[ $status ];
+		return $count[$status];
 	}
 
 
@@ -261,7 +269,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The percent of optimized images.
 	 */
-	public static function percent_optimized_files() {
+	public static function percent_optimized_files()
+	{
 		/**
 		 * Filter the percent of optimized images in custom folders.
 		 *
@@ -270,20 +279,20 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $percent Default is false. Provide an integer.
 		 */
-		$percent = apply_filters( 'imagify_percent_optimized_files', false );
+		$percent = apply_filters('imagify_percent_optimized_files', false);
 
-		if ( false !== $percent ) {
+		if (false !== $percent) {
 			return (int) $percent;
 		}
 
 		$total_files           = self::count_all_files();
 		$total_optimized_files = self::count_optimized_files();
 
-		if ( ! $total_files || ! $total_optimized_files ) {
+		if (! $total_files || ! $total_optimized_files) {
 			return 0;
 		}
 
-		return min( round( 100 * $total_optimized_files / $total_files ), 100 );
+		return min(round(100 * $total_optimized_files / $total_files), 100);
 	}
 
 
@@ -300,7 +309,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The sizes sum in bytes.
 	 */
-	public static function get_optimized_size() {
+	public static function get_optimized_size()
+	{
 		/**
 		 * Filter the optimized sizes of all successfully optimized files.
 		 *
@@ -309,13 +319,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_size Default is false. Provide an integer.
 		 */
-		$pre_size = apply_filters( 'imagify_get_optimized_files_size', false );
+		$pre_size = apply_filters('imagify_get_optimized_files_size', false);
 
-		if ( false !== $pre_size ) {
+		if (false !== $pre_size) {
 			return (int) $pre_size;
 		}
 
-		return self::get_size( 'optimized' );
+		return self::get_size('optimized');
 	}
 
 	/**
@@ -327,7 +337,8 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The sizes sum in bytes.
 	 */
-	public static function get_original_size() {
+	public static function get_original_size()
+	{
 		/**
 		 * Filter the original sizes of all successfully optimized files.
 		 *
@@ -336,13 +347,13 @@ class Imagify_Files_Stats {
 		 *
 		 * @param int|bool $pre_size Default is false. Provide an integer.
 		 */
-		$pre_size = apply_filters( 'imagify_get_original_files_size', false );
+		$pre_size = apply_filters('imagify_get_original_files_size', false);
 
-		if ( false !== $pre_size ) {
+		if (false !== $pre_size) {
 			return (int) $pre_size;
 		}
 
-		return self::get_size( 'original' );
+		return self::get_size('original');
 	}
 
 	/**
@@ -355,29 +366,30 @@ class Imagify_Files_Stats {
 	 * @param  string $type "optimized" or "original".
 	 * @return int          The sizes sum in bytes.
 	 */
-	public static function get_size( $type = null ) {
+	public static function get_size($type = null)
+	{
 		global $wpdb;
 		static $sizes = [];
 
 		$type = 'optimized' === $type ? 'optimized_size' : 'original_size';
 
-		if ( isset( $sizes[ $type ] ) ) {
-			return $sizes[ $type ];
+		if (isset($sizes[$type])) {
+			return $sizes[$type];
 		}
 
 		$files_db = Imagify_Files_DB::get_instance();
 
-		if ( ! $files_db->can_operate() ) {
-			$sizes[ $type ] = 0;
-			return $sizes[ $type ];
+		if (! $files_db->can_operate()) {
+			$sizes[$type] = 0;
+			return $sizes[$type];
 		}
 
 		$table_name     = $files_db->get_table_name();
-		$sizes[ $type ] = (int) $wpdb->get_var( // WPCS: unprepared SQL ok.
+		$sizes[$type] = (int) $wpdb->get_var( // WPCS: unprepared SQL ok.
 			"SELECT SUM( $type ) FROM $table_name WHERE status = 'success'"
 		);
 
-		return $sizes[ $type ];
+		return $sizes[$type];
 	}
 
 	/**
@@ -389,24 +401,25 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The sizes sum in bytes.
 	 */
-	public static function get_overall_original_size() {
+	public static function get_overall_original_size()
+	{
 		global $wpdb;
 		static $size;
 
-		if ( isset( $size ) ) {
+		if (isset($size)) {
 			return $size;
 		}
 
 		$files_db = Imagify_Files_DB::get_instance();
 
-		if ( ! $files_db->can_operate() ) {
+		if (! $files_db->can_operate()) {
 			$size = 0;
 			return $size;
 		}
 
 		$table_name = $files_db->get_table_name();
-		$sql        = $wpdb->get_var( "SELECT SUM( original_size ) FROM $table_name" ); // WPCS: unprepared SQL ok.
-		$size       = is_null( $sql ) ? 0 : round( $sql );
+		$sql        = $wpdb->get_var("SELECT SUM( original_size ) FROM $table_name"); // WPCS: unprepared SQL ok.
+		$size       = is_null($sql) ? 0 : round($sql);
 
 		return $size;
 	}
@@ -420,24 +433,25 @@ class Imagify_Files_Stats {
 	 *
 	 * @return int The current average size of images uploaded per month in bytes.
 	 */
-	public static function calculate_average_size_per_month() {
+	public static function calculate_average_size_per_month()
+	{
 		global $wpdb;
 		static $average;
 
-		if ( isset( $average ) ) {
+		if (isset($average)) {
 			return $average;
 		}
 
 		$files_db = Imagify_Files_DB::get_instance();
 
-		if ( ! $files_db->can_operate() ) {
+		if (! $files_db->can_operate()) {
 			$average = 0;
 			return $average;
 		}
 
 		$table_name = $files_db->get_table_name();
-		$sql        = $wpdb->get_var( "SELECT AVG( size ) AS average_size_per_month FROM ( SELECT SUM( original_size ) AS size FROM $table_name GROUP BY YEAR( file_date ), MONTH( file_date ) ) AS size_per_month" ); // WPCS: unprepared SQL ok.
-		$average    = is_null( $sql ) ? 0 : round( $sql );
+		$sql        = $wpdb->get_var("SELECT AVG( size ) AS average_size_per_month FROM ( SELECT SUM( original_size ) AS size FROM $table_name GROUP BY YEAR( file_date ), MONTH( file_date ) ) AS size_per_month"); // WPCS: unprepared SQL ok.
+		$average    = is_null($sql) ? 0 : round($sql);
 
 		return $average;
 	}
@@ -460,7 +474,8 @@ class Imagify_Files_Stats {
 	 *                        "unoptimized" regroups "error" and "none".
 	 * @return string         Fallback to 'all' if the status is not valid.
 	 */
-	public static function validate_status( $status = 'all' ) {
+	public static function validate_status($status = 'all')
+	{
 		$statuses = [
 			'all'               => 1,
 			'success'           => 1,
@@ -471,6 +486,6 @@ class Imagify_Files_Stats {
 			'unoptimized'       => 1,
 		];
 
-		return isset( $statuses[ $status ] ) ? $status : 'all';
+		return isset($statuses[$status]) ? $status : 'all';
 	}
 }

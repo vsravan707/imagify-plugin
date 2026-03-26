@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
+if (! class_exists('WP_List_Table')) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
@@ -9,7 +9,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  *
  * @since 1.7
  */
-class Imagify_Files_List_Table extends WP_List_Table {
+class Imagify_Files_List_Table extends WP_List_Table
+{
 
 	/**
 	 * Class version.
@@ -58,16 +59,17 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param array $args An associative array of arguments.
 	 */
-	public function __construct( $args = [] ) {
+	public function __construct($args = [])
+	{
 		parent::__construct(
 			[
 				'plural' => 'imagify-files',
-				'screen' => isset( $args['screen'] ) ? convert_to_screen( $args['screen'] ) : null,
+				'screen' => isset($args['screen']) ? convert_to_screen($args['screen']) : null,
 			]
 		);
 
 		$this->modes = [
-			'list' => __( 'List View', 'imagify' ),
+			'list' => __('List View', 'imagify'),
 		];
 
 		$this->filesystem = Imagify_Filesystem::get_instance();
@@ -79,13 +81,14 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @since 1.7
 	 */
-	public function prepare_items() {
+	public function prepare_items()
+	{
 		global $wpdb;
 
 		add_screen_option(
 			'per_page',
 			[
-				'label'   => __( 'Number of files per page', 'imagify' ),
+				'label'   => __('Number of files per page', 'imagify'),
 				'default' => 20,
 				'option'  => self::PER_PAGE_OPTION,
 			]
@@ -94,12 +97,12 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		$files_db      = Imagify_Files_DB::get_instance();
 		$files_table   = $files_db->get_table_name();
 		$files_key     = $files_db->get_primary_key();
-		$files_key_esc = esc_sql( $files_key );
-		$per_page      = $this->get_items_per_page( self::PER_PAGE_OPTION );
+		$files_key_esc = esc_sql($files_key);
+		$per_page      = $this->get_items_per_page(self::PER_PAGE_OPTION);
 
 		// Prepare the query to get items.
 		$page     = $this->get_pagenum();
-		$offset   = ( $page - 1 ) * $per_page;
+		$offset   = ($page - 1) * $per_page;
 		$orderbys = $this->get_sortable_columns();
 		$orderby  = 'path';
 		$order    = 'ASC';
@@ -107,34 +110,34 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		$file_ids = [];
 		$where    = '';
 
-		$sent_orderby  = isset( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
-		$sent_order    = isset( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		$sent_orderby  = isset($_GET['orderby']) ? sanitize_text_field(wp_unslash($_GET['orderby'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		$sent_order    = isset($_GET['order']) ? sanitize_text_field(wp_unslash($_GET['order'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 		$folder_filter = self::get_folder_filter();
 		$status_filter = self::get_status_filter();
 
-		if ( ! empty( $sent_orderby ) && isset( $orderbys[ $sent_orderby ] ) ) {
+		if (! empty($sent_orderby) && isset($orderbys[$sent_orderby])) {
 			$orderby = $sent_orderby;
-			$order   = is_array( $orderbys[ $orderby ] ) ? 'DESC' : 'ASC';
+			$order   = is_array($orderbys[$orderby]) ? 'DESC' : 'ASC';
 
-			if ( 'optimization' === $orderby ) {
+			if ('optimization' === $orderby) {
 				$orderby = 'percent';
 			}
 		}
 
-		if ( $sent_order ) {
-			$order = 'ASC' === strtoupper( $sent_order ) ? 'ASC' : 'DESC';
+		if ($sent_order) {
+			$order = 'ASC' === strtoupper($sent_order) ? 'ASC' : 'DESC';
 		}
 
-		if ( $folder_filter ) {
+		if ($folder_filter) {
 			// Display only files from a specific custom folder.
 			$where = "WHERE folder_id = $folder_filter";
 		}
 
-		if ( $status_filter ) {
+		if ($status_filter) {
 			// Display files optimized, not optimized, or with error.
 			$where .= $where ? ' AND ' : 'WHERE ';
 
-			switch ( $status_filter ) {
+			switch ($status_filter) {
 				case 'optimized':
 					$where .= "( status = 'success' OR status = 'already_optimized' )";
 					break;
@@ -150,79 +153,79 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		// Pagination.
 		$this->set_pagination_args(
 			[
-				'total_items' => (int) $wpdb->get_var( "SELECT COUNT($files_key_esc) FROM $files_table $where" ), // WPCS: unprepared SQL ok.
+				'total_items' => (int) $wpdb->get_var("SELECT COUNT($files_key_esc) FROM $files_table $where"), // WPCS: unprepared SQL ok.
 				'per_page'    => $per_page,
 			]
 		);
 
 		// Get items.
-		$this->items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $files_table $where ORDER BY $orderby $order LIMIT %d, %d", $offset, $per_page ) ); // WPCS: unprepared SQL ok.
+		$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM $files_table $where ORDER BY $orderby $order LIMIT %d, %d", $offset, $per_page)); // WPCS: unprepared SQL ok.
 
-		if ( ! $this->items ) {
+		if (! $this->items) {
 			return;
 		}
 
 		// Prepare items.
-		foreach ( $this->items as $i => $item ) {
+		foreach ($this->items as $i => $item) {
 			// Cast values.
-			$item = $files_db->cast_row( $item );
+			$item = $files_db->cast_row($item);
 
 			// Store the folders used by the items to get their data later in 1 query.
-			$folders[ $item->folder_id ] = $item->folder_id;
+			$folders[$item->folder_id] = $item->folder_id;
 
 			// Store the item IDs to store transients later in 1 query.
-			$file_ids[ $item->$files_key ] = $item->$files_key;
+			$file_ids[$item->$files_key] = $item->$files_key;
 
 			// Use Imagify objects + add related folder ID and path (set later).
-			$this->items[ $i ] = (object) [
-				'process'          => imagify_get_optimization_process( $item, 'custom-folders' ),
+			$this->items[$i] = (object) [
+				'process'          => imagify_get_optimization_process($item, 'custom-folders'),
 				'folder_id'        => $item->folder_id,
 				'folder_path'      => false,
 				'is_folder_active' => true,
 			];
 
-			if ( ! $this->items[ $i ]->process->is_valid() ) {
-				unset( $this->items[ $i ] );
+			if (! $this->items[$i]->process->is_valid()) {
+				unset($this->items[$i]);
 			}
 		}
 
-		$folders = array_filter( $folders );
+		$folders = array_filter($folders);
 
 		// Cache transient values.
-		Imagify_DB::cache_process_locks( 'custom-folders', $file_ids );
+		Imagify_DB::cache_process_locks('custom-folders', $file_ids);
 
-		if ( ! $folders ) {
+		if (! $folders) {
 			return;
 		}
 
 		// Get folders data.
 		$folders_db      = Imagify_Folders_DB::get_instance();
 		$folders_table   = $folders_db->get_table_name();
-		$folders_key_esc = esc_sql( $folders_db->get_primary_key() );
-		$folders         = Imagify_DB::prepare_values_list( $folders );
-		$folders         = $wpdb->get_results( "SELECT * FROM $folders_table WHERE $folders_key_esc IN ( $folders )" ); // WPCS: unprepared SQL ok.
+		$folders_key_esc = esc_sql($folders_db->get_primary_key());
+		$folders         = Imagify_DB::prepare_values_list($folders);
+		$folders         = $wpdb->get_results("SELECT * FROM $folders_table WHERE $folders_key_esc IN ( $folders )"); // WPCS: unprepared SQL ok.
 
-		if ( ! $folders ) {
+		if (! $folders) {
 			return;
 		}
 
 		// Cast folders data and store data into a property.
-		foreach ( $folders as $folder ) {
-			$folder = $folders_db->cast_row( $folder );
+		foreach ($folders as $folder) {
+			$folder = $folders_db->cast_row($folder);
 
-			$this->folders[ $folder->folder_id ] = $folder;
+			$this->folders[$folder->folder_id] = $folder;
 		}
 
 		// Set folders path to each item.
-		foreach ( $this->items as $i => $item ) {
-			if ( $item->folder_id && isset( $this->folders[ $item->folder_id ] ) ) {
-				$item->folder_path      = $this->folders[ $item->folder_id ]->path;
-				$item->is_folder_active = (bool) $this->folders[ $item->folder_id ]->active;
+		foreach ($this->items as $i => $item) {
+			if ($item->folder_id && isset($this->folders[$item->folder_id])) {
+				$item->folder_path      = $this->folders[$item->folder_id]->path;
+				$item->is_folder_active = (bool) $this->folders[$item->folder_id]->active;
 			}
 		}
 
 		// Button templates.
-		Imagify_Views::get_instance()->print_js_template_in_footer( 'button/processing' );
+		Imagify_Views::get_instance()->print_js_template_in_footer('button/processing');
 	}
 
 	/**
@@ -230,54 +233,55 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @since 1.7
 	 */
-	public function no_items() {
-		if ( self::get_status_filter() ) {
+	public function no_items()
+	{
+		if (self::get_status_filter()) {
 			// Filter by status.
-			switch ( self::get_status_filter() ) {
+			switch (self::get_status_filter()) {
 				case 'optimized':
 					/* translators: 1 is a link tag start, 2 is the link tag end. */
-					printf( esc_html__( 'No optimized files. Have you tried the %1$sbulk optimization%2$s yet?', 'imagify' ), '<a href="' . esc_url( get_imagify_admin_url( 'files-bulk-optimization' ) ) . '">', '</a>' );
+					printf(esc_html__('No optimized files. Have you tried the %1$sbulk optimization%2$s yet?', 'imagify'), '<a href="' . esc_url(get_imagify_admin_url('files-bulk-optimization')) . '">', '</a>');
 					return;
 
 				case 'unoptimized':
-					esc_html_e( 'No unoptimized files, hurray!', 'imagify' );
+					esc_html_e('No unoptimized files, hurray!', 'imagify');
 					return;
 
 				case 'errors':
-					esc_html_e( 'No errors, hurray!', 'imagify' );
+					esc_html_e('No errors, hurray!', 'imagify');
 					return;
 			}
 		}
 
 		$args = [
 			'action'           => 'imagify_scan_custom_folders',
-			'_wpnonce'         => wp_create_nonce( 'imagify_scan_custom_folders' ),
-			'_wp_http_referer' => get_imagify_admin_url( 'files-list' ),
+			'_wpnonce'         => wp_create_nonce('imagify_scan_custom_folders'),
+			'_wp_http_referer' => get_imagify_admin_url('files-list'),
 		];
 
-		if ( self::get_folder_filter() ) {
+		if (self::get_folder_filter()) {
 			// A specific custom folder (selected or not).
 			$args['folder']           = self::get_folder_filter();
-			$args['_wp_http_referer'] = rawurlencode( add_query_arg( 'folder-filter', self::get_folder_filter(), $args['_wp_http_referer'] ) );
+			$args['_wp_http_referer'] = rawurlencode(add_query_arg('folder-filter', self::get_folder_filter(), $args['_wp_http_referer']));
 
 			printf(
 				/* translators: 1 and 2 are link tag starts, 3 is a link tag end. */
-				esc_html__( 'No files yet. Do you want to %1$sscan this folder%3$s for new files or launch a %2$sbulk optimization%3$s directly?', 'imagify' ),
-				'<a href="' . esc_url( add_query_arg( $args, admin_url( 'admin-post.php' ) ) ) . '">',
-				'<a href="' . esc_url( get_imagify_admin_url( 'files-bulk-optimization' ) ) . '">',
+				esc_html__('No files yet. Do you want to %1$sscan this folder%3$s for new files or launch a %2$sbulk optimization%3$s directly?', 'imagify'),
+				'<a href="' . esc_url(add_query_arg($args, admin_url('admin-post.php'))) . '">',
+				'<a href="' . esc_url(get_imagify_admin_url('files-bulk-optimization')) . '">',
 				'</a>'
 			);
 			return;
 		}
 
-		if ( Imagify_Folders_DB::get_instance()->has_active_folders() ) {
+		if (Imagify_Folders_DB::get_instance()->has_active_folders()) {
 			// All selected custom folders.
-			$args['_wp_http_referer'] = rawurlencode( $args['_wp_http_referer'] );
+			$args['_wp_http_referer'] = rawurlencode($args['_wp_http_referer']);
 			printf(
 				/* translators: 1 and 2 are link tag starts, 3 is a link tag end. */
-				esc_html__( 'No files yet. Do you want to %1$sscan your selected folders%3$s for new files or launch a %2$sbulk optimization%3$s directly?', 'imagify' ),
-				'<a href="' . esc_url( add_query_arg( $args, admin_url( 'admin-post.php' ) ) ) . '">',
-				'<a href="' . esc_url( get_imagify_admin_url( 'files-bulk-optimization' ) ) . '">',
+				esc_html__('No files yet. Do you want to %1$sscan your selected folders%3$s for new files or launch a %2$sbulk optimization%3$s directly?', 'imagify'),
+				'<a href="' . esc_url(add_query_arg($args, admin_url('admin-post.php'))) . '">',
+				'<a href="' . esc_url(get_imagify_admin_url('files-bulk-optimization')) . '">',
 				'</a>'
 			);
 			return;
@@ -286,8 +290,8 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		// Nothing selected in the settings.
 		printf(
 			/* translators: 1 is a link tag start, 2 is the link tag end. */
-			esc_html__( 'To see things appear here, you must select folders in the settings page first :)', 'imagify' ),
-			'<a href="' . esc_url( get_imagify_admin_url() ) . '">',
+			esc_html__('To see things appear here, you must select folders in the settings page first :)', 'imagify'),
+			'<a href="' . esc_url(get_imagify_admin_url()) . '">',
 			'</a>'
 		);
 	}
@@ -297,75 +301,76 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @since 1.7
 	 */
-	public function views() {
+	public function views()
+	{
 		global $wpdb;
 
 		// Get all folders.
 		$folders_table = Imagify_Folders_DB::get_instance()->get_table_name();
-		$folders       = $wpdb->get_results( "SELECT folder_id, path FROM $folders_table" ); // WPCS: unprepared SQL ok.
+		$folders       = $wpdb->get_results("SELECT folder_id, path FROM $folders_table"); // WPCS: unprepared SQL ok.
 
-		if ( ! $folders ) {
+		if (! $folders) {
 			return;
 		}
 
 		$files_db      = Imagify_Files_DB::get_instance();
 		$files_table   = $files_db->get_table_name();
-		$files_key_esc = esc_sql( $files_db->get_primary_key() );
+		$files_key_esc = esc_sql($files_db->get_primary_key());
 
 		// Filter files by folder.
 		$folder_filters = [];
 		$root_id        = 0;
-		$counts         = $wpdb->get_results( "SELECT folder_id, COUNT( $files_key_esc ) AS count FROM $files_table GROUP BY folder_id", OBJECT_K ); // WPCS: unprepared SQL ok.
+		$counts         = $wpdb->get_results("SELECT folder_id, COUNT( $files_key_esc ) AS count FROM $files_table GROUP BY folder_id", OBJECT_K); // WPCS: unprepared SQL ok.
 
-		foreach ( $folders as $folder ) {
-			if ( '{{ROOT}}/' === $folder->path ) {
+		foreach ($folders as $folder) {
+			if ('{{ROOT}}/' === $folder->path) {
 				$root_id = $folder->folder_id;
 
-				$folder_filters[ $folder->folder_id ] = '/';
+				$folder_filters[$folder->folder_id] = '/';
 			} else {
-				$folder_filters[ $folder->folder_id ] = '/' . trim( $this->filesystem->make_path_relative( Imagify_Files_Scan::remove_placeholder( $folder->path ) ), '/' );
+				$folder_filters[$folder->folder_id] = '/' . trim($this->filesystem->make_path_relative(Imagify_Files_Scan::remove_placeholder($folder->path)), '/');
 			}
 		}
 
-		natcasesort( $folder_filters );
+		natcasesort($folder_filters);
 
-		if ( $root_id ) {
-			$folder_filters[ $root_id ] = __( 'Site\'s root', 'imagify' );
+		if ($root_id) {
+			$folder_filters[$root_id] = __('Site\'s root', 'imagify');
 		}
 
-		foreach ( $folder_filters as $folder_id => $label ) {
-			$folder_filters[ $folder_id ] .= ' (' . ( isset( $counts[ $folder_id ] ) ? (int) $counts[ $folder_id ]->count : 0 ) . ')';
+		foreach ($folder_filters as $folder_id => $label) {
+			$folder_filters[$folder_id] .= ' (' . (isset($counts[$folder_id]) ? (int) $counts[$folder_id]->count : 0) . ')';
 		}
 
 		// Filter files by status.
-		$counts         = $wpdb->get_results( "SELECT status, COUNT( $files_key_esc ) AS count FROM $files_table GROUP BY status", OBJECT_K ); // WPCS: unprepared SQL ok.
+		$counts         = $wpdb->get_results("SELECT status, COUNT( $files_key_esc ) AS count FROM $files_table GROUP BY status", OBJECT_K); // WPCS: unprepared SQL ok.
 		$status_filters = [
 			'optimized'   => 0,
 			'unoptimized' => 0,
 			'errors'      => 0,
 		];
 
-		if ( isset( $counts['success'] ) ) {
+		if (isset($counts['success'])) {
 			$status_filters['optimized'] += $counts['success']->count;
 		}
 
-		if ( isset( $counts['already_optimized'] ) ) {
+		if (isset($counts['already_optimized'])) {
 			$status_filters['optimized'] += $counts['already_optimized']->count;
 		}
 
-		if ( isset( $counts[''] ) ) {
+		if (isset($counts[''])) {
 			$status_filters['unoptimized'] += $counts['']->count;
 		}
 
-		if ( isset( $counts['error'] ) ) {
+		if (isset($counts['error'])) {
 			$status_filters['errors'] += $counts['error']->count;
 		}
 
 		$status_filters = [
-			''            => __( 'All Media Files', 'imagify' ),
-			'optimized'   => _x( 'Optimized', 'Media Files', 'imagify' ) . ' (' . $status_filters['optimized'] . ')',
-			'unoptimized' => _x( 'Unoptimized', 'Media Files', 'imagify' ) . ' (' . $status_filters['unoptimized'] . ')',
-			'errors'      => _x( 'Errors', 'Media Files', 'imagify' ) . ' (' . $status_filters['errors'] . ')',
+			''            => __('All Media Files', 'imagify'),
+			'optimized'   => _x('Optimized', 'Media Files', 'imagify') . ' (' . $status_filters['optimized'] . ')',
+			'unoptimized' => _x('Unoptimized', 'Media Files', 'imagify') . ' (' . $status_filters['unoptimized'] . ')',
+			'errors'      => _x('Errors', 'Media Files', 'imagify') . ' (' . $status_filters['errors'] . ')',
 		];
 
 		// Get submitted values.
@@ -373,40 +378,40 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		$status_filter = self::get_status_filter();
 
 		// Display the filters.
-		if ( method_exists( $this->screen, 'render_screen_reader_content' ) ) {
+		if (method_exists($this->screen, 'render_screen_reader_content')) {
 			// Introduced in WP 4.4.
-			$this->screen->render_screen_reader_content( 'heading_views' );
+			$this->screen->render_screen_reader_content('heading_views');
 		}
-		?>
+?>
 		<div class="wp-filter">
 			<div class="filter-items">
 
-				<label for="folder-filter" class="screen-reader-text"><?php esc_html_e( 'Filter by folder', 'imagify' ); ?></label>
+				<label for="folder-filter" class="screen-reader-text"><?php esc_html_e('Filter by folder', 'imagify'); ?></label>
 				<select class="folder-filters" name="folder-filter" id="folder-filter">
 					<?php
-					printf( '<option value="%s"%s>%s</option>', '', selected( $folder_filter, 0, false ), esc_html__( 'All Folders', 'imagify' ) );
+					printf('<option value="%s"%s>%s</option>', '', selected($folder_filter, 0, false), esc_html__('All Folders', 'imagify'));
 
-					foreach ( $folder_filters as $folder_id => $label ) {
-						printf( '<option value="%d"%s>%s</option>', esc_attr( $folder_id ), selected( $folder_filter, $folder_id, false ), esc_html( $label ) );
+					foreach ($folder_filters as $folder_id => $label) {
+						printf('<option value="%d"%s>%s</option>', esc_attr($folder_id), selected($folder_filter, $folder_id, false), esc_html($label));
 					}
 					?>
 				</select>
 
-				<label for="status-filter" class="screen-reader-text"><?php esc_html_e( 'Filter by status', 'imagify' ); ?></label>
+				<label for="status-filter" class="screen-reader-text"><?php esc_html_e('Filter by status', 'imagify'); ?></label>
 				<select class="folder-filters" name="status-filter" id="status-filter">
 					<?php
-					foreach ( $status_filters as $status => $label ) {
-						printf( '<option value="%s"%s>%s</option>', esc_attr( $status ), selected( $status_filter, $status, false ), esc_html( $label ) );
+					foreach ($status_filters as $status => $label) {
+						printf('<option value="%s"%s>%s</option>', esc_attr($status), selected($status_filter, $status, false), esc_html($label));
 					}
 					?>
 				</select>
 
-				<?php submit_button( _x( 'Filter', 'verb', 'imagify' ), '', 'filter_action', false, [ 'id' => 'folders-query-submit' ] ); ?>
+				<?php submit_button(_x('Filter', 'verb', 'imagify'), '', 'filter_action', false, ['id' => 'folders-query-submit']); ?>
 
-				<?php $this->extra_tablenav( 'bar' ); ?>
+				<?php $this->extra_tablenav('bar'); ?>
 			</div>
 		</div>
-		<?php
+	<?php
 	}
 
 	/**
@@ -416,9 +421,10 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_bulk_actions() {
+	public function get_bulk_actions()
+	{
 		return [
-			'imagify-bulk-refresh-status' => __( 'Refresh status', 'imagify' ),
+			'imagify-bulk-refresh-status' => __('Refresh status', 'imagify'),
 		];
 	}
 
@@ -430,15 +436,16 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_columns() {
+	public function get_columns()
+	{
 		return [
 			'cb'                 => '<input type="checkbox" />',
-			'title'              => __( 'File', 'imagify' ),
-			'folder'             => __( 'Folder', 'imagify' ),
-			'optimization'       => __( 'Optimization', 'imagify' ),
-			'status'             => __( 'Status', 'imagify' ),
-			'optimization_level' => __( 'Optimization Level', 'imagify' ),
-			'actions'            => __( 'Actions', 'imagify' ),
+			'title'              => __('File', 'imagify'),
+			'folder'             => __('Folder', 'imagify'),
+			'optimization'       => __('Optimization', 'imagify'),
+			'status'             => __('Status', 'imagify'),
+			'optimization_level' => __('Optimization Level', 'imagify'),
+			'actions'            => __('Actions', 'imagify'),
 		];
 	}
 
@@ -454,12 +461,13 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_sortable_columns() {
+	public function get_sortable_columns()
+	{
 		return [
 			'folder'             => 'folder',
-			'optimization'       => [ 'optimization', true ],
+			'optimization'       => ['optimization', true],
 			'status'             => 'status',
-			'optimization_level' => [ 'optimization_level', true ],
+			'optimization_level' => ['optimization_level', true],
 		];
 	}
 
@@ -472,13 +480,14 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 * @param  object $item   The current item. It must contain at least a $process property.
 	 * @return string         HTML contents,
 	 */
-	public function get_column( $column, $item ) {
-		if ( ! method_exists( $this, 'column_' . $column ) ) {
+	public function get_column($column, $item)
+	{
+		if (! method_exists($this, 'column_' . $column)) {
 			return '';
 		}
 
 		ob_start();
-		call_user_func( [ $this, 'column_' . $column ], $item );
+		call_user_func([$this, 'column_' . $column], $item);
 		return ob_get_clean();
 	}
 
@@ -489,12 +498,13 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_cb( $item ) {
+	public function column_cb($item)
+	{
 		$media_id = $item->process->get_media()->get_id();
-		?>
-		<label class="screen-reader-text" for="cb-select-<?php echo esc_attr( $media_id ); ?>"><?php echo esc_html_x( 'Select file', 'checkbox label', 'imagify' ); ?></label>
-		<input id="cb-select-<?php echo esc_attr( $media_id ); ?>" type="checkbox" name="bulk_select[]" value="<?php echo esc_attr( $media_id ); ?>" />
-		<?php
+	?>
+		<label class="screen-reader-text" for="cb-select-<?php echo esc_attr($media_id); ?>"><?php echo esc_html_x('Select file', 'checkbox label', 'imagify'); ?></label>
+		<input id="cb-select-<?php echo esc_attr($media_id); ?>" type="checkbox" name="bulk_select[]" value="<?php echo esc_attr($media_id); ?>" />
+	<?php
 	}
 
 	/**
@@ -504,46 +514,48 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_title( $item ) {
-		$item  = $this->maybe_set_item_folder( $item );
+	public function column_title($item)
+	{
+		$item  = $this->maybe_set_item_folder($item);
 		$media = $item->process->get_media();
 		$url   = $media->get_fullsize_url();
-		$base  = ! empty( $item->folder_path ) ? Imagify_Files_Scan::remove_placeholder( $item->folder_path ) : '';
-		$title = $this->filesystem->make_path_relative( $media->get_fullsize_path(), $base );
+		$base  = ! empty($item->folder_path) ? Imagify_Files_Scan::remove_placeholder($item->folder_path) : '';
+		$title = $this->filesystem->make_path_relative($media->get_fullsize_path(), $base);
 
-		list( $mime ) = explode( '/', $media->get_mime_type() );
+		list($mime) = explode('/', $media->get_mime_type());
 
-		if ( $media->is_image() ) {
+		if ($media->is_image()) {
 			$dimensions  = $media->get_dimensions();
 			$orientation = $dimensions['width'] > $dimensions['height'] ? ' landscape' : ' portrait';
 			$orientation = $dimensions['width'] && $dimensions['height'] ? $orientation : '';
 
-			if ( ! wp_doing_ajax() && $item->process->get_data()->get_optimized_size( false, 0, false ) > 100000 ) {
+			if (! wp_doing_ajax() && $item->process->get_data()->get_optimized_size(false, 0, false) > 100000) {
 				// LazyLoad.
-				$image_tag  = '<img src="' . esc_url( IMAGIFY_ASSETS_IMG_URL . 'lazyload.png' ) . '" data-lazy-src="' . esc_url( $url ) . '" alt="" />';
-				$image_tag .= '<noscript><img src="' . esc_url( $url ) . '" alt="" /></noscript>';
+				$image_tag  = '<img src="' . esc_url(IMAGIFY_ASSETS_IMG_URL . 'lazyload.png') . '" data-lazy-src="' . esc_url($url) . '" alt="" />';
+				$image_tag .= '<noscript><img src="' . esc_url($url) . '" alt="" /></noscript>';
 			} else {
-				$image_tag = '<img src="' . esc_url( $url ) . '" class="hide-if-no-js" alt="" />';
+				$image_tag = '<img src="' . esc_url($url) . '" class="hide-if-no-js" alt="" />';
 			}
 		} else {
 			$orientation = '';
-			$image_tag   = '<img src="' . esc_url( wp_mime_type_icon( $mime ) ) . '" class="hide-if-no-js" alt="" />';
+			$image_tag   = '<img src="' . esc_url(wp_mime_type_icon($mime)) . '" class="hide-if-no-js" alt="" />';
 		}
-		?>
+	?>
 		<strong class="has-media-icon">
-			<a href="<?php echo esc_url( $url ); ?>" target="_blank">
-				<span class="media-icon <?php echo sanitize_html_class( $mime . '-icon' ); ?><?php echo esc_attr( $orientation ); ?>">
+			<a href="<?php echo esc_url($url); ?>" target="_blank">
+				<span class="media-icon <?php echo sanitize_html_class($mime . '-icon'); ?><?php echo esc_attr($orientation); ?>">
 					<span class="centered">
-						<?php echo $image_tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php echo $image_tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						?>
 					</span>
 				</span>
-				<?php echo esc_html( $title ); ?>
+				<?php echo esc_html($title); ?>
 			</a>
 		</strong>
 		<p class="filename">
-			<?php $this->comparison_tool_button( $item ); ?>
+			<?php $this->comparison_tool_button($item); ?>
 		</p>
-		<?php
+	<?php
 	}
 
 	/**
@@ -553,30 +565,31 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_folder( $item ) {
-		$item = $this->maybe_set_item_folder( $item );
+	public function column_folder($item)
+	{
+		$item = $this->maybe_set_item_folder($item);
 
-		if ( empty( $item->folder_path ) ) {
+		if (empty($item->folder_path)) {
 			return;
 		}
 
 		$format = '%s';
 		$filter = self::get_folder_filter();
 
-		if ( $filter !== $item->folder_id ) {
-			$format = '<a href="' . esc_url( add_query_arg( 'folder-filter', $item->folder_id, get_imagify_admin_url( 'files-list' ) ) ) . '">%s</a>';
+		if ($filter !== $item->folder_id) {
+			$format = '<a href="' . esc_url(add_query_arg('folder-filter', $item->folder_id, get_imagify_admin_url('files-list'))) . '">%s</a>';
 		}
 
-		if ( '{{ROOT}}/' === $item->folder_path ) {
+		if ('{{ROOT}}/' === $item->folder_path) {
 			// It's the site's root.
-			printf( $format, esc_html__( 'Site\'s root', 'imagify' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			printf($format, esc_html__('Site\'s root', 'imagify')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		} else {
-			printf( $format, '<code>/' . trim( $this->filesystem->make_path_relative( Imagify_Files_Scan::remove_placeholder( $item->folder_path ) ), '/' ) . '</code>' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			printf($format, '<code>/' . trim($this->filesystem->make_path_relative(Imagify_Files_Scan::remove_placeholder($item->folder_path)), '/') . '</code>'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		if ( ! $item->is_folder_active ) {
+		if (! $item->is_folder_active) {
 			echo '<br/>';
-			esc_html_e( 'This folder is not selected for bulk optimization.', 'imagify' );
+			esc_html_e('This folder is not selected for bulk optimization.', 'imagify');
 		}
 	}
 
@@ -587,43 +600,46 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_optimization( $item ) {
+	public function column_optimization($item)
+	{
 		$data     = $item->process->get_data();
 		$media_id = $item->process->get_media()->get_id();
-		?>
+	?>
 		<ul class="imagify-datas-list">
 			<li class="imagify-data-item">
-				<span class="data"><?php esc_html_e( 'Original Filesize:', 'imagify' ); ?></span>
-				<strong class="data-value original"><?php echo esc_html( $data->get_original_size() ); ?></strong>
+				<span class="data"><?php esc_html_e('Original Filesize:', 'imagify'); ?></span>
+				<strong class="data-value original"><?php echo esc_html($data->get_original_size()); ?></strong>
 			</li>
-			<?php if ( $data->is_optimized() ) { ?>
+			<?php if ($data->is_optimized()) { ?>
 				<li class="imagify-data-item">
-					<span class="data"><?php esc_html_e( 'New Filesize:', 'imagify' ); ?></span>
-					<strong class="data-value big optimized"><?php echo esc_html( $data->get_optimized_size() ); ?></strong>
+					<span class="data"><?php esc_html_e('New Filesize:', 'imagify'); ?></span>
+					<strong class="data-value big optimized"><?php echo esc_html($data->get_optimized_size()); ?></strong>
 				</li>
 				<li class="imagify-data-item">
-					<span class="data"><?php esc_html_e( 'Original Saving:', 'imagify' ); ?></span>
+					<span class="data"><?php esc_html_e('Original Saving:', 'imagify'); ?></span>
 					<strong class="data-value">
 						<span class="imagify-chart">
 							<span class="imagify-chart-container">
-								<canvas class="imagify-consumption-chart imagify-consumption-chart-<?php echo esc_attr( $media_id ); ?>" width="15" height="15"></canvas>
-								<?php if ( wp_doing_ajax() ) { ?>
-									<script type="text/javascript">jQuery( window ).trigger( "canvasprinted.imagify", [ ".imagify-consumption-chart-<?php echo esc_attr( $media_id ); ?>" ] ); </script>
+								<canvas class="imagify-consumption-chart imagify-consumption-chart-<?php echo esc_attr($media_id); ?>" width="15" height="15"></canvas>
+								<?php if (wp_doing_ajax()) { ?>
+									<script type="text/javascript">
+										jQuery(window).trigger("canvasprinted.imagify", [".imagify-consumption-chart-<?php echo esc_attr($media_id); ?>"]);
+									</script>
 								<?php } ?>
 							</span>
 						</span>
-						<span class="imagify-chart-value"><?php echo esc_html( $data->get_saving_percent() ); ?></span>%
+						<span class="imagify-chart-value"><?php echo esc_html($data->get_saving_percent()); ?></span>%
 					</strong>
 				</li>
 				<?php
-				if ( $item->process->get_media()->is_image() ) {
-					$has_nextgen = $item->process->has_next_gen() ? __( 'Yes', 'imagify' ) : __( 'No', 'imagify' );
-					?>
+				if ($item->process->get_media()->is_image()) {
+					$has_nextgen = $item->process->has_next_gen() ? __('Yes', 'imagify') : __('No', 'imagify');
+				?>
 					<li class="imagify-data-item">
-						<span class="data"><?php esc_html_e( 'Next-Gen generated:', 'imagify' ); ?></span>
-						<strong class="data-value"><?php echo esc_html( $has_nextgen ); ?></strong>
+						<span class="data"><?php esc_html_e('Next-Gen generated:', 'imagify'); ?></span>
+						<strong class="data-value"><?php echo esc_html($has_nextgen); ?></strong>
 					</li>
-					<?php
+			<?php
 				}
 			}
 			?>
@@ -638,31 +654,32 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_status( $item ) {
+	public function column_status($item)
+	{
 		$data     = $item->process->get_data();
 		$row      = $data->get_row();
 		$status   = $data->get_optimization_status();
 		$messages = [];
 
-		if ( ! $status ) {
+		if (! $status) {
 			// File is not optimized.
-			$messages[] = '<strong class="imagify-status-not-optimized">' . esc_html_x( 'Not optimized', 'Media File', 'imagify' ) . '</strong>';
-		} elseif ( ! empty( $row['error'] ) ) {
+			$messages[] = '<strong class="imagify-status-not-optimized">' . esc_html_x('Not optimized', 'Media File', 'imagify') . '</strong>';
+		} elseif (! empty($row['error'])) {
 			// Error or already optimized.
-			$messages[] = '<span class="imagify-status-' . $status . '">' . esc_html( imagify_translate_api_message( $row['error'] ) ) . '</span>';
+			$messages[] = '<span class="imagify-status-' . $status . '">' . esc_html(imagify_translate_api_message($row['error'])) . '</span>';
 		}
 
-		if ( empty( $row['modified'] ) && ! $messages ) {
+		if (empty($row['modified']) && ! $messages) {
 			// No need to display this if we already have another message to display.
-			$messages[] = '<em class="imagify-status-no-changes">' . esc_html__( 'No changes found', 'imagify' ) . '</em>';
-		} elseif ( ! empty( $row['modified'] ) ) {
+			$messages[] = '<em class="imagify-status-no-changes">' . esc_html__('No changes found', 'imagify') . '</em>';
+		} elseif (! empty($row['modified'])) {
 			// The file has changed or is missing.
-			$messages[] = '<strong class="imagify-status-changed">' . esc_html__( 'The file has changed', 'imagify' ) . '</strong>';
+			$messages[] = '<strong class="imagify-status-changed">' . esc_html__('The file has changed', 'imagify') . '</strong>';
 		}
 
-		echo implode( '<br/>', $messages ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo implode('<br/>', $messages); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-		$this->refresh_status_button( $item );
+		$this->refresh_status_button($item);
 	}
 
 	/**
@@ -672,11 +689,12 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_optimization_level( $item ) {
+	public function column_optimization_level($item)
+	{
 		$data = $item->process->get_data();
 
-		if ( ! $data->is_error() ) {
-			echo imagify_get_optimization_level_label( $data->get_optimization_level(), '%ICON% %s' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		if (! $data->is_error()) {
+			echo imagify_get_optimization_level_label($data->get_optimization_level(), '%ICON% %s'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
@@ -687,36 +705,37 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	public function column_actions( $item ) {
+	public function column_actions($item)
+	{
 		static $done = false;
 
-		if ( ! Imagify_Requirements::is_api_key_valid() ) {
+		if (! Imagify_Requirements::is_api_key_valid()) {
 			// Stop the process if the API key isn't valid.
-			if ( ! $done ) {
+			if (! $done) {
 				// No need to display this on every row.
 				$done = true;
-				esc_html_e( 'Invalid API key', 'imagify' );
-				echo '<br/><a href="' . esc_url( get_imagify_admin_url() ) . '">' . esc_html__( 'Check your Settings', 'imagify' ) . '</a>';
+				esc_html_e('Invalid API key', 'imagify');
+				echo '<br/><a href="' . esc_url(get_imagify_admin_url()) . '">' . esc_html__('Check your Settings', 'imagify') . '</a>';
 			}
 			return;
 		}
 
-		if ( $item->process->is_locked() ) {
+		if ($item->process->is_locked()) {
 			Imagify_Views::get_instance()->print_template(
 				'button-processing',
 				[
-					'label' => __( 'Optimizing...', 'imagify' ),
+					'label' => __('Optimizing...', 'imagify'),
 				]
 			);
 			return;
 		}
 
-		$this->optimize_button( $item );
-		$this->retry_button( $item );
-		$this->reoptimize_buttons( $item );
-		$this->generate_nextgen_versions_button( $item );
-		$this->delete_nextgen_versions_button( $item );
-		$this->restore_button( $item );
+		$this->optimize_button($item);
+		$this->retry_button($item);
+		$this->reoptimize_buttons($item);
+		$this->generate_nextgen_versions_button($item);
+		$this->delete_nextgen_versions_button($item);
+		$this->restore_button($item);
 	}
 
 	/**
@@ -726,8 +745,9 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function optimize_button( $item ) {
-		if ( $item->process->get_data()->get_optimization_status() ) {
+	protected function optimize_button($item)
+	{
+		if ($item->process->get_data()->get_optimization_status()) {
 			// Already optimized.
 			return;
 		}
@@ -746,7 +766,7 @@ class Imagify_Files_List_Table extends WP_List_Table {
 			[
 				'url'  => $url, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				'atts' => [
-					'class' => 'button-primary button-imagify-optimize' . esc_attr( $class ),
+					'class' => 'button-primary button-imagify-optimize' . esc_attr($class),
 				],
 			]
 		);
@@ -759,10 +779,11 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function retry_button( $item ) {
+	protected function retry_button($item)
+	{
 		$data = $item->process->get_data();
 
-		if ( ! $data->is_already_optimized() && ! $data->is_error() ) {
+		if (! $data->is_already_optimized() && ! $data->is_error()) {
 			// Not optimized or successfully optimized.
 			return;
 		}
@@ -781,7 +802,7 @@ class Imagify_Files_List_Table extends WP_List_Table {
 			[
 				'url'  => $url, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				'atts' => [
-					'class' => 'button button-imagify-optimize' . esc_attr( $class ),
+					'class' => 'button button-imagify-optimize' . esc_attr($class),
 				],
 			]
 		);
@@ -795,10 +816,11 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function reoptimize_buttons( $item ) {
+	protected function reoptimize_buttons($item)
+	{
 		$data = $item->process->get_data();
 
-		if ( ! $data->get_optimization_status() ) {
+		if (! $data->get_optimization_status()) {
 			// Not optimized yet.
 			return;
 		}
@@ -808,26 +830,26 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		$can_reoptimize       = $is_already_optimized || $media->has_backup();
 
 		// Don't display anything if there is no backup or the image has been optimized.
-		if ( ! $can_reoptimize ) {
+		if (! $can_reoptimize) {
 			return;
 		}
 
 		$media_level = $data->get_optimization_level();
 		$data        = [];
-		$url_args    = [ 'attachment_id' => $media->get_id() ];
+		$url_args    = ['attachment_id' => $media->get_id()];
 
-		if ( $media_level < 1 ) {
+		if ($media_level < 1) {
 			$url_args['optimization_level'] = 2;
 			$data['optimization_level']     = 2;
-			$data['url']                    = get_imagify_admin_url( 'reoptimize-file', $url_args );
+			$data['url']                    = get_imagify_admin_url('reoptimize-file', $url_args);
 
-			echo $this->views->get_template( 'button/re-optimize', $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		} elseif ( $media_level > 0 ) {
+			echo $this->views->get_template('button/re-optimize', $data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} elseif ($media_level > 0) {
 			$url_args['optimization_level'] = 0;
 			$data['optimization_level']     = 0;
-			$data['url']                    = get_imagify_admin_url( 'reoptimize-file', $url_args );
+			$data['url']                    = get_imagify_admin_url('reoptimize-file', $url_args);
 
-			echo $this->views->get_template( 'button/re-optimize', $data ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $this->views->get_template('button/re-optimize', $data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
@@ -838,10 +860,11 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function generate_nextgen_versions_button( $item ) {
-		$button = get_imagify_attachment_generate_nextgen_versions_link( $item->process );
+	protected function generate_nextgen_versions_button($item)
+	{
+		$button = get_imagify_attachment_generate_nextgen_versions_link($item->process);
 
-		if ( $button ) {
+		if ($button) {
 			echo $button . '<br/>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
@@ -853,10 +876,11 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function delete_nextgen_versions_button( $item ) {
-		$button = get_imagify_attachment_delete_nextgen_versions_link( $item->process );
+	protected function delete_nextgen_versions_button($item)
+	{
+		$button = get_imagify_attachment_delete_nextgen_versions_link($item->process);
 
-		if ( $button ) {
+		if ($button) {
 			echo $button . '<br/>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
@@ -868,11 +892,12 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function restore_button( $item ) {
+	protected function restore_button($item)
+	{
 		$data  = $item->process->get_data();
 		$media = $item->process->get_media();
 
-		if ( ! $data->is_optimized() || ! $media->has_backup() ) {
+		if (! $data->is_optimized() || ! $media->has_backup()) {
 			return;
 		}
 
@@ -883,7 +908,7 @@ class Imagify_Files_List_Table extends WP_List_Table {
 			]
 		);
 
-		echo $this->views->get_template( 'button/restore', [ 'url' => $url ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->views->get_template('button/restore', ['url' => $url]); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -893,7 +918,8 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function refresh_status_button( $item ) {
+	protected function refresh_status_button($item)
+	{
 		$url = get_imagify_admin_url(
 			'refresh-file-modified',
 			[
@@ -902,7 +928,7 @@ class Imagify_Files_List_Table extends WP_List_Table {
 		);
 
 		echo '<br/>';
-		echo $this->views->get_template( 'button/refresh-status', [ 'url' => $url ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $this->views->get_template('button/refresh-status', ['url' => $url]); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -912,23 +938,24 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @param object $item The current item. It must contain at least a $process property.
 	 */
-	protected function comparison_tool_button( $item ) {
+	protected function comparison_tool_button($item)
+	{
 		$data  = $item->process->get_data();
 		$media = $item->process->get_media();
 
-		if ( ! $data->is_optimized() || ! $media->has_backup() || ! $media->is_image() ) {
+		if (! $data->is_optimized() || ! $media->has_backup() || ! $media->is_image()) {
 			return;
 		}
 
 		$file_path = $media->get_fullsize_path();
 
-		if ( ! $file_path ) {
+		if (! $file_path) {
 			return;
 		}
 
 		$dimensions = $media->get_dimensions();
 
-		if ( $dimensions['width'] < 360 ) {
+		if ($dimensions['width'] < 360) {
 			return;
 		}
 
@@ -946,10 +973,12 @@ class Imagify_Files_List_Table extends WP_List_Table {
 			]
 		);
 
-		if ( wp_doing_ajax() ) {
-			?>
-			<script type="text/javascript">jQuery( window ).trigger( 'comparisonprinted.imagify', [ <?php echo esc_js( $media->get_id() ); ?> ] ); </script>
-			<?php
+		if (wp_doing_ajax()) {
+		?>
+			<script type="text/javascript">
+				jQuery(window).trigger('comparisonprinted.imagify', [<?php echo esc_js($media->get_id()); ?>]);
+			</script>
+<?php
 		}
 	}
 
@@ -962,8 +991,9 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 * @param  object $item The current item. It must contain at least a $process property.
 	 * @return object       The current item.
 	 */
-	protected function maybe_set_item_folder( $item ) {
-		if ( isset( $item->folder_path ) ) {
+	protected function maybe_set_item_folder($item)
+	{
+		if (isset($item->folder_path)) {
 			return $item;
 		}
 
@@ -972,13 +1002,13 @@ class Imagify_Files_List_Table extends WP_List_Table {
 
 		$row = $item->process->get_data()->get_row();
 
-		if ( empty( $row['folder_id'] ) ) {
+		if (empty($row['folder_id'])) {
 			return $item;
 		}
 
-		$folder = Imagify_Folders_DB::get_instance()->get( $row['folder_id'] );
+		$folder = Imagify_Folders_DB::get_instance()->get($row['folder_id']);
 
-		if ( ! $folder ) {
+		if (! $folder) {
 			return $item;
 		}
 
@@ -996,7 +1026,8 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return string Name of the default primary column, in this case, 'title'.
 	 */
-	protected function get_default_primary_column_name() {
+	protected function get_default_primary_column_name()
+	{
 		return 'title';
 	}
 
@@ -1007,8 +1038,9 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */
-	protected function get_table_classes() {
-		return [ 'widefat', 'fixed', 'striped', 'media', $this->_args['plural'] ];
+	protected function get_table_classes()
+	{
+		return ['widefat', 'fixed', 'striped', 'media', $this->_args['plural']];
 	}
 
 	/**
@@ -1021,8 +1053,9 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 * @param  int      $value  The number of rows to use.
 	 * @return int|bool
 	 */
-	public static function save_screen_options( $status, $option, $value ) {
-		if ( self::PER_PAGE_OPTION === $option ) {
+	public static function save_screen_options($status, $option, $value)
+	{
+		if (self::PER_PAGE_OPTION === $option) {
 			return (int) $value;
 		}
 
@@ -1036,12 +1069,13 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	public static function get_folder_filter() {
+	public static function get_folder_filter()
+	{
 		static $filter;
 
-		if ( ! isset( $filter ) ) {
-			$filter = filter_input( INPUT_GET, 'folder-filter', FILTER_VALIDATE_INT );
-			$filter = max( 0, $filter );
+		if (! isset($filter)) {
+			$filter = filter_input(INPUT_GET, 'folder-filter', FILTER_VALIDATE_INT);
+			$filter = max(0, $filter);
 		}
 
 		return $filter;
@@ -1054,10 +1088,11 @@ class Imagify_Files_List_Table extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	public static function get_status_filter() {
+	public static function get_status_filter()
+	{
 		static $filter;
 
-		if ( isset( $filter ) ) {
+		if (isset($filter)) {
 			return $filter;
 		}
 
@@ -1066,8 +1101,8 @@ class Imagify_Files_List_Table extends WP_List_Table {
 			'unoptimized' => 1,
 			'errors'      => 1,
 		];
-		$filter = isset( $_GET['status-filter'] ) ? trim( sanitize_text_field( wp_unslash( $_GET['status-filter'] ) ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
-		$filter = isset( $values[ $filter ] ) ? $filter : '';
+		$filter = isset($_GET['status-filter']) ? trim(sanitize_text_field(wp_unslash($_GET['status-filter']))) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
+		$filter = isset($values[$filter]) ? $filter : '';
 
 		return $filter;
 	}

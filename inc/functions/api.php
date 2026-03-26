@@ -1,7 +1,8 @@
 <?php
+
 use Imagify\CLI\CommandInterface;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Returns the main instance of the Imagify class.
@@ -10,7 +11,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return object The Imagify instance.
  */
-function imagify() {
+function imagify()
+{
 	return Imagify::get_instance();
 }
 
@@ -20,8 +22,9 @@ function imagify() {
  * @param  array $data All user data.
  * @return object
  */
-function add_imagify_user( $data ) {
-	return imagify()->create_user( $data );
+function add_imagify_user($data)
+{
+	return imagify()->create_user($data);
 }
 
 /**
@@ -30,8 +33,9 @@ function add_imagify_user( $data ) {
  * @param  string $data All user data.
  * @return object
  */
-function update_imagify_user( $data ) {
-	return imagify()->update_user( $data );
+function update_imagify_user($data)
+{
+	return imagify()->update_user($data);
 }
 
 /**
@@ -39,16 +43,17 @@ function update_imagify_user( $data ) {
  *
  * @return object
  */
-function get_imagify_user() {
-	$user = get_transient( 'imagify_user_cache' );
-	if ( false !== $user ) {
+function get_imagify_user()
+{
+	$user = get_transient('imagify_user_cache');
+	if (false !== $user) {
 		return $user;
 	}
 
 	$user = imagify()->get_user();
 
 	// Fill user object with missed details before saving the transient.
-	if ( is_wp_error( $user ) ) {
+	if (is_wp_error($user)) {
 		$user->id                           = 0;
 		$user->email                        = '';
 		$user->plan_id                      = 0;
@@ -62,7 +67,7 @@ function get_imagify_user() {
 		$user->is_monthly                   = false;
 	}
 
-	set_transient( 'imagify_user_cache', $user, 5 * MINUTE_IN_SECONDS );
+	set_transient('imagify_user_cache', $user, 5 * MINUTE_IN_SECONDS);
 	return $user;
 }
 
@@ -71,7 +76,8 @@ function get_imagify_user() {
  *
  * @return object
  */
-function get_imagify_api_version() {
+function get_imagify_api_version()
+{
 	return imagify()->get_api_version();
 }
 
@@ -81,8 +87,9 @@ function get_imagify_api_version() {
  * @param  string $data An API key.
  * @return bool
  */
-function get_imagify_status( $data ) {
-	return imagify()->get_status( $data );
+function get_imagify_status($data)
+{
+	return imagify()->get_status($data);
 }
 
 /**
@@ -91,8 +98,9 @@ function get_imagify_status( $data ) {
  * @param  array $data All image data.
  * @return object
  */
-function fetch_imagify_image( $data ) {
-	return imagify()->fetch_image( $data );
+function fetch_imagify_image($data)
+{
+	return imagify()->fetch_image($data);
 }
 
 /**
@@ -103,8 +111,9 @@ function fetch_imagify_image( $data ) {
  * @param  array $data All image data.
  * @return object
  */
-function upload_imagify_image( $data ) {
-	return imagify()->upload_image( $data );
+function upload_imagify_image($data)
+{
+	return imagify()->upload_image($data);
 }
 
 /**
@@ -114,7 +123,8 @@ function upload_imagify_image( $data ) {
  *
  * @return object
  */
-function get_imagify_plans_prices() {
+function get_imagify_plans_prices()
+{
 	return imagify()->get_plans_prices();
 }
 
@@ -125,7 +135,8 @@ function get_imagify_plans_prices() {
  *
  * @return object
  */
-function get_imagify_all_prices() {
+function get_imagify_all_prices()
+{
 	return imagify()->get_all_prices();
 }
 
@@ -137,8 +148,9 @@ function get_imagify_all_prices() {
  * @param  string $coupon the coupon code to check.
  * @return object
  */
-function check_imagify_coupon_code( $coupon ) {
-	return imagify()->check_coupon_code( $coupon );
+function check_imagify_coupon_code($coupon)
+{
+	return imagify()->check_coupon_code($coupon);
 }
 
 /**
@@ -148,7 +160,8 @@ function check_imagify_coupon_code( $coupon ) {
  *
  * @return object
  */
-function check_imagify_discount() {
+function check_imagify_discount()
+{
 	return imagify()->check_discount();
 }
 
@@ -159,19 +172,9 @@ function check_imagify_discount() {
  *
  * @return string
  */
-function get_imagify_max_image_size() {
-	$max_image_size = get_transient( 'imagify_max_image_size' );
-
-	if ( false === $max_image_size ) {
-		$max_image_size = imagify()->get_public_info();
-
-		if ( ! is_wp_error( $max_image_size ) ) {
-			$max_image_size = $max_image_size->max_image_size;
-			set_transient( 'imagify_max_image_size', $max_image_size, 6 * HOUR_IN_SECONDS );
-		}
-	}
-
-	return $max_image_size;
+function get_imagify_max_image_size()
+{
+	return PHP_INT_MAX;
 }
 
 /**
@@ -185,16 +188,17 @@ function get_imagify_max_image_size() {
  * @param  string $message The message from the server (in English).
  * @return string          If in our list, the translated message. The original message otherwise.
  */
-function imagify_translate_api_message( $message ) {
-	if ( ! $message ) {
+function imagify_translate_api_message($message)
+{
+	if (! $message) {
 		$message = 'Unknown error occurred';
 	}
 
-	if ( is_wp_error( $message ) ) {
-		if ( $message->errors ) {
-			foreach ( (array) $message->errors as $code => $messages ) {
-				if ( $messages ) {
-					$message->errors[ $code ] = array_map( 'imagify_translate_api_message', (array) $messages );
+	if (is_wp_error($message)) {
+		if ($message->errors) {
+			foreach ((array) $message->errors as $code => $messages) {
+				if ($messages) {
+					$message->errors[$code] = array_map('imagify_translate_api_message', (array) $messages);
 				}
 			}
 		}
@@ -202,84 +206,84 @@ function imagify_translate_api_message( $message ) {
 		return $message;
 	}
 
-	if ( is_object( $message ) && ! empty( $message->detail ) ) {
-		$message->detail = imagify_translate_api_message( $message->detail );
+	if (is_object($message) && ! empty($message->detail)) {
+		$message->detail = imagify_translate_api_message($message->detail);
 	}
 
-	if ( ! is_string( $message ) ) {
+	if (! is_string($message)) {
 		return $message;
 	}
 
-	$trim_message = trim( $message, '. ' );
+	$trim_message = trim($message, '. ');
 
 	$messages = [
 		// Local messages from Imagify::curl_http_call() and Imagify::handle_response().
-		'Could not initialize a new cURL handle'        => __( 'Could not initialize a new cURL handle.', 'imagify' ),
+		'Could not initialize a new cURL handle'        => __('Could not initialize a new cURL handle.', 'imagify'),
 		'Unknown error occurred'                        => sprintf(
 			// translators: %1$s = opening link tag, %2$s = closing link tag.
-			__( 'An unknown error occurred: %1$sMore info and possible solutions%2$s', 'imagify' ),
+			__('An unknown error occurred: %1$sMore info and possible solutions%2$s', 'imagify'),
 			'<a href="https://imagify.io/documentation/optimization-is-stuck/" rel="noopener" target="_blank">',
 			'</a>'
 		),
-		'Your image is too big to be uploaded on our server' => __( 'Your file is too big to be uploaded on our server.', 'imagify' ),
-		'Webp is less performant than original'         => __( 'WebP file is larger than the original image', 'imagify' ),
-		'Our server returned an invalid response'       => __( 'Our server returned an invalid response.', 'imagify' ),
-		'cURL isn\'t installed on the server'           => __( 'cURL is not available on the server.', 'imagify' ),
+		'Your image is too big to be uploaded on our server' => __('Your file is too big to be uploaded on our server.', 'imagify'),
+		'Webp is less performant than original'         => __('WebP file is larger than the original image', 'imagify'),
+		'Our server returned an invalid response'       => __('Our server returned an invalid response.', 'imagify'),
+		'cURL isn\'t installed on the server'           => __('cURL is not available on the server.', 'imagify'),
 		// API messages.
-		'Authentification not provided'                 => __( 'Authentication not provided.', 'imagify' ),
-		'Cannot create client token'                    => __( 'Cannot create client token.', 'imagify' ),
-		'Confirm your account to continue optimizing image' => __( 'Confirm your account to continue optimizing files.', 'imagify' ),
-		'Coupon doesn\'t exist'                         => __( 'Coupon does not exist.', 'imagify' ),
-		'Email field shouldn\'t be empty'               => __( 'Email field should not be empty.', 'imagify' ),
-		'Email or Password field shouldn\'t be empty'   => __( 'This account already exists.', 'imagify' ),
-		'Error uploading to data Storage'               => __( 'Error uploading to Data Storage.', 'imagify' ),
-		'Not able to connect to Data Storage API to get the token' => __( 'Unable to connect to Data Storage API to get the token.', 'imagify' ),
-		'Not able to connect to Data Storage API'       => __( 'Unable to connect to Data Storage API.', 'imagify' ),
-		'Not able to retrieve the token from DataStorage API' => __( 'Unable to retrieve the token from Data Storage API.', 'imagify' ),
-		'This email is already registered, you should try another email' => __( 'This email is already registered, you should try another email.', 'imagify' ),
-		'This user doesn\'t exit'                       => __( 'This user does not exist.', 'imagify' ),
-		'Too many request, be patient'                  => __( 'Too many requests, please be patient.', 'imagify' ),
-		'Unable to regenerate access token'             => __( 'Unable to regenerate access token.', 'imagify' ),
-		'User not valid'                                => __( 'User not valid.', 'imagify' ),
-		'WELL DONE. This image is already compressed, no further compression required' => __( 'WELL DONE. This media file is already optimized, no further optimization is required.', 'imagify' ),
-		'You are not authorized to perform this action' => __( 'You are not authorized to perform this action.', 'imagify' ),
-		'You\'ve consumed all your data. You have to upgrade your account to continue' => __( 'You have consumed all your data. You have to upgrade your account to continue.', 'imagify' ),
-		'Invalid token'                                 => __( 'Invalid API key', 'imagify' ),
-		'Upload a valid image. The file you uploaded was either not an image or a corrupted image' => __( 'Invalid or corrupted file.', 'imagify' ),
+		'Authentification not provided'                 => __('Authentication not provided.', 'imagify'),
+		'Cannot create client token'                    => __('Cannot create client token.', 'imagify'),
+		'Confirm your account to continue optimizing image' => __('Confirm your account to continue optimizing files.', 'imagify'),
+		'Coupon doesn\'t exist'                         => __('Coupon does not exist.', 'imagify'),
+		'Email field shouldn\'t be empty'               => __('Email field should not be empty.', 'imagify'),
+		'Email or Password field shouldn\'t be empty'   => __('This account already exists.', 'imagify'),
+		'Error uploading to data Storage'               => __('Error uploading to Data Storage.', 'imagify'),
+		'Not able to connect to Data Storage API to get the token' => __('Unable to connect to Data Storage API to get the token.', 'imagify'),
+		'Not able to connect to Data Storage API'       => __('Unable to connect to Data Storage API.', 'imagify'),
+		'Not able to retrieve the token from DataStorage API' => __('Unable to retrieve the token from Data Storage API.', 'imagify'),
+		'This email is already registered, you should try another email' => __('This email is already registered, you should try another email.', 'imagify'),
+		'This user doesn\'t exit'                       => __('This user does not exist.', 'imagify'),
+		'Too many request, be patient'                  => __('Too many requests, please be patient.', 'imagify'),
+		'Unable to regenerate access token'             => __('Unable to regenerate access token.', 'imagify'),
+		'User not valid'                                => __('User not valid.', 'imagify'),
+		'WELL DONE. This image is already compressed, no further compression required' => __('WELL DONE. This media file is already optimized, no further optimization is required.', 'imagify'),
+		'You are not authorized to perform this action' => __('You are not authorized to perform this action.', 'imagify'),
+		'You\'ve consumed all your data. You have to upgrade your account to continue' => __('You have consumed all your data. You have to upgrade your account to continue.', 'imagify'),
+		'Invalid token'                                 => __('Invalid API key', 'imagify'),
+		'Upload a valid image. The file you uploaded was either not an image or a corrupted image' => __('Invalid or corrupted file.', 'imagify'),
 	];
 
-	if ( isset( $messages[ $trim_message ] ) ) {
-		return $messages[ $trim_message ];
+	if (isset($messages[$trim_message])) {
+		return $messages[$trim_message];
 	}
 
 	// Local message.
-	if ( preg_match( '@^(?:Unknown|An) error occurred \((.+)\)$@', $trim_message, $matches ) ) {
+	if (preg_match('@^(?:Unknown|An) error occurred \((.+)\)$@', $trim_message, $matches)) {
 		/* translators: %s is an error message. */
-		return sprintf( __( 'An error occurred (%s).', 'imagify' ), esc_html( wp_strip_all_tags( $matches[1] ) ) );
+		return sprintf(__('An error occurred (%s).', 'imagify'), esc_html(wp_strip_all_tags($matches[1])));
 	}
 
 	// Local message.
-	if ( preg_match( '@^Our server returned an error \((.+)\)$@', $trim_message, $matches ) ) {
+	if (preg_match('@^Our server returned an error \((.+)\)$@', $trim_message, $matches)) {
 		/* translators: %s is an error message. */
-		return sprintf( __( 'Our server returned an error (%s).', 'imagify' ), esc_html( wp_strip_all_tags( $matches[1] ) ) );
+		return sprintf(__('Our server returned an error (%s).', 'imagify'), esc_html(wp_strip_all_tags($matches[1])));
 	}
 
 	// API message.
-	if ( preg_match( '@^Custom one time plan starts from (\d+) MB$@', $trim_message, $matches ) ) {
+	if (preg_match('@^Custom one time plan starts from (\d+) MB$@', $trim_message, $matches)) {
 		/* translators: %s is a formatted number, dont use %d. */
-		return sprintf( __( 'Custom One Time plan starts from %s MB.', 'imagify' ), number_format_i18n( (int) $matches[1] ) );
+		return sprintf(__('Custom One Time plan starts from %s MB.', 'imagify'), number_format_i18n((int) $matches[1]));
 	}
 
 	// API message.
-	if ( preg_match( '@^(.*) is not a valid extension$@', $trim_message, $matches ) ) {
+	if (preg_match('@^(.*) is not a valid extension$@', $trim_message, $matches)) {
 		/* translators: %s is a file extension. */
-		return sprintf( __( '%s is not a valid extension.', 'imagify' ), sanitize_text_field( $matches[1] ) );
+		return sprintf(__('%s is not a valid extension.', 'imagify'), sanitize_text_field($matches[1]));
 	}
 
 	// API message.
-	if ( preg_match( '@^Request was throttled\. Expected available in ([\d.]+) second$@', $trim_message, $matches ) ) {
+	if (preg_match('@^Request was throttled\. Expected available in ([\d.]+) second$@', $trim_message, $matches)) {
 		/* translators: %s is a float number. */
-		return sprintf( _n( 'Request was throttled. Expected available in %s second.', 'Request was throttled. Expected available in %s seconds.', (int) $matches[1], 'imagify' ), sanitize_text_field( $matches[1] ) );
+		return sprintf(_n('Request was throttled. Expected available in %s second.', 'Request was throttled. Expected available in %s seconds.', (int) $matches[1], 'imagify'), sanitize_text_field($matches[1]));
 	}
 
 	return $message;
@@ -293,9 +297,10 @@ function imagify_translate_api_message( $message ) {
  *
  * @return void
  */
-function imagify_bulk_optimize( $contexts, $optimization_level ) {
-	foreach ( $contexts as $context ) {
-		Imagify\Bulk\Bulk::get_instance()->run_optimize( $context, $optimization_level );
+function imagify_bulk_optimize($contexts, $optimization_level)
+{
+	foreach ($contexts as $context) {
+		Imagify\Bulk\Bulk::get_instance()->run_optimize($context, $optimization_level);
 	}
 }
 
@@ -306,8 +311,9 @@ function imagify_bulk_optimize( $contexts, $optimization_level ) {
  *
  * @return void
  */
-function imagify_generate_nextgen( $contexts ) {
-	Imagify\Bulk\Bulk::get_instance()->run_generate_nextgen( $contexts );
+function imagify_generate_nextgen($contexts)
+{
+	Imagify\Bulk\Bulk::get_instance()->run_generate_nextgen($contexts);
 }
 
 /**
@@ -317,8 +323,9 @@ function imagify_generate_nextgen( $contexts ) {
  *
  * @return void
  */
-function imagify_add_command( CommandInterface $command ) {
-	if ( ! defined( 'WP_CLI' ) || ! WP_CLI || ! class_exists( '\WP_CLI' ) ) {
+function imagify_add_command(CommandInterface $command)
+{
+	if (! defined('WP_CLI') || ! WP_CLI || ! class_exists('\WP_CLI')) {
 		return;
 	}
 
@@ -337,6 +344,7 @@ function imagify_add_command( CommandInterface $command ) {
  *
  * @return bool
  */
-function imagify_is_api_key_valid() {
+function imagify_is_api_key_valid()
+{
 	return Imagify_Requirements::is_api_key_valid();
 }

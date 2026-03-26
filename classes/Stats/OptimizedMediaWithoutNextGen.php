@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Stats;
@@ -12,7 +13,8 @@ use WP_Error;
 /**
  * Class to get and cache the number of optimized media without next-gen versions.
  */
-final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInterface {
+final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInterface
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -27,16 +29,17 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 *
 	 * @return array
 	 */
-	public static function get_subscribed_events() {
+	public static function get_subscribed_events()
+	{
 		return [
 			// @action
-			'imagify_after_optimize'         => [ 'maybe_clear_cache_after_optimization', 10, 2 ],
+			'imagify_after_optimize'         => ['maybe_clear_cache_after_optimization', 10, 2],
 			// @action
-			'imagify_after_restore_media'    => [ 'maybe_clear_cache_after_restoration', 10, 4 ],
+			'imagify_after_restore_media'    => ['maybe_clear_cache_after_restoration', 10, 4],
 			// @action
 			'imagify_delete_media'           => 'maybe_clear_cache_on_deletion',
 			// @action
-			'update_option_imagify_settings' => [ 'maybe_clear_stat_cache', 9, 2 ],
+			'update_option_imagify_settings' => ['maybe_clear_stat_cache', 9, 2],
 		];
 	}
 
@@ -47,13 +50,14 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 *
 	 * @return int
 	 */
-	public function get_stat() {
+	public function get_stat()
+	{
 		$bulk = Bulk::get_instance();
 		$stat = 0;
 
 		// Sum the counts of each context.
-		foreach ( imagify_get_context_names() as $context ) {
-			$stat += $bulk->get_bulk_instance( $context )->has_optimized_media_without_nextgen();
+		foreach (imagify_get_context_names() as $context) {
+			$stat += $bulk->get_bulk_instance($context)->has_optimized_media_without_nextgen();
 		}
 
 		return $stat;
@@ -66,11 +70,12 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 *
 	 * @return int
 	 */
-	public function get_cached_stat() {
-		$contexts = implode( '|', imagify_get_context_names() );
-		$stat     = get_transient( self::NAME );
+	public function get_cached_stat()
+	{
+		$contexts = implode('|', imagify_get_context_names());
+		$stat     = get_transient(self::NAME);
 
-		if ( isset( $stat['stat'], $stat['contexts'] ) && $stat['contexts'] === $contexts ) {
+		if (isset($stat['stat'], $stat['contexts']) && $stat['contexts'] === $contexts) {
 			// The number is stored and the contexts are the same.
 			return (int) $stat['stat'];
 		}
@@ -80,7 +85,7 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 			'stat'     => $this->get_stat(),
 		];
 
-		set_transient( self::NAME, $stat, 2 * DAY_IN_SECONDS );
+		set_transient(self::NAME, $stat, 2 * DAY_IN_SECONDS);
 
 		return $stat['stat'];
 	}
@@ -90,8 +95,9 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 *
 	 * @since 2.2
 	 */
-	public function clear_cache() {
-		delete_transient( self::NAME );
+	public function clear_cache()
+	{
+		delete_transient(self::NAME);
 	}
 
 	/**
@@ -102,22 +108,23 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 * @param ProcessInterface $process The optimization process.
 	 * @param array            $item    The item being processed.
 	 */
-	public function maybe_clear_cache_after_optimization( $process, $item ) {
-		if ( ! $process->get_media()->is_image() || false === get_transient( self::NAME ) ) {
+	public function maybe_clear_cache_after_optimization($process, $item)
+	{
+		if (! $process->get_media()->is_image() || false === get_transient(self::NAME)) {
 			return;
 		}
 
 		$sizes     = $process->get_data()->get_optimization_data();
-		$sizes     = isset( $sizes['sizes'] ) ? (array) $sizes['sizes'] : [];
-		$new_sizes = array_flip( $item['sizes_done'] );
-		$new_sizes = array_intersect_key( $sizes, $new_sizes );
+		$sizes     = isset($sizes['sizes']) ? (array) $sizes['sizes'] : [];
+		$new_sizes = array_flip($item['sizes_done']);
+		$new_sizes = array_intersect_key($sizes, $new_sizes);
 		$size_name = 'full' . $process::WEBP_SUFFIX;
 
-		if ( 'avif' === get_imagify_option( 'optimization_format' ) ) {
+		if ('avif' === get_imagify_option('optimization_format')) {
 			$size_name = 'full' . $process::AVIF_SUFFIX;
 		}
 
-		if ( ! isset( $new_sizes['full'] ) && ! empty( $new_sizes[ $size_name ]['success'] ) ) {
+		if (! isset($new_sizes['full']) && ! empty($new_sizes[$size_name]['success'])) {
 			/**
 			 * We just successfully generated the next-gen version of the full size.
 			 * The full size was not optimized at the same time, that means it was optimized previously.
@@ -127,7 +134,7 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 			return;
 		}
 
-		if ( ! empty( $new_sizes['full']['success'] ) && empty( $new_sizes[ $size_name ]['success'] ) ) {
+		if (! empty($new_sizes['full']['success']) && empty($new_sizes[$size_name]['success'])) {
 			/**
 			 * We now have a new optimized media without next-gen.
 			 */
@@ -145,19 +152,20 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 * @param array            $files    The list of files, before restoring them.
 	 * @param array            $data     The optimization data, before deleting it.
 	 */
-	public function maybe_clear_cache_after_restoration( $process, $response, $files, $data ) {
-		if ( ! $process->get_media()->is_image() || false === get_transient( self::NAME ) ) {
+	public function maybe_clear_cache_after_restoration($process, $response, $files, $data)
+	{
+		if (! $process->get_media()->is_image() || false === get_transient(self::NAME)) {
 			return;
 		}
 
-		$sizes     = isset( $data['sizes'] ) ? (array) $data['sizes'] : [];
+		$sizes     = isset($data['sizes']) ? (array) $data['sizes'] : [];
 		$size_name = 'full' . $process::WEBP_SUFFIX;
 
-		if ( 'avif' === get_imagify_option( 'optimization_format' ) ) {
+		if ('avif' === get_imagify_option('optimization_format')) {
 			$size_name = 'full' . $process::AVIF_SUFFIX;
 		}
 
-		if ( ! empty( $sizes['full']['success'] ) && empty( $sizes[ $size_name ]['success'] ) ) {
+		if (! empty($sizes['full']['success']) && empty($sizes[$size_name]['success'])) {
 			/**
 			 * This media had no next-gen versions.
 			 */
@@ -172,20 +180,21 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 *
 	 * @param ProcessInterface $process An optimization process.
 	 */
-	public function maybe_clear_cache_on_deletion( $process ) {
-		if ( false === get_transient( self::NAME ) ) {
+	public function maybe_clear_cache_on_deletion($process)
+	{
+		if (false === get_transient(self::NAME)) {
 			return;
 		}
 
 		$data      = $process->get_data()->get_optimization_data();
-		$sizes     = isset( $data['sizes'] ) ? (array) $data['sizes'] : [];
+		$sizes     = isset($data['sizes']) ? (array) $data['sizes'] : [];
 		$size_name = 'full' . $process::WEBP_SUFFIX;
 
-		if ( 'avif' === get_imagify_option( 'optimization_format' ) ) {
+		if ('avif' === get_imagify_option('optimization_format')) {
 			$size_name = 'full' . $process::AVIF_SUFFIX;
 		}
 
-		if ( ! empty( $sizes['full']['success'] ) && empty( $sizes[ $size_name ]['success'] ) ) {
+		if (! empty($sizes['full']['success']) && empty($sizes[$size_name]['success'])) {
 			/**
 			 * This media had no next-gen versions.
 			 */
@@ -203,12 +212,13 @@ final class OptimizedMediaWithoutNextGen implements StatInterface, SubscriberInt
 	 *
 	 * @return void
 	 */
-	public function maybe_clear_stat_cache( $old_value, $value ) {
-		if ( ! isset( $old_value['optimization_format'], $value['optimization_format'] ) ) {
+	public function maybe_clear_stat_cache($old_value, $value)
+	{
+		if (! isset($old_value['optimization_format'], $value['optimization_format'])) {
 			return;
 		}
 
-		if ( $old_value['optimization_format'] === $value['optimization_format'] ) {
+		if ($old_value['optimization_format'] === $value['optimization_format']) {
 			return;
 		}
 

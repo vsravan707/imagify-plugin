@@ -7,7 +7,8 @@ use Imagify\Traits\InstanceGetterTrait;
  *
  * @since 1.7
  */
-class Imagify_Data extends Imagify_Abstract_Options {
+class Imagify_Data extends Imagify_Abstract_Options
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -58,19 +59,20 @@ class Imagify_Data extends Imagify_Abstract_Options {
 	 * @param  mixed  $default_value The default value.
 	 * @return mixed
 	 */
-	public function sanitize_and_validate_value( $key, $value, $default_value ) {
-		switch ( $key ) {
+	public function sanitize_and_validate_value($key, $value, $default_value)
+	{
+		switch ($key) {
 			case 'total_size_images_library':
 			case 'average_size_images_per_month':
-				if ( $value <= 0 ) {
+				if ($value <= 0) {
 					// Invalid.
 					return 0.0;
 				}
 				return $value;
 
 			case 'previous_quota_percent':
-				$value = round( $value, 1 );
-				return min( max( 0, $value ), 100 );
+				$value = round($value, 1);
+				return min(max(0, $value), 100);
 		}
 
 		return false;

@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Class for deprecated methods from Imagify_Notices.
@@ -8,7 +8,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @author Grégory Viguier
  * @deprecated
  */
-class Imagify_Notices_Deprecated {
+class Imagify_Notices_Deprecated
+{
 
 	/**
 	 * Include the view file.
@@ -21,9 +22,10 @@ class Imagify_Notices_Deprecated {
 	 * @param string $view The view ID.
 	 * @param mixed  $data Some data to pass to the view.
 	 */
-	public function render_view( $view, $data = array() ) {
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->print_template( \'notice-\' . $view, $data )' );
+	public function render_view($view, $data = array())
+	{
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '1.7', 'Imagify_Views::get_instance()->print_template( \'notice-\' . $view, $data )');
 
-		Imagify_Views::get_instance()->print_template( 'notice-' . $view, $data );
+		Imagify_Views::get_instance()->print_template('notice-' . $view, $data);
 	}
 }

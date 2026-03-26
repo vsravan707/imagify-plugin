@@ -1,10 +1,11 @@
 <?php
+
 namespace Imagify\Media;
 
 use Imagify\CDN\PushCDNInterface;
 use Imagify\Context\ContextInterface;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Abstract used for "media groups" (aka attachments).
@@ -12,7 +13,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.9
  * @author Grégory Viguier
  */
-abstract class AbstractMedia implements MediaInterface {
+abstract class AbstractMedia implements MediaInterface
+{
 
 	/**
 	 * The media ID.
@@ -106,7 +108,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @param int $id The media ID.
 	 */
-	public function __construct( $id ) {
+	public function __construct($id)
+	{
 		$this->id         = (int) $id;
 		$this->filesystem = \Imagify_Filesystem::get_instance();
 	}
@@ -120,7 +123,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return int
 	 */
-	public function get_id() {
+	public function get_id()
+	{
 		return $this->id;
 	}
 
@@ -133,7 +137,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_valid() {
+	public function is_valid()
+	{
 		return $this->get_id() > 0;
 	}
 
@@ -146,7 +151,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return string
 	 */
-	public function get_context() {
+	public function get_context()
+	{
 		return $this->get_context_instance()->get_name();
 	}
 
@@ -159,18 +165,19 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return ContextInterface
 	 */
-	public function get_context_instance() {
-		if ( $this->context ) {
-			if ( is_string( $this->context ) ) {
-				$this->context = imagify_get_context( $this->context );
+	public function get_context_instance()
+	{
+		if ($this->context) {
+			if (is_string($this->context)) {
+				$this->context = imagify_get_context($this->context);
 			}
 
 			return $this->context;
 		}
 
-		$class_name    = get_class( $this );
-		$class_name    = '\\' . trim( $class_name, '\\' );
-		$class_name    = str_replace( '\\Media\\', '\\Context\\', $class_name );
+		$class_name    = get_class($this);
+		$class_name    = '\\' . trim($class_name, '\\');
+		$class_name    = str_replace('\\Media\\', '\\Context\\', $class_name);
 		$this->context = new $class_name();
 
 		return $this->context;
@@ -185,12 +192,13 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool|PushCDNInterface A PushCDNInterface instance. False if no CDN is used.
 	 */
-	public function get_cdn() {
-		if ( isset( $this->cdn ) ) {
+	public function get_cdn()
+	{
+		if (isset($this->cdn)) {
 			return $this->cdn;
 		}
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			$this->cdn = false;
 			return $this->cdn;
 		}
@@ -208,9 +216,9 @@ abstract class AbstractMedia implements MediaInterface {
 		 * @param int                   $media_id The media ID.
 		 * @param ContextInterface      $context  The context object.
 		 */
-		$this->cdn = apply_filters( 'imagify_cdn', false, $media_id, $context );
+		$this->cdn = apply_filters('imagify_cdn', false, $media_id, $context);
 
-		if ( ! $this->cdn || ! $this->cdn instanceof PushCDNInterface ) {
+		if (! $this->cdn || ! $this->cdn instanceof PushCDNInterface) {
 			$this->cdn = false;
 			return $this->cdn;
 		}
@@ -232,14 +240,15 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False if it doesn't exist.
 	 */
-	public function get_original_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_original_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
 		$original_path = $this->get_raw_original_path();
 
-		if ( ! $original_path || ! $this->filesystem->exists( $original_path ) ) {
+		if (! $original_path || ! $this->filesystem->exists($original_path)) {
 			return false;
 		}
 
@@ -260,14 +269,15 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False if it doesn't exist.
 	 */
-	public function get_fullsize_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_fullsize_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
 		$original_path = $this->get_raw_fullsize_path();
 
-		if ( ! $original_path || ! $this->filesystem->exists( $original_path ) ) {
+		if (! $original_path || ! $this->filesystem->exists($original_path)) {
 			return false;
 		}
 
@@ -288,14 +298,15 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return string|bool The file path. False if it doesn't exist.
 	 */
-	public function get_backup_path() {
-		if ( ! $this->is_valid() ) {
+	public function get_backup_path()
+	{
+		if (! $this->is_valid()) {
 			return false;
 		}
 
 		$backup_path = $this->get_raw_backup_path();
 
-		if ( ! $backup_path || ! $this->filesystem->exists( $backup_path ) ) {
+		if (! $backup_path || ! $this->filesystem->exists($backup_path)) {
 			return false;
 		}
 
@@ -311,7 +322,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool True if the media has a backup.
 	 */
-	public function has_backup() {
+	public function has_backup()
+	{
 		return (bool) $this->get_backup_path();
 	}
 
@@ -329,7 +341,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_supported() {
+	public function is_supported()
+	{
 		return (bool) $this->get_mime_type();
 	}
 
@@ -342,12 +355,13 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool Returns false in case it's an image but not in a supported format (bmp for example).
 	 */
-	public function is_image() {
-		if ( isset( $this->is_image ) ) {
+	public function is_image()
+	{
+		if (isset($this->is_image)) {
 			return $this->is_image;
 		}
 
-		$this->is_image = strpos( (string) $this->get_mime_type(), 'image/' ) === 0;
+		$this->is_image = strpos((string) $this->get_mime_type(), 'image/') === 0;
 
 		return $this->is_image;
 	}
@@ -361,8 +375,9 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool
 	 */
-	public function is_pdf() {
-		if ( isset( $this->is_pdf ) ) {
+	public function is_pdf()
+	{
+		if (isset($this->is_pdf)) {
 			return $this->is_pdf;
 		}
 
@@ -380,7 +395,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return string|null
 	 */
-	public function get_extension() {
+	public function get_extension()
+	{
 		return $this->get_file_type()->ext;
 	}
 
@@ -393,7 +409,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return string
 	 */
-	public function get_mime_type() {
+	public function get_mime_type()
+	{
 		return $this->get_file_type()->type;
 	}
 
@@ -407,8 +424,9 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return array
 	 */
-	public function get_allowed_mime_types() {
-		return imagify_get_mime_types( $this->get_context_instance()->get_allowed_mime_types() );
+	public function get_allowed_mime_types()
+	{
+		return imagify_get_mime_types($this->get_context_instance()->get_allowed_mime_types());
 	}
 
 	/**
@@ -420,15 +438,16 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return bool True on success. False on failure.
 	 */
-	public function update_dimensions() {
-		if ( ! $this->is_image() ) {
+	public function update_dimensions()
+	{
+		if (! $this->is_image()) {
 			// The media is not a supported image.
 			return false;
 		}
 
-		$dimensions = $this->filesystem->get_image_size( $this->get_raw_fullsize_path() );
+		$dimensions = $this->filesystem->get_image_size($this->get_raw_fullsize_path());
 
-		if ( ! $dimensions ) {
+		if (! $dimensions) {
 			// Could not get the new dimensions.
 			return false;
 		}
@@ -450,9 +469,9 @@ abstract class AbstractMedia implements MediaInterface {
 		 *     @type int $height The image height.
 		 * }
 		 */
-		do_action( "imagify_before_update_{$context}_media_data_dimensions", $this->get_id(), $dimensions );
+		do_action("imagify_before_update_{$context}_media_data_dimensions", $this->get_id(), $dimensions);
 
-		$this->update_media_data_dimensions( $dimensions );
+		$this->update_media_data_dimensions($dimensions);
 
 		/**
 		 * Triggered after updating an image width and height into its metadata.
@@ -469,7 +488,7 @@ abstract class AbstractMedia implements MediaInterface {
 		 *     @type int $height The image height.
 		 * }
 		 */
-		do_action( "imagify_after_update_{$context}_media_data_dimensions", $this->get_id(), $dimensions );
+		do_action("imagify_after_update_{$context}_media_data_dimensions", $this->get_id(), $dimensions);
 
 		return true;
 	}
@@ -488,7 +507,7 @@ abstract class AbstractMedia implements MediaInterface {
 	 *     @type int $height The image height.
 	 * }
 	 */
-	abstract protected function update_media_data_dimensions( $dimensions );
+	abstract protected function update_media_data_dimensions($dimensions);
 
 	/**
 	 * Get the file mime type + file extension (if the file is supported by Imagify).
@@ -501,8 +520,9 @@ abstract class AbstractMedia implements MediaInterface {
 	 *
 	 * @return object
 	 */
-	protected function get_file_type() {
-		if ( isset( $this->file_type ) ) {
+	protected function get_file_type()
+	{
+		if (isset($this->file_type)) {
 			return $this->file_type;
 		}
 
@@ -511,17 +531,17 @@ abstract class AbstractMedia implements MediaInterface {
 			'type' => '',
 		];
 
-		if ( ! $this->is_valid() ) {
+		if (! $this->is_valid()) {
 			return $this->file_type;
 		}
 
 		$path = $this->get_raw_fullsize_path();
 
-		if ( ! $path ) {
+		if (! $path) {
 			return $this->file_type;
 		}
 
-		$this->file_type = (object) wp_check_filetype( $path, $this->get_allowed_mime_types() );
+		$this->file_type = (object) wp_check_filetype($path, $this->get_allowed_mime_types());
 
 		return $this->file_type;
 	}
@@ -537,7 +557,8 @@ abstract class AbstractMedia implements MediaInterface {
 	 * @param  array $files An array with the size names as keys ('full' is used for the full size file), and arrays of data as values.
 	 * @return array
 	 */
-	protected function filter_media_files( $files ) {
+	protected function filter_media_files($files)
+	{
 		/**
 		 * Filter the media files.
 		 *
@@ -547,6 +568,6 @@ abstract class AbstractMedia implements MediaInterface {
 		 * @param array          $files An array with the size names as keys ('full' is used for the full size file), and arrays of data as values.
 		 * @param MediaInterface $media This instance.
 		 */
-		return (array) apply_filters( 'imagify_media_files', $files, $this );
+		return (array) apply_filters('imagify_media_files', $files, $this);
 	}
 }

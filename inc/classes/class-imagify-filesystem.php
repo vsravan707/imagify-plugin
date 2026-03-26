@@ -11,7 +11,8 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
  * @since  1.7.1
  * @author Grégory Viguier
  */
-class Imagify_Filesystem extends WP_Filesystem_Direct {
+class Imagify_Filesystem extends WP_Filesystem_Direct
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -41,16 +42,17 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		// Define the permission constants if not already done.
-		if ( ! defined( 'FS_CHMOD_DIR' ) ) {
-			define( 'FS_CHMOD_DIR', ( fileperms( ABSPATH ) & 0777 | 0755 ) );
+		if (! defined('FS_CHMOD_DIR')) {
+			define('FS_CHMOD_DIR', (fileperms(ABSPATH) & 0777 | 0755));
 		}
-		if ( ! defined( 'FS_CHMOD_FILE' ) ) {
-			define( 'FS_CHMOD_FILE', ( fileperms( ABSPATH . 'index.php' ) & 0777 | 0644 ) );
+		if (! defined('FS_CHMOD_FILE')) {
+			define('FS_CHMOD_FILE', (fileperms(ABSPATH . 'index.php') & 0777 | 0644));
 		}
 
-		parent::__construct( '' );
+		parent::__construct('');
 	}
 
 
@@ -69,12 +71,13 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return string|bool       The base name of the given path. False on failure.
 	 */
-	public function file_name( $file_path ) {
-		if ( ! $file_path ) {
+	public function file_name($file_path)
+	{
+		if (! $file_path) {
 			return false;
 		}
 
-		return wp_basename( $file_path );
+		return wp_basename($file_path);
 	}
 
 	/**
@@ -88,14 +91,15 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return string|bool       The directory path with a trailing slash. False on failure.
 	 */
-	public function dir_path( $file_path ) {
-		if ( ! $file_path ) {
+	public function dir_path($file_path)
+	{
+		if (! $file_path) {
 			return false;
 		}
 
-		$file_path = dirname( $file_path );
+		$file_path = dirname($file_path);
 
-		return $this->is_root( $file_path ) ? $this->get_root() : trailingslashit( $file_path );
+		return $this->is_root($file_path) ? $this->get_root() : trailingslashit($file_path);
 	}
 
 	/**
@@ -111,9 +115,10 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *                           If option is not specified, returns all available elements.
 	 * @return array|string|null If the option parameter is not passed, an associative array containing the following elements is returned: 'dir_path' (with trailing slash), 'file_name' (with extension), 'extension' (if any), and 'file_base' (without extension).
 	 */
-	public function path_info( $file_path, $option = null ) {
-		if ( ! $file_path ) {
-			if ( isset( $option ) ) {
+	public function path_info($file_path, $option = null)
+	{
+		if (! $file_path) {
+			if (isset($option)) {
 				return '';
 			}
 
@@ -125,7 +130,7 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 			];
 		}
 
-		if ( isset( $option ) ) {
+		if (isset($option)) {
 			$options = [
 				'dir_path'  => PATHINFO_DIRNAME,
 				'file_name' => PATHINFO_BASENAME,
@@ -133,23 +138,23 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 				'file_base' => PATHINFO_FILENAME,
 			];
 
-			if ( ! isset( $options[ $option ] ) ) {
+			if (! isset($options[$option])) {
 				return '';
 			}
 
-			$output = pathinfo( $file_path, $options[ $option ] );
+			$output = pathinfo($file_path, $options[$option]);
 
-			if ( 'dir_path' !== $option ) {
+			if ('dir_path' !== $option) {
 				return $output;
 			}
 
-			return $this->is_root( $output ) ? $this->get_root() : trailingslashit( $output );
+			return $this->is_root($output) ? $this->get_root() : trailingslashit($output);
 		}
 
-		$output = pathinfo( $file_path );
+		$output = pathinfo($file_path);
 
-		$output['dirname']   = $this->is_root( $output['dirname'] ) ? $this->get_root() : trailingslashit( $output['dirname'] );
-		$output['extension'] = isset( $output['extension'] ) ? $output['extension'] : null;
+		$output['dirname']   = $this->is_root($output['dirname']) ? $this->get_root() : trailingslashit($output['dirname']);
+		$output['extension'] = isset($output['extension']) ? $output['extension'] : null;
 
 		// '/www/htdocs/inc/lib.inc.php'
 		return [
@@ -171,57 +176,58 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $path Full path to attempt to create.
 	 * @return bool         Whether the path was created. True if path already exists.
 	 */
-	public function make_dir( $path ) {
+	public function make_dir($path)
+	{
 		/*
 		* Safe mode fails with a trailing slash under certain PHP versions.
 		*/
-		$path = untrailingslashit( wp_normalize_path( $path ) );
+		$path = untrailingslashit(wp_normalize_path($path));
 
-		if ( $this->is_root( $path ) ) {
-			return $this->is_dir( $this->get_root() ) && $this->is_writable( $this->get_root() );
+		if ($this->is_root($path)) {
+			return $this->is_dir($this->get_root()) && $this->is_writable($this->get_root());
 		}
 
-		if ( $this->exists( $path ) ) {
-			return $this->is_dir( $path ) && $this->is_writable( $path );
+		if ($this->exists($path)) {
+			return $this->is_dir($path) && $this->is_writable($path);
 		}
 
 		$site_root = $this->get_site_root();
 
-		if ( strpos( $path, $site_root ) !== 0 ) {
+		if (strpos($path, $site_root) !== 0) {
 			return false;
 		}
 
-		$bits = preg_replace( '@^' . preg_quote( $site_root, '@' ) . '@i', '', $path );
-		$bits = explode( '/', trim( $bits, '/' ) );
-		$path = untrailingslashit( $site_root );
+		$bits = preg_replace('@^' . preg_quote($site_root, '@') . '@i', '', $path);
+		$bits = explode('/', trim($bits, '/'));
+		$path = untrailingslashit($site_root);
 
-		foreach ( $bits as $bit ) {
+		foreach ($bits as $bit) {
 			$parent_path = $path;
 			$path       .= '/' . $bit;
 
-			if ( $this->exists( $path ) ) {
-				if ( ! $this->is_dir( $path ) ) {
+			if ($this->exists($path)) {
+				if (! $this->is_dir($path)) {
 					return false;
 				}
 
 				continue;
 			}
 
-			if ( ! $this->is_writable( $parent_path ) ) {
-				$this->chmod_dir( $parent_path );
+			if (! $this->is_writable($parent_path)) {
+				$this->chmod_dir($parent_path);
 
-				if ( ! $this->is_writable( $parent_path ) ) {
+				if (! $this->is_writable($parent_path)) {
 					return false;
 				}
 			}
 
-			$this->mkdir( $path );
+			$this->mkdir($path);
 
-			if ( ! $this->exists( $path ) ) {
+			if (! $this->exists($path)) {
 				return false;
 			}
 
-			$this->touch( trailingslashit( $path ) . 'index.php' );
+			$this->touch(trailingslashit($path) . 'index.php');
 		}
 
 		return true;
@@ -237,12 +243,13 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return bool              True on success, false on failure.
 	 */
-	public function chmod_file( $file_path ) {
-		if ( ! $file_path ) {
+	public function chmod_file($file_path)
+	{
+		if (! $file_path) {
 			return false;
 		}
 
-		return $this->chmod( $file_path, FS_CHMOD_FILE );
+		return $this->chmod($file_path, FS_CHMOD_FILE);
 	}
 
 	/**
@@ -255,12 +262,13 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the directory.
 	 * @return bool              True on success, false on failure.
 	 */
-	public function chmod_dir( $file_path ) {
-		if ( ! $file_path ) {
+	public function chmod_dir($file_path)
+	{
+		if (! $file_path) {
 			return false;
 		}
 
-		return $this->chmod( $file_path, FS_CHMOD_DIR );
+		return $this->chmod($file_path, FS_CHMOD_DIR);
 	}
 
 	/**
@@ -273,12 +281,13 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path A file path (prefered) or a filename.
 	 * @return string|bool       A mime type. False on failure: the test is limited to mime types supported by Imagify.
 	 */
-	public function get_mime_type( $file_path ) {
-		if ( ! $file_path ) {
+	public function get_mime_type($file_path)
+	{
+		if (! $file_path) {
 			return false;
 		}
 
-		$file_type = wp_check_filetype( $file_path, imagify_get_mime_types() );
+		$file_type = wp_check_filetype($file_path, imagify_get_mime_types());
 
 		return $file_type['type'];
 	}
@@ -293,24 +302,25 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return string            The date.
 	 */
-	public function get_date( $file_path ) {
+	public function get_date($file_path)
+	{
 		static $offset;
 
-		if ( ! $file_path ) {
-			return current_time( 'mysql' );
+		if (! $file_path) {
+			return current_time('mysql');
 		}
 
-		$date = $this->mtime( $file_path );
+		$date = $this->mtime($file_path);
 
-		if ( ! $date ) {
-			return current_time( 'mysql' );
+		if (! $date) {
+			return current_time('mysql');
 		}
 
-		if ( ! isset( $offset ) ) {
-			$offset = get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+		if (! isset($offset)) {
+			$offset = get_option('gmt_offset') * HOUR_IN_SECONDS;
 		}
 
-		return gmdate( 'Y-m-d H:i:s', $date + $offset );
+		return gmdate('Y-m-d H:i:s', $date + $offset);
 	}
 
 	/**
@@ -323,43 +333,44 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path An absolute path.
 	 * @return bool
 	 */
-	public function is_symlinked( $file_path ) {
+	public function is_symlinked($file_path)
+	{
 		static $site_root;
 		static $plugin_paths = [];
 		global $wp_plugin_paths;
 
-		if ( ! $file_path ) {
+		if (! $file_path) {
 			return false;
 		}
 
-		$real_path = realpath( $file_path );
+		$real_path = realpath($file_path);
 
-		if ( ! $real_path ) {
+		if (! $real_path) {
 			return false;
 		}
 
-		if ( ! isset( $site_root ) ) {
-			$site_root = $this->normalize_path_for_comparison( $this->get_site_root() );
+		if (! isset($site_root)) {
+			$site_root = $this->normalize_path_for_comparison($this->get_site_root());
 		}
 
-		$lower_file_path = $this->normalize_path_for_comparison( $real_path );
+		$lower_file_path = $this->normalize_path_for_comparison($real_path);
 
-		if ( strpos( $lower_file_path, $site_root ) !== 0 ) {
+		if (strpos($lower_file_path, $site_root) !== 0) {
 			return true;
 		}
 
-		if ( $wp_plugin_paths && is_array( $wp_plugin_paths ) ) {
-			if ( ! $plugin_paths ) {
-				foreach ( $wp_plugin_paths as $dir => $real_dir ) {
-					$dir                  = $this->normalize_path_for_comparison( $dir );
-					$plugin_paths[ $dir ] = $this->normalize_path_for_comparison( $real_dir );
+		if ($wp_plugin_paths && is_array($wp_plugin_paths)) {
+			if (! $plugin_paths) {
+				foreach ($wp_plugin_paths as $dir => $real_dir) {
+					$dir                  = $this->normalize_path_for_comparison($dir);
+					$plugin_paths[$dir] = $this->normalize_path_for_comparison($real_dir);
 				}
 			}
 
-			$lower_file_path = $this->normalize_path_for_comparison( $file_path );
+			$lower_file_path = $this->normalize_path_for_comparison($file_path);
 
-			foreach ( $plugin_paths as $dir => $real_dir ) {
-				if ( strpos( $lower_file_path, $dir ) === 0 ) {
+			foreach ($plugin_paths as $dir => $real_dir) {
+				if (strpos($lower_file_path, $dir) === 0) {
 					return true;
 				}
 			}
@@ -378,21 +389,22 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return bool
 	 */
-	public function is_pdf( $file_path ) {
-		if ( function_exists( 'finfo_fopen' ) ) {
-			$finfo = finfo_open( FILEINFO_MIME );
+	public function is_pdf($file_path)
+	{
+		if (function_exists('finfo_fopen')) {
+			$finfo = finfo_open(FILEINFO_MIME);
 
-			if ( $finfo ) {
-				$mimetype = finfo_file( $finfo, $file_path );
+			if ($finfo) {
+				$mimetype = finfo_file($finfo, $file_path);
 
-				if ( false !== $mimetype ) {
+				if (false !== $mimetype) {
 					return 'application/pdf' === $mimetype;
 				}
 			}
 		}
 
-		if ( function_exists( 'mime_content_type' ) ) {
-			$mimetype = mime_content_type( $file_path );
+		if (function_exists('mime_content_type')) {
+			$mimetype = mime_content_type($file_path);
 			return 'application/pdf' === $mimetype;
 		}
 
@@ -417,17 +429,18 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  bool   $overwrite   Allow to overwrite existing file at destination.
 	 * @return bool                True on success, false on failure.
 	 */
-	public function move( $source, $destination, $overwrite = false ) {
-		if ( parent::move( $source, $destination, $overwrite ) ) {
-			return $this->chmod_file( $destination );
+	public function move($source, $destination, $overwrite = false)
+	{
+		if (parent::move($source, $destination, $overwrite)) {
+			return $this->chmod_file($destination);
 		}
 
-		if ( ! $this->chmod_file( $destination ) ) {
+		if (! $this->chmod_file($destination)) {
 			return false;
 		}
 
-		if ( parent::move( $source, $destination, $overwrite ) ) {
-			return $this->chmod_file( $destination );
+		if (parent::move($source, $destination, $overwrite)) {
+			return $this->chmod_file($destination);
 		}
 
 		return false;
@@ -445,12 +458,13 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return bool
 	 */
-	public function is_writable( $file_path ) {
-		if ( ! $file_path ) {
+	public function is_writable($file_path)
+	{
+		if (! $file_path) {
 			return false;
 		}
 
-		return wp_is_writable( $file_path );
+		return wp_is_writable($file_path);
 	}
 
 
@@ -468,27 +482,28 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return bool
 	 */
-	public function is_image( $file_path ) {
-		if ( function_exists( 'finfo_fopen' ) ) {
-			$finfo = finfo_open( FILEINFO_MIME );
+	public function is_image($file_path)
+	{
+		if (function_exists('finfo_fopen')) {
+			$finfo = finfo_open(FILEINFO_MIME);
 
-			if ( $finfo ) {
-				$mimetype = finfo_file( $finfo, $file_path );
+			if ($finfo) {
+				$mimetype = finfo_file($finfo, $file_path);
 
-				if ( false !== $mimetype ) {
-					return strpos( $mimetype, 'image/' ) === 0;
+				if (false !== $mimetype) {
+					return strpos($mimetype, 'image/') === 0;
 				}
 			}
 		}
 
-		if ( function_exists( 'exif_imagetype' ) ) {
-			$mimetype = exif_imagetype( $file_path );
+		if (function_exists('exif_imagetype')) {
+			$mimetype = exif_imagetype($file_path);
 			return (bool) $mimetype;
 		}
 
-		if ( function_exists( 'mime_content_type' ) ) {
-			$mimetype = mime_content_type( $file_path );
-			return strpos( $mimetype, 'image/' ) === 0;
+		if (function_exists('mime_content_type')) {
+			$mimetype = mime_content_type($file_path);
+			return strpos($mimetype, 'image/') === 0;
 		}
 
 		return false;
@@ -505,14 +520,15 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return array             The image data. An empty array on failure.
 	 */
-	public function get_image_size( $file_path ) {
-		if ( ! $file_path ) {
+	public function get_image_size($file_path)
+	{
+		if (! $file_path) {
 			return [];
 		}
 
-		$size = @getimagesize( $file_path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		$size = @getimagesize($file_path); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
-		if ( ! $size || ! isset( $size[0], $size[1] ) ) {
+		if (! $size || ! isset($size[0], $size[1])) {
 			return [];
 		}
 
@@ -523,8 +539,8 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 			'height'   => (int) $size[1],
 			'type'     => (int) $size[2],
 			'attr'     => $size[3],
-			'channels' => isset( $size['channels'] ) ? (int) $size['channels'] : null,
-			'bits'     => isset( $size['bits'] ) ? (int) $size['bits'] : null,
+			'channels' => isset($size['channels']) ? (int) $size['channels'] : null,
+			'bits'     => isset($size['bits']) ? (int) $size['bits'] : null,
 			'mime'     => $size['mime'],
 		];
 	}
@@ -538,11 +554,12 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return bool
 	 */
-	public function can_get_exif() {
+	public function can_get_exif()
+	{
 		static $callable;
 
-		if ( ! isset( $callable ) ) {
-			$callable = is_callable( 'exif_read_data' );
+		if (! isset($callable)) {
+			$callable = is_callable('exif_read_data');
 		}
 
 		return $callable;
@@ -563,14 +580,15 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  bool   $thumbnail When set to TRUE the thumbnail itself is read. Otherwise, only the tagged data is read.
 	 * @return array             The EXIF headers. An empty array on failure.
 	 */
-	public function get_image_exif( $file_path, $sections = null, $arrays = false, $thumbnail = false ) {
-		if ( ! $file_path || ! $this->can_get_exif() ) {
+	public function get_image_exif($file_path, $sections = null, $arrays = false, $thumbnail = false)
+	{
+		if (! $file_path || ! $this->can_get_exif()) {
 			return [];
 		}
 
-		$exif = @exif_read_data( $file_path, $sections, $arrays, $thumbnail ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		$exif = @exif_read_data($file_path, $sections, $arrays, $thumbnail); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
-		return is_array( $exif ) ? $exif : [];
+		return is_array($exif) ? $exif : [];
 	}
 
 	/**
@@ -584,15 +602,16 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path Path to the file.
 	 * @return bool|null         Null if the file cannot be read.
 	 */
-	public function is_animated_gif( $file_path ) {
-		if ( $this->path_info( $file_path, 'extension' ) !== 'gif' ) {
+	public function is_animated_gif($file_path)
+	{
+		if ($this->path_info($file_path, 'extension') !== 'gif') {
 			// Not a gif file.
 			return false;
 		}
 
-		$fh = @fopen( $file_path, 'rb' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_fopen
+		$fh = @fopen($file_path, 'rb'); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 
-		if ( ! $fh ) {
+		if (! $fh) {
 			// Could not open the file.
 			return null;
 		}
@@ -606,13 +625,13 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 		$count = 0;
 
 		// We read through the file til we reach the end of the file, or we've found at least 2 frame headers.
-		while ( ! feof( $fh ) && $count < 2 ) {
+		while (! feof($fh) && $count < 2) {
 			// Read 100kb at a time.
-			$chunk  = fread( $fh, 1024 * 100 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread
-			$count += preg_match_all( '#\x00\x21\xF9\x04.{4}\x00(\x2C|\x21)#s', $chunk, $matches );
+			$chunk  = fread($fh, 1024 * 100); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread
+			$count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00(\x2C|\x21)#s', $chunk, $matches);
 		}
 
-		fclose( $fh ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+		fclose($fh); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 
 		return $count > 1;
 	}
@@ -634,36 +653,37 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $base      A base path to use instead of ABSPATH.
 	 * @return string|bool       A relative path. Can return the absolute path or false in case of a failure.
 	 */
-	public function make_path_relative( $file_path, $base = '' ) {
+	public function make_path_relative($file_path, $base = '')
+	{
 		global $wp_plugin_paths;
 
-		if ( ! $file_path ) {
+		if (! $file_path) {
 			return false;
 		}
 
-		$file_path = wp_normalize_path( $file_path );
-		$base      = $base ? $this->normalize_dir_path( $base ) : $this->get_site_root();
-		$pos       = strpos( $file_path, $base );
+		$file_path = wp_normalize_path($file_path);
+		$base      = $base ? $this->normalize_dir_path($base) : $this->get_site_root();
+		$pos       = strpos($file_path, $base);
 
-		if ( false === $pos && $wp_plugin_paths && is_array( $wp_plugin_paths ) ) {
+		if (false === $pos && $wp_plugin_paths && is_array($wp_plugin_paths)) {
 			// The file is probably part of a symlinked plugin.
-			arsort( $wp_plugin_paths );
+			arsort($wp_plugin_paths);
 
-			foreach ( $wp_plugin_paths as $dir => $real_dir ) {
-				if ( strpos( $file_path, $real_dir ) === 0 ) {
-					$file_path = wp_normalize_path( $dir . substr( $file_path, strlen( $real_dir ) ) );
+			foreach ($wp_plugin_paths as $dir => $real_dir) {
+				if (strpos($file_path, $real_dir) === 0) {
+					$file_path = wp_normalize_path($dir . substr($file_path, strlen($real_dir)));
 				}
 			}
 
-			$pos = strpos( $file_path, $base );
+			$pos = strpos($file_path, $base);
 		}
 
-		if ( false === $pos ) {
+		if (false === $pos) {
 			// We're in trouble.
 			return $file_path;
 		}
 
-		return substr_replace( $file_path, '', 0, $pos + strlen( $base ) );
+		return substr_replace($file_path, '', 0, $pos + strlen($base));
 	}
 
 	/**
@@ -677,8 +697,9 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path The file path.
 	 * @return string            The normalized dir path.
 	 */
-	public function normalize_dir_path( $file_path ) {
-		return wp_normalize_path( trailingslashit( $file_path ) );
+	public function normalize_dir_path($file_path)
+	{
+		return wp_normalize_path(trailingslashit($file_path));
 	}
 
 	/**
@@ -692,8 +713,9 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $file_path The file path.
 	 * @return string            The normalized file path.
 	 */
-	public function normalize_path_for_comparison( $file_path ) {
-		return strtolower( $this->normalize_dir_path( $file_path ) );
+	public function normalize_path_for_comparison($file_path)
+	{
+		return strtolower($this->normalize_dir_path($file_path));
 	}
 
 
@@ -711,7 +733,8 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string
 	 */
-	public function has_wp_its_own_directory() {
+	public function has_wp_its_own_directory()
+	{
 		return $this->get_abspath() !== $this->get_site_root();
 	}
 
@@ -725,14 +748,15 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string The path to the server's root.
 	 */
-	public function get_root() {
+	public function get_root()
+	{
 		static $groot;
 
-		if ( isset( $groot ) ) {
+		if (isset($groot)) {
 			return $groot;
 		}
 
-		$groot = preg_replace( '@^((?:.:)?/+).*@', '$1', $this->get_site_root() );
+		$groot = preg_replace('@^((?:.:)?/+).*@', '$1', $this->get_site_root());
 
 		return $groot;
 	}
@@ -747,9 +771,10 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $path The path.
 	 * @return bool
 	 */
-	public function is_root( $path ) {
-		$path = rtrim( $path, '/\\' );
-		return '.' === $path || '' === $path || preg_match( '@^.:$@', $path );
+	public function is_root($path)
+	{
+		$path = rtrim($path, '/\\');
+		return '.' === $path || '' === $path || preg_match('@^.:$@', $path);
 	}
 
 	/**
@@ -764,10 +789,11 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string
 	 */
-	public function get_site_root() {
+	public function get_site_root()
+	{
 		static $root_path;
 
-		if ( isset( $root_path ) ) {
+		if (isset($root_path)) {
 			return $root_path;
 		}
 
@@ -779,31 +805,31 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 		 *
 		 * @param string $root_path Path to the site's root. Default is null.
 		 */
-		$root_path = apply_filters( 'imagify_site_root', null );
+		$root_path = apply_filters('imagify_site_root', null);
 
-		if ( is_string( $root_path ) ) {
-			$root_path = trailingslashit( wp_normalize_path( $root_path ) );
+		if (is_string($root_path)) {
+			$root_path = trailingslashit(wp_normalize_path($root_path));
 
 			return $root_path;
 		}
 
-		$home    = set_url_scheme( untrailingslashit( get_option( 'home' ) ), 'http' );
-		$siteurl = set_url_scheme( untrailingslashit( get_option( 'siteurl' ) ), 'http' );
+		$home    = set_url_scheme(untrailingslashit(get_option('home')), 'http');
+		$siteurl = set_url_scheme(untrailingslashit(get_option('siteurl')), 'http');
 
-		if ( ! empty( $home ) && 0 !== strcasecmp( $home, $siteurl ) ) {
-			$wp_path_rel_to_home = str_ireplace( $home, '', $siteurl ); /* $siteurl - $home */
-			$pos                 = strripos( str_replace( '\\', '/', ABSPATH ), trailingslashit( $wp_path_rel_to_home ) );
-			$root_path           = substr( ABSPATH, 0, $pos );
-			$root_path           = trailingslashit( wp_normalize_path( $root_path ) );
+		if (! empty($home) && 0 !== strcasecmp($home, $siteurl)) {
+			$wp_path_rel_to_home = str_ireplace($home, '', $siteurl); /* $siteurl - $home */
+			$pos                 = strripos(str_replace('\\', '/', ABSPATH), trailingslashit($wp_path_rel_to_home));
+			$root_path           = substr(ABSPATH, 0, $pos);
+			$root_path           = trailingslashit(wp_normalize_path($root_path));
 			return $root_path;
 		}
 
-		if ( ! defined( 'PATH_CURRENT_SITE' ) || ! is_multisite() || is_main_site() ) {
+		if (! defined('PATH_CURRENT_SITE') || ! is_multisite() || is_main_site()) {
 			$root_path = $this->get_abspath();
 			return $root_path;
 		}
 
-		if ( empty( $_SERVER['DOCUMENT_ROOT'] ) ) {
+		if (empty($_SERVER['DOCUMENT_ROOT'])) {
 			return $root_path;
 		}
 
@@ -813,11 +839,11 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 		 * Friend, each time an attempt is made to improve this method, and especially this part, please increment the following counter.
 		 * Improvement attempts: 3.
 		 */
-		$document_root = realpath( wp_unslash( $_SERVER['DOCUMENT_ROOT'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$document_root = realpath(wp_unslash($_SERVER['DOCUMENT_ROOT'])); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		// `realpath()` is needed for those cases where $_SERVER['DOCUMENT_ROOT'] is totally different from ABSPATH.
-		$document_root     = trailingslashit( str_replace( '\\', '/', $document_root ) );
-		$path_current_site = trim( str_replace( '\\', '/', PATH_CURRENT_SITE ), '/' );
-		$root_path         = trailingslashit( wp_normalize_path( $document_root . $path_current_site ) );
+		$document_root     = trailingslashit(str_replace('\\', '/', $document_root));
+		$path_current_site = trim(str_replace('\\', '/', PATH_CURRENT_SITE), '/');
+		$root_path         = trailingslashit(wp_normalize_path($document_root . $path_current_site));
 
 		return $root_path;
 	}
@@ -831,34 +857,35 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string
 	 */
-	public function get_site_root_url() {
+	public function get_site_root_url()
+	{
 		static $root_url;
 
-		if ( isset( $root_url ) ) {
+		if (isset($root_url)) {
 			return $root_url;
 		}
 
-		if ( ! is_multisite() || is_main_site() ) {
-			$root_url = home_url( '/' );
+		if (! is_multisite() || is_main_site()) {
+			$root_url = home_url('/');
 			return $root_url;
 		}
 
 		$current_network = false;
 
-		if ( function_exists( 'get_network' ) ) {
+		if (function_exists('get_network')) {
 			$current_network = get_network();
-		} elseif ( function_exists( 'get_current_site' ) ) {
+		} elseif (function_exists('get_current_site')) {
 			$current_network = get_current_site();
 		}
 
-		if ( ! $current_network ) {
-			$root_url = home_url( '/' );
+		if (! $current_network) {
+			$root_url = home_url('/');
 			return $root_url;
 		}
 
 		$root_url = is_ssl() ? 'https' : 'http';
-		$root_url = set_url_scheme( 'http://' . $current_network->domain . $current_network->path, $root_url );
-		$root_url = trailingslashit( $root_url );
+		$root_url = set_url_scheme('http://' . $current_network->domain . $current_network->path, $root_url);
+		$root_url = trailingslashit($root_url);
 
 		return $root_url;
 	}
@@ -873,8 +900,9 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $path The path.
 	 * @return bool
 	 */
-	public function is_site_root( $path ) {
-		return $this->normalize_dir_path( $path ) === $this->get_site_root();
+	public function is_site_root($path)
+	{
+		return $this->normalize_dir_path($path) === $this->get_site_root();
 	}
 
 	/**
@@ -886,38 +914,38 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string The path to WordPress' root folder.
 	 */
-	public function get_abspath() {
+	public function get_abspath()
+	{
 		static $abspath;
 
-		if ( isset( $abspath ) ) {
+		if (isset($abspath)) {
 			return $abspath;
 		}
 
-		$abspath = wp_normalize_path( ABSPATH );
+		$abspath = wp_normalize_path(ABSPATH);
 
 		// Make sure ABSPATH is not messed up: it could be defined as a relative path for example (yeah, I know, but we've seen it).
-		$test_file = wp_normalize_path( IMAGIFY_FILE );
-		$pos       = strpos( $test_file, $abspath );
+		$test_file = wp_normalize_path(IMAGIFY_FILE);
+		$pos       = strpos($test_file, $abspath);
 
-		if ( $pos > 0 ) {
+		if ($pos > 0) {
 			// ABSPATH has a wrong value.
-			$abspath = substr( $test_file, 0, $pos ) . $abspath;
-
-		} elseif ( false === $pos && class_exists( 'ReflectionClass' ) ) {
+			$abspath = substr($test_file, 0, $pos) . $abspath;
+		} elseif (false === $pos && class_exists('ReflectionClass')) {
 			// Imagify is symlinked (dude, you look for trouble).
-			$reflector = new ReflectionClass( 'WP' );
+			$reflector = new ReflectionClass('WP');
 			$test_file = $reflector->getFileName();
-			$pos       = strpos( $test_file, $abspath );
+			$pos       = strpos($test_file, $abspath);
 
-			if ( 0 < $pos ) {
+			if (0 < $pos) {
 				// ABSPATH has a wrong value.
-				$abspath = substr( $test_file, 0, $pos ) . $abspath;
+				$abspath = substr($test_file, 0, $pos) . $abspath;
 			}
 		}
 
-		$abspath = trailingslashit( $abspath );
+		$abspath = trailingslashit($abspath);
 
-		if ( '/' !== substr( $abspath, 0, 1 ) && ':' !== substr( $abspath, 1, 1 ) ) {
+		if ('/' !== substr($abspath, 0, 1) && ':' !== substr($abspath, 1, 1)) {
 			$abspath = '/' . $abspath;
 		}
 
@@ -934,8 +962,9 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  string $path The path.
 	 * @return bool
 	 */
-	public function is_abspath( $path ) {
-		return $this->normalize_dir_path( $path ) === $this->get_abspath();
+	public function is_abspath($path)
+	{
+		return $this->normalize_dir_path($path) === $this->get_abspath();
 	}
 
 	/**
@@ -948,18 +977,19 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 * @param  bool $bypass_error True to return the path even if there is an error. This is used when we want to display this path in a message for example.
 	 * @return string|bool        The path. False on failure.
 	 */
-	public function get_upload_basedir( $bypass_error = false ) {
+	public function get_upload_basedir($bypass_error = false)
+	{
 		static $upload_basedir;
 		static $upload_basedir_or_error;
 
-		if ( isset( $upload_basedir ) ) {
+		if (isset($upload_basedir)) {
 			return $bypass_error ? $upload_basedir : $upload_basedir_or_error;
 		}
 
 		$uploads        = wp_upload_dir();
-		$upload_basedir = $this->normalize_dir_path( $uploads['basedir'] );
+		$upload_basedir = $this->normalize_dir_path($uploads['basedir']);
 
-		if ( false !== $uploads['error'] ) {
+		if (false !== $uploads['error']) {
 			$upload_basedir_or_error = false;
 		} else {
 			$upload_basedir_or_error = $upload_basedir;
@@ -977,21 +1007,22 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string|bool The URL. False on failure.
 	 */
-	public function get_upload_baseurl() {
+	public function get_upload_baseurl()
+	{
 		static $upload_baseurl;
 
-		if ( isset( $upload_baseurl ) ) {
+		if (isset($upload_baseurl)) {
 			return $upload_baseurl;
 		}
 
 		$uploads = wp_upload_dir();
 
-		if ( false !== $uploads['error'] ) {
+		if (false !== $uploads['error']) {
 			$upload_baseurl = false;
 			return $upload_baseurl;
 		}
 
-		$upload_baseurl = trailingslashit( $uploads['baseurl'] );
+		$upload_baseurl = trailingslashit($uploads['baseurl']);
 
 		return $upload_baseurl;
 	}
@@ -1005,18 +1036,19 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string
 	 */
-	public function get_main_upload_basedir() {
+	public function get_main_upload_basedir()
+	{
 		static $basedir;
 
-		if ( isset( $basedir ) ) {
+		if (isset($basedir)) {
 			return $basedir;
 		}
 
-		$basedir = get_imagify_upload_basedir( true );
+		$basedir = get_imagify_upload_basedir(true);
 
-		if ( is_multisite() ) {
+		if (is_multisite()) {
 			$pattern = '/' . $this->get_multisite_uploads_subdir_pattern() . '$';
-			$basedir = preg_replace( self::PATTERN_DELIMITER . $pattern . self::PATTERN_DELIMITER, '/', $basedir );
+			$basedir = preg_replace(self::PATTERN_DELIMITER . $pattern . self::PATTERN_DELIMITER, '/', $basedir);
 		}
 
 		return $basedir;
@@ -1031,18 +1063,19 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string
 	 */
-	public function get_main_upload_baseurl() {
+	public function get_main_upload_baseurl()
+	{
 		static $baseurl;
 
-		if ( isset( $baseurl ) ) {
+		if (isset($baseurl)) {
 			return $baseurl;
 		}
 
-		$baseurl = get_imagify_upload_baseurl( true );
+		$baseurl = get_imagify_upload_baseurl(true);
 
-		if ( is_multisite() ) {
+		if (is_multisite()) {
 			$pattern = '/' . $this->get_multisite_uploads_subdir_pattern() . '$';
-			$baseurl = preg_replace( self::PATTERN_DELIMITER . $pattern . self::PATTERN_DELIMITER, '/', $baseurl );
+			$baseurl = preg_replace(self::PATTERN_DELIMITER . $pattern . self::PATTERN_DELIMITER, '/', $baseurl);
 		}
 
 		return $baseurl;
@@ -1060,34 +1093,35 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 	 *
 	 * @return string
 	 */
-	public function get_multisite_uploads_subdir_pattern() {
+	public function get_multisite_uploads_subdir_pattern()
+	{
 		static $pattern;
 
-		if ( isset( $pattern ) ) {
+		if (isset($pattern)) {
 			return $pattern;
 		}
 
 		$pattern = '';
 
-		if ( ! is_multisite() ) {
+		if (! is_multisite()) {
 			return $pattern;
 		}
 
-		if ( ! get_site_option( 'ms_files_rewriting' ) ) {
-			if ( defined( 'MULTISITE' ) ) {
+		if (! get_site_option('ms_files_rewriting')) {
+			if (defined('MULTISITE')) {
 				$pattern = 'sites/\d+/';
 			} else {
 				$pattern = '\d+/';
 			}
-		} elseif ( defined( 'UPLOADS' ) ) {
+		} elseif (defined('UPLOADS')) {
 			$site_id = (string) get_current_blog_id();
-			$path    = $this->get_upload_basedir( true ); // Something like `/absolute/path/to/wp-content/blogs.dir/3/files/`, also for site 1.
-			$path    = strrev( $path );
+			$path    = $this->get_upload_basedir(true); // Something like `/absolute/path/to/wp-content/blogs.dir/3/files/`, also for site 1.
+			$path    = strrev($path);
 
-			if ( preg_match( self::PATTERN_DELIMITER . '^.*' . strrev( $site_id ) . '[^/]*/' . self::PATTERN_DELIMITER . 'U', $path, $matches ) ) {
-				$pattern = end( $matches );
-				$pattern = ltrim( strtolower( strrev( $pattern ) ), '/' );
-				$pattern = str_replace( $site_id, '\d+', $pattern );
+			if (preg_match(self::PATTERN_DELIMITER . '^.*' . strrev($site_id) . '[^/]*/' . self::PATTERN_DELIMITER . 'U', $path, $matches)) {
+				$pattern = end($matches);
+				$pattern = ltrim(strtolower(strrev($pattern)), '/');
+				$pattern = str_replace($site_id, '\d+', $pattern);
 			}
 		}
 
@@ -1101,7 +1135,7 @@ class Imagify_Filesystem extends WP_Filesystem_Direct {
 		 *
 		 * @param string $pattern The regex pattern.
 		 */
-		$pattern = apply_filters( 'imagify_multisite_uploads_subdir_pattern', $pattern );
+		$pattern = apply_filters('imagify_multisite_uploads_subdir_pattern', $pattern);
 
 		return $pattern;
 	}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\ThirdParty;
@@ -10,7 +11,8 @@ use Imagify\ThirdParty\Plugins\GravityForms;
 /**
  * Service provider for Third Party(Plugins, Themes, Hosting).
  */
-class ServiceProvider extends AbstractServiceProvider {
+class ServiceProvider extends AbstractServiceProvider
+{
 	/**
 	 * Services provided by this provider
 	 *
@@ -38,8 +40,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return bool
 	 */
-	public function provides( string $id ): bool {
-		return in_array( $id, $this->provides, true );
+	public function provides(string $id): bool
+	{
+		return in_array($id, $this->provides, true);
 	}
 
 	/**
@@ -47,7 +50,8 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function get_subscribers() {
+	public function get_subscribers()
+	{
 		return $this->subscribers;
 	}
 
@@ -56,8 +60,9 @@ class ServiceProvider extends AbstractServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register(): void {
-		$this->getContainer()->addShared( 'gravity_from_subscriber', GravityForms::class );
-		$this->getContainer()->addShared( Extendify::class );
+	public function register(): void
+	{
+		$this->getContainer()->addShared('gravity_from_subscriber', GravityForms::class);
+		$this->getContainer()->addShared(Extendify::class);
 	}
 }

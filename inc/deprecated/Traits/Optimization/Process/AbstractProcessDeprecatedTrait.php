@@ -1,7 +1,8 @@
 <?php
+
 namespace Imagify\Deprecated\Traits\Optimization\Process;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Trait containing deprecated methods of the class \Imagify\Optimization\Process\AbstractProcess.
@@ -9,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since
  * @author Grégory Viguier
  */
-trait AbstractProcessDeprecatedTrait {
+trait AbstractProcessDeprecatedTrait
+{
 
 	/**
 	 * Get the File instance.
@@ -22,21 +24,22 @@ trait AbstractProcessDeprecatedTrait {
 	 *
 	 * @return File|false
 	 */
-	public function get_file() {
-		$full_class = get_class( $this );
-		$class_name = explode( '\\', trim( $full_class, '\\' ) );
-		$class_name = end( $class_name );
+	public function get_file()
+	{
+		$full_class = get_class($this);
+		$class_name = explode('\\', trim($full_class, '\\'));
+		$class_name = end($class_name);
 
-		_deprecated_function( get_class( $this ) . '::' . __FUNCTION__ . '()', '', '( new \Imagify\Optimization\Process\\' . $class_name . '( $id ) )->get_fullsize_file()' );
+		_deprecated_function(get_class($this) . '::' . __FUNCTION__ . '()', '', '( new \Imagify\Optimization\Process\\' . $class_name . '( $id ) )->get_fullsize_file()');
 
-		if ( isset( $this->file ) ) {
+		if (isset($this->file)) {
 			return $this->file;
 		}
 
 		$this->file = false;
 
-		if ( $this->get_media() ) {
-			$this->file = new File( $this->get_media()->get_raw_fullsize_path() );
+		if ($this->get_media()) {
+			$this->file = new File($this->get_media()->get_raw_fullsize_path());
 		}
 
 		return $this->file;

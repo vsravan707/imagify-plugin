@@ -69,7 +69,7 @@ return [
 					'optimization_level' => '1',
 					'backup'             => '1',
 					'convert_to_webp'    => '1',
-					'disallowed-sizes'   => [ 'thumbnail', 'large', 'medium' ]
+					'disallowed-sizes'   => ['thumbnail', 'large', 'medium']
 				],
 			],
 			'expected' => [

@@ -1,5 +1,5 @@
 <?php
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Get the optimization data list for a specific media.
@@ -11,8 +11,9 @@ defined( 'ABSPATH' ) || exit;
  * @param  ProcessInterface $process The optimization process object.
  * @return string                    The output to print.
  */
-function get_imagify_attachment_optimization_text( $process ) {
-	if ( ! $process->is_valid() ) {
+function get_imagify_attachment_optimization_text($process)
+{
+	if (! $process->is_valid()) {
 		return '';
 	}
 
@@ -21,19 +22,19 @@ function get_imagify_attachment_optimization_text( $process ) {
 	$output                   = $is_media_page ? '' : '<ul class="imagify-datas-list" id="imagify_data_sum">';
 	$output_before            = $is_media_page ? '' : '<li class="imagify-data-item">';
 	$output_after             = $is_media_page ? '<br/>' : '</li>';
-	$reoptimize_link          = get_imagify_attachment_reoptimize_link( $process );
-	$reoptimize_link         .= get_imagify_attachment_optimize_missing_thumbnails_link( $process );
-	$reoptimize_link         .= get_imagify_attachment_generate_nextgen_versions_link( $process );
-	$reoptimize_link         .= get_imagify_attachment_delete_nextgen_versions_link( $process );
+	$reoptimize_link          = get_imagify_attachment_reoptimize_link($process);
+	$reoptimize_link         .= get_imagify_attachment_optimize_missing_thumbnails_link($process);
+	$reoptimize_link         .= get_imagify_attachment_generate_nextgen_versions_link($process);
+	$reoptimize_link         .= get_imagify_attachment_delete_nextgen_versions_link($process);
 	$reoptimize_output        = $reoptimize_link ? $reoptimize_link : '';
 	$reoptimize_output_before = '<div class="imagify-datas-actions-links">';
 	$reoptimize_output_after  = '</div><!-- .imagify-datas-actions-links -->';
-	$error                    = get_imagify_attachment_error_text( $process );
+	$error                    = get_imagify_attachment_error_text($process);
 	$media                    = $process->get_media();
 
-	if ( $error ) {
-		if ( ! $is_media_page && $reoptimize_link && $media->has_backup() ) {
-			$reoptimize_output .= '<span class="attachment-has-backup hidden"></span>';
+	if ($error) {
+		if (! $is_media_page && $reoptimize_link && $media->has_backup()) {
+			$reoptimize_output .= '<span class="hidden attachment-has-backup"></span>';
 		}
 
 		$reoptimize_output = $reoptimize_output_before . $reoptimize_output . $reoptimize_output_after;
@@ -44,20 +45,20 @@ function get_imagify_attachment_optimization_text( $process ) {
 	$data               = $process->get_data();
 	$optimized_data     = $data->get_optimization_data();
 	$attachment_id      = $media->get_id();
-	$optimization_level = imagify_get_optimization_level_label( $data->get_optimization_level() );
+	$optimization_level = imagify_get_optimization_level_label($data->get_optimization_level());
 
-	if ( ! $is_media_page ) {
-		$output .= $output_before . '<span class="data">' . __( 'New Filesize:', 'imagify' ) . '</span> <strong class="big">' . $data->get_optimized_size() . '</strong>' . $output_after;
+	if (! $is_media_page) {
+		$output .= $output_before . '<span class="data">' . __('New Filesize:', 'imagify') . '</span> <strong class="big">' . $data->get_optimized_size() . '</strong>' . $output_after;
 	}
 
-	if ( key_exists( 'message', $optimized_data ) && $optimized_data['message'] ) {
-		$output .= $output_before . '<span class="data">' . __( 'Convert:', 'imagify' ) . '</span> <strong class="big">' . $optimized_data['message'] . '</strong>' . $output_after;
+	if (key_exists('message', $optimized_data) && $optimized_data['message']) {
+		$output .= $output_before . '<span class="data">' . __('Convert:', 'imagify') . '</span> <strong class="big">' . $optimized_data['message'] . '</strong>' . $output_after;
 	}
 
 	$chart = '';
 
-	if ( ! $is_media_page ) {
-		if ( ! $is_library_page ) {
+	if (! $is_media_page) {
+		if (! $is_library_page) {
 			// No need to print this on the library page, the event whould be triggered before the handler is attached (the JS file is loaded in the footer).
 			$chart = '<script type="text/javascript">jQuery( window ).trigger( "canvasprinted.imagify", [ ".imagify-consumption-chart-' . $attachment_id . '" ] ); </script>';
 		}
@@ -71,41 +72,41 @@ function get_imagify_attachment_optimization_text( $process ) {
 	}
 
 	$output .= $output_before;
-	$output .= '<span class="data">' . __( 'Original Saving:', 'imagify' ) . '</span> ';
+	$output .= '<span class="data">' . __('Original Saving:', 'imagify') . '</span> ';
 	$output .= '<strong>' . $chart . '<span class="imagify-chart-value">' . $data->get_saving_percent() . '</span>%</strong>';
 	$output .= $output_after;
 
 	// More details section.
-	if ( ! $is_media_page ) {
+	if (! $is_media_page) {
 		// New list.
 		$output .= '</ul>';
 		$output .= '<p class="imagify-datas-more-action">';
-		$output .= '<a href="#imagify-view-details-' . $attachment_id . '" data-close="' . __( 'Close details', 'imagify' ) . '" data-open="' . __( 'View details', 'imagify' ) . '">';
-		$output .= '<span class="the-text">' . __( 'View details', 'imagify' ) . '</span>';
+		$output .= '<a href="#imagify-view-details-' . $attachment_id . '" data-close="' . __('Close details', 'imagify') . '" data-open="' . __('View details', 'imagify') . '">';
+		$output .= '<span class="the-text">' . __('View details', 'imagify') . '</span>';
 		$output .= '<span class="dashicons dashicons-arrow-down-alt2"></span>';
 		$output .= '</a>';
 		$output .= '</p>';
 		$output .= '<ul id="imagify-view-details-' . $attachment_id . '" class="imagify-datas-list imagify-datas-details">';
 
 		// Not in metabox.
-		$output .= $output_before . '<span class="data">' . __( 'Original Filesize:', 'imagify' ) . '</span> <strong class="original">' . $data->get_original_size() . '</strong>' . $output_after;
+		$output .= $output_before . '<span class="data">' . __('Original Filesize:', 'imagify') . '</span> <strong class="original">' . $data->get_original_size() . '</strong>' . $output_after;
 	}
 
-	$output .= $output_before . '<span class="data">' . __( 'Level:', 'imagify' ) . '</span> <strong>' . $optimization_level . '</strong>' . $output_after;
+	$output .= $output_before . '<span class="data">' . __('Level:', 'imagify') . '</span> <strong>' . $optimization_level . '</strong>' . $output_after;
 
-	if ( $media->is_image() ) {
-		$has_nextgen = $process->has_next_gen() ? __( 'Yes', 'imagify' ) : __( 'No', 'imagify' );
+	if ($media->is_image()) {
+		$has_nextgen = $process->has_next_gen() ? __('Yes', 'imagify') : __('No', 'imagify');
 
-		if ( $process->has_next_gen() ) {
-			$has_nextgen = $process->is_full_next_gen() ? __( 'Yes', 'imagify' ) : __( 'Partially', 'imagify' );
+		if ($process->has_next_gen()) {
+			$has_nextgen = $process->is_full_next_gen() ? __('Yes', 'imagify') : __('Partially', 'imagify');
 		}
-		$output .= $output_before . '<span class="data">' . __( 'Next-Gen generated:', 'imagify' ) . '</span> <strong class="big">' . esc_html( $has_nextgen ) . '</strong>' . $output_after;
+		$output .= $output_before . '<span class="data">' . __('Next-Gen generated:', 'imagify') . '</span> <strong class="big">' . esc_html($has_nextgen) . '</strong>' . $output_after;
 
 		$total_optimized_thumbnails = $data->get_optimized_sizes_count();
 
-		if ( $total_optimized_thumbnails ) {
-			$output .= $output_before . '<span class="data">' . __( 'Thumbnails Optimized:', 'imagify' ) . '</span> <strong>' . $total_optimized_thumbnails . '</strong>' . $output_after;
-			$output .= $output_before . '<span class="data">' . __( 'Overall Saving:', 'imagify' ) . '</span> <strong>' . $data->get_overall_saving_percent() . '%</strong>' . $output_after;
+		if ($total_optimized_thumbnails) {
+			$output .= $output_before . '<span class="data">' . __('Thumbnails Optimized:', 'imagify') . '</span> <strong>' . $total_optimized_thumbnails . '</strong>' . $output_after;
+			$output .= $output_before . '<span class="data">' . __('Overall Saving:', 'imagify') . '</span> <strong>' . $data->get_overall_saving_percent() . '%</strong>' . $output_after;
 		}
 	}
 
@@ -117,7 +118,7 @@ function get_imagify_attachment_optimization_text( $process ) {
 	$output .= $reoptimize_output_before;
 	$output .= $reoptimize_output;
 
-	if ( $media->has_backup() ) {
+	if ($media->has_backup()) {
 		$url = get_imagify_admin_url(
 			'restore',
 			[
@@ -136,12 +137,12 @@ function get_imagify_attachment_optimization_text( $process ) {
 			]
 		);
 
-		if ( ! $is_library_page ) {
-			$output .= '<input id="imagify-original-src" type="hidden" value="' . esc_url( $media->get_backup_url() ) . '">';
+		if (! $is_library_page) {
+			$output .= '<input id="imagify-original-src" type="hidden" value="' . esc_url($media->get_backup_url()) . '">';
 			$output .= '<input id="imagify-original-size" type="hidden" value="' . $data->get_original_size() . '">';
-			$output .= '<input id="imagify-full-src" type="hidden" value="' . esc_url( $media->get_fullsize_url() ) . '">';
+			$output .= '<input id="imagify-full-src" type="hidden" value="' . esc_url($media->get_fullsize_url()) . '">';
 
-			if ( $media->is_image() ) {
+			if ($media->is_image()) {
 				$dimensions = $media->get_dimensions();
 
 				$output .= '<input id="imagify-full-width" type="hidden" value="' . $dimensions['width'] . '">';
@@ -165,14 +166,15 @@ function get_imagify_attachment_optimization_text( $process ) {
  * @param  ProcessInterface $process The optimization process object.
  * @return string                    The output to print.
  */
-function get_imagify_attachment_error_text( $process ) {
-	if ( ! $process->is_valid() ) {
+function get_imagify_attachment_error_text($process)
+{
+	if (! $process->is_valid()) {
 		return '';
 	}
 
 	$data = $process->get_data()->get_optimization_data();
 
-	if ( ! isset( $data['sizes']['full']['success'] ) || $data['sizes']['full']['success'] ) {
+	if (! isset($data['sizes']['full']['success']) || $data['sizes']['full']['success']) {
 		return '';
 	}
 
@@ -186,7 +188,7 @@ function get_imagify_attachment_error_text( $process ) {
 		]
 	);
 
-	if ( ! Imagify_Views::get_instance()->is_media_page() ) {
+	if (! Imagify_Views::get_instance()->is_media_page()) {
 		$class .= ' button-imagify-optimize';
 	}
 
@@ -212,20 +214,16 @@ function get_imagify_attachment_error_text( $process ) {
  * @param  ProcessInterface $process The optimization process object.
  * @return string                    The output to print.
  */
-function get_imagify_attachment_reoptimize_link( $process ) {
-	if ( ! $process->is_valid() ) {
+function get_imagify_attachment_reoptimize_link($process)
+{
+	if (! $process->is_valid()) {
 		return '';
 	}
 
 	$data = $process->get_data();
 
-	if ( ! $data->get_optimization_status() ) {
+	if (! $data->get_optimization_status()) {
 		// Not optimized yet.
-		return '';
-	}
-
-	// Stop the process if the API key isn't valid.
-	if ( ! Imagify_Requirements::is_api_key_valid() ) {
 		return '';
 	}
 
@@ -234,7 +232,7 @@ function get_imagify_attachment_reoptimize_link( $process ) {
 	$can_reoptimize       = $is_already_optimized || $media->has_backup();
 
 	// Don't display anything if there is no backup or the image has been optimized.
-	if ( ! $can_reoptimize ) {
+	if (! $can_reoptimize) {
 		return '';
 	}
 
@@ -247,24 +245,24 @@ function get_imagify_attachment_reoptimize_link( $process ) {
 		'context'       => $media->get_context(),
 	];
 
-	if ( Imagify_Views::get_instance()->is_media_page() ) {
+	if (Imagify_Views::get_instance()->is_media_page()) {
 		$data['atts'] = [
 			'class' => '',
 		];
 	}
 
-	if ( $media_level < 1 ) {
+	if ($media_level < 1) {
 		$url_args['optimization_level'] = 2;
 		$data['optimization_level']     = 2;
-		$data['url']                    = get_imagify_admin_url( 'manual-reoptimize', $url_args );
+		$data['url']                    = get_imagify_admin_url('manual-reoptimize', $url_args);
 
-		$output .= $views->get_template( 'button/re-optimize', $data );
-	} elseif ( $media_level > 0 ) {
+		$output .= $views->get_template('button/re-optimize', $data);
+	} elseif ($media_level > 0) {
 		$url_args['optimization_level'] = 0;
 		$data['optimization_level']     = 0;
-		$data['url']                    = get_imagify_admin_url( 'manual-reoptimize', $url_args );
+		$data['url']                    = get_imagify_admin_url('manual-reoptimize', $url_args);
 
-		$output .= $views->get_template( 'button/re-optimize', $data );
+		$output .= $views->get_template('button/re-optimize', $data);
 	}
 
 	return $output;
@@ -280,14 +278,15 @@ function get_imagify_attachment_reoptimize_link( $process ) {
  * @param  ProcessInterface $process The optimization process object.
  * @return string                    The output to print.
  */
-function get_imagify_attachment_optimize_missing_thumbnails_link( $process ) {
-	if ( ! $process->is_valid() ) {
+function get_imagify_attachment_optimize_missing_thumbnails_link($process)
+{
+	if (! $process->is_valid()) {
 		return '';
 	}
 
 	$media = $process->get_media();
 
-	if ( ! $media->is_image() || ! Imagify_Requirements::is_api_key_valid() || ! $media->has_backup() ) {
+	if (! $media->is_image() || ! $media->has_backup()) {
 		return '';
 	}
 
@@ -304,16 +303,16 @@ function get_imagify_attachment_optimize_missing_thumbnails_link( $process ) {
 	 * @param ProcessInterface $process The optimization process object.
 	 * @param string           $context The context.
 	 */
-	$display = apply_filters( 'imagify_display_missing_thumbnails_link', true, $process, $context );
+	$display = apply_filters('imagify_display_missing_thumbnails_link', true, $process, $context);
 
 	// Stop the process if the filter is false.
-	if ( ! $display ) {
+	if (! $display) {
 		return '';
 	}
 
 	$missing_sizes = $process->get_missing_sizes();
 
-	if ( ! $missing_sizes || is_wp_error( $missing_sizes ) ) {
+	if (! $missing_sizes || is_wp_error($missing_sizes)) {
 		return '';
 	}
 
@@ -329,7 +328,7 @@ function get_imagify_attachment_optimize_missing_thumbnails_link( $process ) {
 		'button/optimize-missing-sizes',
 		[
 			'url'   => $url,
-			'count' => count( $missing_sizes ),
+			'count' => count($missing_sizes),
 		]
 	);
 }
@@ -343,24 +342,25 @@ function get_imagify_attachment_optimize_missing_thumbnails_link( $process ) {
  *
  * @return string The output to print.
  */
-function get_imagify_attachment_generate_nextgen_versions_link( $process ) {
-	if ( ! $process->is_valid() ) {
+function get_imagify_attachment_generate_nextgen_versions_link($process)
+{
+	if (! $process->is_valid()) {
 		return '';
 	}
 
 	$formats = imagify_nextgen_images_formats();
 
-	if ( empty( $formats ) ) {
+	if (empty($formats)) {
 		return '';
 	}
 
 	$media = $process->get_media();
 
-	if ( ! $media->is_image() || ! Imagify_Requirements::is_api_key_valid() || ! $media->has_backup() ) {
+	if (! $media->is_image() || ! $media->has_backup()) {
 		return '';
 	}
 
-	$format = get_imagify_option( 'optimization_format' );
+	$format = get_imagify_option('optimization_format');
 
 	if (
 		'avif' === $format
@@ -368,23 +368,23 @@ function get_imagify_attachment_generate_nextgen_versions_link( $process ) {
 		'image/avif' === $media->get_mime_type()
 	) {
 		return '';
-	} elseif ( 'image/webp' === $media->get_mime_type() ) {
+	} elseif ('image/webp' === $media->get_mime_type()) {
 		return '';
 	}
 
 	$data = $process->get_data();
 
-	if ( ! $data->is_optimized() && ! $data->is_already_optimized() ) {
+	if (! $data->is_optimized() && ! $data->is_already_optimized()) {
 		return '';
 	}
 
-	if ( $process->has_next_gen() ) {
+	if ($process->has_next_gen()) {
 		return '';
 	}
 
 	$context = $media->get_context();
 
-	$display = apply_filters_deprecated( 'imagify_display_generate_webp_versions_link', [ true, $process, $context ], '2.2', 'imagify_display_generate_next_gen_versions_link' );
+	$display = apply_filters_deprecated('imagify_display_generate_webp_versions_link', [true, $process, $context], '2.2', 'imagify_display_generate_next_gen_versions_link');
 
 	/**
 	 * Allow to not display the "Generate next-gen versions" link.
@@ -396,10 +396,10 @@ function get_imagify_attachment_generate_nextgen_versions_link( $process ) {
 	 * @param ProcessInterface $process The optimization process object.
 	 * @param string           $context The context.
 	 */
-	$display = apply_filters( 'imagify_display_generate_next_gen_versions_link', $display, $process, $context );
+	$display = apply_filters('imagify_display_generate_next_gen_versions_link', $display, $process, $context);
 
 	// Stop the process if the filter is false.
-	if ( ! $display ) {
+	if (! $display) {
 		return '';
 	}
 
@@ -430,8 +430,9 @@ function get_imagify_attachment_generate_nextgen_versions_link( $process ) {
  * @param  ProcessInterface $process The optimization process object.
  * @return string                    The output to print.
  */
-function get_imagify_attachment_delete_nextgen_versions_link( $process ) {
-	if ( ! $process->is_valid() ) {
+function get_imagify_attachment_delete_nextgen_versions_link($process)
+{
+	if (! $process->is_valid()) {
 		return '';
 	}
 
@@ -439,13 +440,13 @@ function get_imagify_attachment_delete_nextgen_versions_link( $process ) {
 	$context  = $media->get_context();
 	$media_id = $media->get_id();
 
-	if ( ! imagify_get_context( $context )->current_user_can( 'manual-restore', $media_id ) ) {
+	if (! imagify_get_context($context)->current_user_can('manual-restore', $media_id)) {
 		imagify_die();
 	}
 
 	$data = $process->get_data();
 
-	if ( ! $data->is_already_optimized() || ! $process->has_next_gen() ) {
+	if (! $data->is_already_optimized() || ! $process->has_next_gen()) {
 		return '';
 	}
 
@@ -458,7 +459,7 @@ function get_imagify_attachment_delete_nextgen_versions_link( $process ) {
 		]
 	);
 
-	if ( ! Imagify_Views::get_instance()->is_media_page() ) {
+	if (! Imagify_Views::get_instance()->is_media_page()) {
 		$class .= 'button-imagify-delete-webp';
 	}
 
@@ -485,35 +486,32 @@ function get_imagify_attachment_delete_nextgen_versions_link( $process ) {
  *
  * @return string The output to print.
  */
-function get_imagify_media_column_content( $process, $with_container = true ) {
-	if ( ! $process->is_valid() ) {
-		return __( 'This media is not valid.', 'imagify' );
+function get_imagify_media_column_content($process, $with_container = true)
+{
+	if (! $process->is_valid()) {
+		return __('This media is not valid.', 'imagify');
 	}
 
-	if ( ! $process->current_user_can( 'manual-optimize' ) ) {
-		return __( 'You are not allowed to optimize this file.', 'imagify' );
+	if (! $process->current_user_can('manual-optimize')) {
+		return __('You are not allowed to optimize this file.', 'imagify');
 	}
 
 	$media = $process->get_media();
 
 	// Check if the media is supported.
-	if ( ! $media->is_supported() ) {
-		return __( 'This media is not supported.', 'imagify' );
+	if (! $media->is_supported()) {
+		return __('This media is not supported.', 'imagify');
 	}
 
 	// Check if the media has the required WP data.
-	if ( ! $media->has_required_media_data() ) {
-		return __( 'This media lacks the required metadata and cannot be optimized.', 'imagify' );
+	if (! $media->has_required_media_data()) {
+		return __('This media lacks the required metadata and cannot be optimized.', 'imagify');
 	}
 
 	$data = $process->get_data();
 
-	// Check if the API key is valid.
-	if ( ! Imagify_Requirements::is_api_key_valid() && ! $data->is_optimized() ) {
-		$output  = __( 'Invalid API key', 'imagify' );
-		$output .= '<br/>';
-		$output .= '<a href="' . esc_url( get_imagify_admin_url() ) . '">' . __( 'Check your Settings', 'imagify' ) . '</a>';
-		return $output;
+	if (false) { // API key check removed — standalone fork.
+		return '';
 	}
 
 	$media_id  = $media->get_id();
@@ -521,22 +519,22 @@ function get_imagify_media_column_content( $process, $with_container = true ) {
 	$views     = Imagify_Views::get_instance();
 	$is_locked = $process->is_locked();
 
-	if ( $is_locked ) {
-		switch ( $is_locked ) {
+	if ($is_locked) {
+		switch ($is_locked) {
 			case 'optimizing':
-				$lock_label = __( 'Optimizing...', 'imagify' );
+				$lock_label = __('Optimizing...', 'imagify');
 				break;
 			case 'restoring':
-				$lock_label = __( 'Restoring...', 'imagify' );
+				$lock_label = __('Restoring...', 'imagify');
 				break;
 			default:
-				$lock_label = __( 'Processing...', 'imagify' );
+				$lock_label = __('Processing...', 'imagify');
 		}
 
-		if ( ! $with_container ) {
+		if (! $with_container) {
 			return $views->get_template(
 				'button/processing',
-				[ 'label' => $lock_label ]
+				['label' => $lock_label]
 			);
 		}
 
@@ -545,13 +543,13 @@ function get_imagify_media_column_content( $process, $with_container = true ) {
 			[
 				'media_id' => $media_id,
 				'context'  => $context,
-				'content'  => $views->get_template( 'button/processing', [ 'label' => $lock_label ] ),
+				'content'  => $views->get_template('button/processing', ['label' => $lock_label]),
 			]
 		);
 	}
 
 	// Check if the image was optimized.
-	if ( ! $data->get_optimization_status() ) {
+	if (! $data->get_optimization_status()) {
 		$output = Imagify_Views::get_instance()->get_template(
 			'button/optimize',
 			[
@@ -565,14 +563,14 @@ function get_imagify_media_column_content( $process, $with_container = true ) {
 			]
 		);
 
-		if ( $media->has_backup() ) {
-			$output .= '<span class="attachment-has-backup hidden"></span>';
+		if ($media->has_backup()) {
+			$output .= '<span class="hidden attachment-has-backup"></span>';
 		}
 	} else {
-		$output = get_imagify_attachment_optimization_text( $process );
+		$output = get_imagify_attachment_optimization_text($process);
 	}
 
-	if ( ! $with_container ) {
+	if (! $with_container) {
 		return $output;
 	}
 

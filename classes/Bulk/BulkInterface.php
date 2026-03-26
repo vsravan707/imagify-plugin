@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Bulk;
 
 /**
@@ -6,7 +7,8 @@ namespace Imagify\Bulk;
  *
  * @since 1.9
  */
-interface BulkInterface {
+interface BulkInterface
+{
 	/**
 	 * Get all unoptimized media ids.
 	 *
@@ -15,7 +17,7 @@ interface BulkInterface {
 	 * @param  int $optimization_level The optimization level.
 	 * @return array                   A list of unoptimized media. Array keys are media IDs prefixed with an underscore character, array values are the main file’s URL.
 	 */
-	public function get_unoptimized_media_ids( $optimization_level );
+	public function get_unoptimized_media_ids($optimization_level);
 
 	/**
 	 * Get ids of all optimized media without Next gen versions.
@@ -32,7 +34,7 @@ interface BulkInterface {
 	 *     }
 	 * }
 	 */
-	public function get_optimized_media_ids_without_format( $format );
+	public function get_optimized_media_ids_without_format($format);
 
 
 	/**

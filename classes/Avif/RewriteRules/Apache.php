@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Avif\RewriteRules;
@@ -8,7 +9,8 @@ use Imagify\WriteFile\AbstractApacheDirConfFile;
 /**
  * Add and remove rewrite rules to the .htaccess file to display AVIF images on the site.
  */
-class Apache extends AbstractApacheDirConfFile {
+class Apache extends AbstractApacheDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delimiter.
@@ -24,10 +26,11 @@ class Apache extends AbstractApacheDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		$extensions = $this->get_extensions_pattern();
-		$extensions = str_replace( '|avif', '', $extensions );
-		$home_root  = wp_parse_url( home_url( '/' ) );
+		$extensions = str_replace('|avif', '', $extensions);
+		$home_root  = wp_parse_url(home_url('/'));
 		$home_root  = $home_root['path'];
 
 		return trim(

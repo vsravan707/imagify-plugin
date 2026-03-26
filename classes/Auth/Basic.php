@@ -1,4 +1,5 @@
 <?php
+
 namespace Imagify\Auth;
 
 use Imagify\Traits\InstanceGetterTrait;
@@ -10,7 +11,8 @@ use Imagify\Traits\InstanceGetterTrait;
  * @since  1.9.5
  * @author Grégory Viguier
  */
-final class Basic {
+final class Basic
+{
 	use InstanceGetterTrait;
 
 	/**
@@ -20,11 +22,12 @@ final class Basic {
 	 * @access public
 	 * @author Grégory Viguier
 	 */
-	public function init() {
-		add_filter( 'imagify_background_process_url', [ $this, 'get_auth_url' ] );
-		add_filter( 'imagify_async_job_url', [ $this, 'get_auth_url' ] );
-		add_filter( 'imagify_internal_request_url', [ $this, 'get_auth_url' ] );
-		add_filter( 'cron_request', [ $this, 'cron_request_args' ] );
+	public function init()
+	{
+		add_filter('imagify_background_process_url', [$this, 'get_auth_url']);
+		add_filter('imagify_async_job_url', [$this, 'get_auth_url']);
+		add_filter('imagify_internal_request_url', [$this, 'get_auth_url']);
+		add_filter('cron_request', [$this, 'cron_request_args']);
 	}
 
 	/**
@@ -37,13 +40,14 @@ final class Basic {
 	 * @param  string $url An URL.
 	 * @return string
 	 */
-	public function get_auth_url( $url ) {
-		if ( ! $url || ! is_string( $url ) ) {
+	public function get_auth_url($url)
+	{
+		if (! $url || ! is_string($url)) {
 			// Invalid.
 			return '';
 		}
 
-		if ( preg_match( '%.+?//(.+?):(.+?)@%', $url ) ) {
+		if (preg_match('%.+?//(.+?):(.+?)@%', $url)) {
 			// Credentials already in the URL.
 			return $url;
 		}
@@ -51,24 +55,24 @@ final class Basic {
 		$user = '';
 		$pass = '';
 
-		if ( defined( 'IMAGIFY_AUTH_USER' ) && defined( 'IMAGIFY_AUTH_PASSWORD' ) && IMAGIFY_AUTH_USER && IMAGIFY_AUTH_PASSWORD ) {
+		if (defined('IMAGIFY_AUTH_USER') && defined('IMAGIFY_AUTH_PASSWORD') && IMAGIFY_AUTH_USER && IMAGIFY_AUTH_PASSWORD) {
 			$user = IMAGIFY_AUTH_USER;
 			$pass = IMAGIFY_AUTH_PASSWORD;
 		} else {
-			$auth_type = ! empty( $_SERVER['AUTH_TYPE'] ) ? strtolower( sanitize_text_field( wp_unslash( $_SERVER['AUTH_TYPE'] ) ) ) : '';
+			$auth_type = ! empty($_SERVER['AUTH_TYPE']) ? strtolower(sanitize_text_field(wp_unslash($_SERVER['AUTH_TYPE']))) : '';
 
-			if ( 'basic' === $auth_type && ! empty( $_SERVER['PHP_AUTH_USER'] ) && ! empty( $_SERVER['PHP_AUTH_PW'] ) ) {
-				$user = sanitize_text_field( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) );
-				$pass = sanitize_text_field( wp_unslash( $_SERVER['PHP_AUTH_PW'] ) );
+			if ('basic' === $auth_type && ! empty($_SERVER['PHP_AUTH_USER']) && ! empty($_SERVER['PHP_AUTH_PW'])) {
+				$user = sanitize_text_field(wp_unslash($_SERVER['PHP_AUTH_USER']));
+				$pass = sanitize_text_field(wp_unslash($_SERVER['PHP_AUTH_PW']));
 			}
 		}
 
-		if ( empty( $user ) ) {
+		if (empty($user)) {
 			// No credentials.
 			return $url;
 		}
 
-		return preg_replace( '%^(.+?//)(.+?)$%', '$1' . rawurlencode( $user ) . ':' . rawurlencode( $pass ) . '@$2', $url );
+		return preg_replace('%^(.+?//)(.+?)$%', '$1' . rawurlencode($user) . ':' . rawurlencode($pass) . '@$2', $url);
 	}
 
 	/**
@@ -93,9 +97,10 @@ final class Basic {
 	 * }
 	 * @return array
 	 */
-	public function cron_request_args( $args ) {
-		if ( ! empty( $args['url'] ) ) {
-			$args['url'] = $this->get_auth_url( $args['url'] );
+	public function cron_request_args($args)
+	{
+		if (! empty($args['url'])) {
+			$args['url'] = $this->get_auth_url($args['url']);
 		}
 
 		return $args;

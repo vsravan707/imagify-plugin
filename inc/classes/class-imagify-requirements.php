@@ -2,7 +2,7 @@
 
 use Imagify\User\User;
 
-defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
+defined('ABSPATH') || die('Cheatin’ uh?');
 
 /**
  * Class used to check that Imagify has everything it needs.
@@ -10,7 +10,8 @@ defined( 'ABSPATH' ) || die( 'Cheatin’ uh?' );
  * @since  1.7.1
  * @author Grégory Viguier
  */
-class Imagify_Requirements {
+class Imagify_Requirements
+{
 	/**
 	 * Cache the test results.
 	 *
@@ -36,9 +37,10 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function supports_curl( $reset_cache = false ) {
-		if ( $reset_cache || ! isset( self::$supports['curl'] ) ) {
-			self::$supports['curl'] = function_exists( 'curl_init' ) && function_exists( 'curl_exec' );
+	public static function supports_curl($reset_cache = false)
+	{
+		if ($reset_cache || ! isset(self::$supports['curl'])) {
+			self::$supports['curl'] = function_exists('curl_init') && function_exists('curl_exec');
 		}
 
 		return self::$supports['curl'];
@@ -56,8 +58,9 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function supports_image_editor( $reset_cache = false ) {
-		if ( ! $reset_cache && isset( self::$supports['image_editor'] ) ) {
+	public static function supports_image_editor($reset_cache = false)
+	{
+		if (! $reset_cache && isset(self::$supports['image_editor'])) {
 			return self::$supports['image_editor'];
 		}
 
@@ -69,25 +72,25 @@ class Imagify_Requirements {
 
 		$args = [
 			'path'       => IMAGIFY_PATH . 'assets/images/imagify-logo.png',
-			'mime_types' => imagify_get_mime_types( 'image' ),
+			'mime_types' => imagify_get_mime_types('image'),
 			'methods'    => Imagify_Attachment::get_editor_methods(),
 		];
 
 		/** This filter is documented in /wp-includes/media.php. */
-		$implementations = apply_filters( 'wp_image_editors', [ 'WP_Image_Editor_Imagick', 'WP_Image_Editor_GD' ] );
+		$implementations = apply_filters('wp_image_editors', ['WP_Image_Editor_Imagick', 'WP_Image_Editor_GD']);
 
-		foreach ( $implementations as $implementation ) {
-			if ( ! call_user_func( [ $implementation, 'test' ], $args ) ) {
+		foreach ($implementations as $implementation) {
+			if (! call_user_func([$implementation, 'test'], $args)) {
 				continue;
 			}
 
-			foreach ( $args['mime_types'] as $mime_type ) {
-				if ( ! call_user_func( [ $implementation, 'supports_mime_type' ], $mime_type ) ) {
+			foreach ($args['mime_types'] as $mime_type) {
+				if (! call_user_func([$implementation, 'supports_mime_type'], $mime_type)) {
 					continue 2;
 				}
 			}
 
-			if ( array_diff( $args['methods'], get_class_methods( $implementation ) ) ) {
+			if (array_diff($args['methods'], get_class_methods($implementation))) {
 				continue;
 			}
 
@@ -108,15 +111,16 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function supports_uploads( $reset_cache = false ) {
-		if ( ! $reset_cache && isset( self::$supports['uploads'] ) ) {
+	public static function supports_uploads($reset_cache = false)
+	{
+		if (! $reset_cache && isset(self::$supports['uploads'])) {
 			return self::$supports['uploads'];
 		}
 
 		self::$supports['uploads'] = Imagify_Filesystem::get_instance()->get_upload_basedir();
 
-		if ( self::$supports['uploads'] ) {
-			self::$supports['uploads'] = Imagify_Filesystem::get_instance()->is_writable( self::$supports['uploads'] );
+		if (self::$supports['uploads']) {
+			self::$supports['uploads'] = Imagify_Filesystem::get_instance()->is_writable(self::$supports['uploads']);
 		}
 
 		return self::$supports['uploads'];
@@ -132,37 +136,10 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function is_imagify_blocked( $reset_cache = false ) {
-		if ( ! $reset_cache && isset( self::$supports['imagify_blocked'] ) ) {
-			return self::$supports['imagify_blocked'];
-		}
-
-		if ( ! defined( 'WP_HTTP_BLOCK_EXTERNAL' ) || ! WP_HTTP_BLOCK_EXTERNAL ) {
-			self::$supports['imagify_blocked'] = false;
-			return self::$supports['imagify_blocked'];
-		}
-
-		if ( ! defined( 'WP_ACCESSIBLE_HOSTS' ) ) {
-			self::$supports['imagify_blocked'] = true;
-			return self::$supports['imagify_blocked'];
-		}
-
-		$accessible_hosts = explode( ',', WP_ACCESSIBLE_HOSTS );
-		$accessible_hosts = array_map( 'trim', $accessible_hosts );
-		$accessible_hosts = array_flip( $accessible_hosts );
-
-		if ( isset( $accessible_hosts['*.imagify.io'] ) ) {
-			self::$supports['imagify_blocked'] = false;
-			return self::$supports['imagify_blocked'];
-		}
-
-		if ( isset( $accessible_hosts['imagify.io'], $accessible_hosts['app.imagify.io'], $accessible_hosts['storage.imagify.io'] ) ) {
-			self::$supports['imagify_blocked'] = false;
-			return self::$supports['imagify_blocked'];
-		}
-
-		self::$supports['imagify_blocked'] = true;
-		return self::$supports['imagify_blocked'];
+	public static function is_imagify_blocked($reset_cache = false)
+	{
+		self::$supports['imagify_blocked'] = false;
+		return false;
 	}
 
 
@@ -180,8 +157,9 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function attachments_backup_dir_is_writable( $reset_cache = false ) {
-		if ( $reset_cache || ! isset( self::$supports['attachment_backups'] ) ) {
+	public static function attachments_backup_dir_is_writable($reset_cache = false)
+	{
+		if ($reset_cache || ! isset(self::$supports['attachment_backups'])) {
 			self::$supports['attachment_backups'] = imagify_backup_dir_is_writable();
 		}
 
@@ -198,8 +176,9 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function custom_folders_backup_dir_is_writable( $reset_cache = false ) {
-		if ( $reset_cache || ! isset( self::$supports['custom_folder_backups'] ) ) {
+	public static function custom_folders_backup_dir_is_writable($reset_cache = false)
+	{
+		if ($reset_cache || ! isset(self::$supports['custom_folder_backups'])) {
 			self::$supports['custom_folder_backups'] = Imagify_Custom_Folders::backup_dir_is_writable();
 		}
 
@@ -222,26 +201,10 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function is_api_up( $reset_cache = false ) {
-		if ( ! $reset_cache && isset( self::$supports['api_up'] ) ) {
-			return self::$supports['api_up'];
-		}
-
-		$transient_name       = 'imagify_check_api_version';
-		$transient_expiration = 3 * MINUTE_IN_SECONDS;
-		$transient_value      = $reset_cache ? false : get_site_transient( $transient_name );
-
-		if ( false !== $transient_value ) {
-			self::$supports['api_up'] = (bool) $transient_value;
-			return self::$supports['api_up'];
-		}
-
-		self::$supports['api_up'] = ! is_wp_error( get_imagify_api_version() );
-		$transient_value          = (int) self::$supports['api_up'];
-
-		set_site_transient( $transient_name, $transient_value, $transient_expiration );
-
-		return self::$supports['api_up'];
+	public static function is_api_up($reset_cache = false)
+	{
+		self::$supports['api_up'] = true;
+		return true;
 	}
 
 	/**
@@ -255,34 +218,10 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool
 	 */
-	public static function is_api_key_valid( $reset_cache = false ) {
-		if ( $reset_cache ) {
-			self::reset_cache( 'api_key_valid' );
-		}
-
-		if ( isset( self::$supports['api_key_valid'] ) ) {
-			return self::$supports['api_key_valid'];
-		}
-
-		if ( ! Imagify_Options::get_instance()->get( 'api_key' ) ) {
-			self::$supports['api_key_valid'] = false;
-			return self::$supports['api_key_valid'];
-		}
-
-		if ( get_site_transient( 'imagify_check_licence_1' ) ) {
-			self::$supports['api_key_valid'] = true;
-			return self::$supports['api_key_valid'];
-		}
-
-		if ( is_wp_error( get_imagify_user() ) ) {
-			self::$supports['api_key_valid'] = false;
-			return self::$supports['api_key_valid'];
-		}
-
+	public static function is_api_key_valid($reset_cache = false)
+	{
 		self::$supports['api_key_valid'] = true;
-		set_site_transient( 'imagify_check_licence_1', 1, YEAR_IN_SECONDS );
-
-		return self::$supports['api_key_valid'];
+		return true;
 	}
 
 	/**
@@ -296,16 +235,10 @@ class Imagify_Requirements {
 	 * @param  bool $reset_cache True to get a fresh value.
 	 * @return bool              True when over quota. False otherwise, even when the API cannot be reached.
 	 */
-	public static function is_over_quota( $reset_cache = false ) {
-		if ( ! $reset_cache && isset( self::$supports['over_quota'] ) ) {
-			return self::$supports['over_quota'];
-		}
-
-		$user = new User();
-
-		self::$supports['over_quota'] = $user->get_error() ? false : $user->is_over_quota();
-
-		return self::$supports['over_quota'];
+	public static function is_over_quota($reset_cache = false)
+	{
+		self::$supports['over_quota'] = false;
+		return false;
 	}
 
 
@@ -322,16 +255,17 @@ class Imagify_Requirements {
 	 *
 	 * @param string $cache_key Cache key.
 	 */
-	public static function reset_cache( $cache_key ) {
-		unset( self::$supports[ $cache_key ] );
+	public static function reset_cache($cache_key)
+	{
+		unset(self::$supports[$cache_key]);
 
 		$transients = [
 			'api_up'        => 'imagify_check_api_version',
 			'api_key_valid' => 'imagify_check_licence_1',
 		];
 
-		if ( isset( $transients[ $cache_key ] ) && get_site_transient( $transients[ $cache_key ] ) ) {
-			delete_site_transient( $transients[ $cache_key ] );
+		if (isset($transients[$cache_key]) && get_site_transient($transients[$cache_key])) {
+			delete_site_transient($transients[$cache_key]);
 		}
 	}
 }

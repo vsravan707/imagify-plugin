@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Imagify\Avif\RewriteRules;
@@ -8,7 +9,8 @@ use Imagify\WriteFile\AbstractNginxDirConfFile;
 /**
  * Add and remove rewrite rules to the imagify.conf file to display AVIF images on the site.
  */
-class Nginx extends AbstractNginxDirConfFile {
+class Nginx extends AbstractNginxDirConfFile
+{
 
 	/**
 	 * Name of the tag used as block delimiter.
@@ -24,7 +26,8 @@ class Nginx extends AbstractNginxDirConfFile {
 	 *
 	 * @return string
 	 */
-	protected function get_raw_new_contents() {
+	protected function get_raw_new_contents()
+	{
 		return '';
 	}
 }
