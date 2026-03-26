@@ -2,7 +2,7 @@ window.imagify = window.imagify || {};
 
 jQuery.extend(window.imagify, {
 	concat: ajaxurl.indexOf("?") > 0 ? "&" : "?",
-	log: function (content) {
+	log:    function (content) {
 		if (undefined !== console) {
 			console.log(content); // eslint-disable-line no-console
 		}
@@ -21,7 +21,7 @@ jQuery.extend(window.imagify, {
 			.fadeIn(400)
 			.attr({
 				"aria-hidden": "false",
-				tabindex: "0",
+				tabindex:      "0",
 			})
 			.trigger("focus")
 			.removeAttr("tabindex")
@@ -38,10 +38,10 @@ jQuery.extend(window.imagify, {
 		return _.memoize(function (data) {
 			var compiled,
 				options = {
-					evaluate: /<#([\s\S]+?)#>/g,
+					evaluate:    /<#([\s\S]+?)#>/g,
 					interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
-					escape: /\{\{([^}]+?)\}\}(?!\})/g,
-					variable: "data",
+					escape:      /\{\{([^}]+?)\}\}(?!\})/g,
+					variable:    "data",
 				};
 
 			return function () {

@@ -120,7 +120,7 @@ window.imagify = window.imagify || {};
 				options = w.imagifybeatSettings;
 
 				// The XHR URL can be passed as option when w.ajaxurl is not set.
-				if (!settings.url && options.ajaxurl) {
+				if (! settings.url && options.ajaxurl) {
 					settings.url = options.ajaxurl;
 				}
 
@@ -168,7 +168,7 @@ window.imagify = window.imagify || {};
 
 				// 'screenId' can be added from settings on the front end where the JS global
 				// 'pagenow' is not set.
-				if (!settings.screenId) {
+				if (! settings.screenId) {
 					settings.screenId = options.screenId || "front";
 				}
 
@@ -304,9 +304,9 @@ window.imagify = window.imagify || {};
 		 * @return {void}
 		 */
 		function checkFocus() {
-			if (settings.hasFocus && !document.hasFocus()) {
+			if (settings.hasFocus && ! document.hasFocus()) {
 				blurred();
-			} else if (!settings.hasFocus && document.hasFocus()) {
+			} else if (! settings.hasFocus && document.hasFocus()) {
 				focused();
 			}
 		}
@@ -351,7 +351,7 @@ window.imagify = window.imagify || {};
 						break;
 				}
 
-				if (trigger && !hasConnectionError()) {
+				if (trigger && ! hasConnectionError()) {
 					settings.connectionError = true;
 					$document.trigger("imagifybeat-connection-lost", [
 						error,
@@ -422,7 +422,7 @@ window.imagify = window.imagify || {};
 			}
 
 			ajaxData = {
-				data: imagifybeatData,
+				data:     imagifybeatData,
 				interval: settings.tempInterval
 					? settings.tempInterval / 1000
 					: settings.mainInterval / 1000,
@@ -430,7 +430,7 @@ window.imagify = window.imagify || {};
 					typeof w.imagifybeatSettings === "object"
 						? w.imagifybeatSettings.nonce
 						: "",
-				action: "imagifybeat",
+				action:    "imagifybeat",
 				screen_id: settings.screenId,
 				has_focus: settings.hasFocus,
 			};
@@ -441,10 +441,10 @@ window.imagify = window.imagify || {};
 
 			settings.connecting = true;
 			settings.xhr = $.ajax({
-				url: settings.url,
-				type: "post",
-				timeout: 60000, // Throw an error if not completed after 60 sec.
-				data: ajaxData,
+				url:      settings.url,
+				type:     "post",
+				timeout:  60000, // Throw an error if not completed after 60 sec.
+				data:     ajaxData,
 				dataType: "json",
 			})
 				.always(function () {
@@ -454,7 +454,7 @@ window.imagify = window.imagify || {};
 				.done(function (response, textStatus, jqXHR) {
 					var newInterval;
 
-					if (!response) {
+					if (! response) {
 						setErrorState("empty");
 						return;
 					}
@@ -542,7 +542,7 @@ window.imagify = window.imagify || {};
 				return;
 			}
 
-			if (!settings.hasFocus && settings.suspendEnabled) {
+			if (! settings.hasFocus && settings.suspendEnabled) {
 				// When no user activity or the window lost focus, increase polling interval to 120 seconds, but only if suspend is enabled.
 				interv = 120000; // 120 sec.
 			} else if (settings.countdown > 0 && settings.tempInterval) {
@@ -595,7 +595,7 @@ window.imagify = window.imagify || {};
 			// Resume if suspended
 			settings.suspend = false;
 
-			if (!settings.hasFocus) {
+			if (! settings.hasFocus) {
 				settings.hasFocus = true;
 				scheduleNextTick();
 			}
@@ -649,7 +649,7 @@ window.imagify = window.imagify || {};
 				settings.suspend = true;
 			}
 
-			if (!settings.userActivityEvents) {
+			if (! settings.userActivityEvents) {
 				$document.on(
 					"mouseover.imagifybeat-active keyup.imagifybeat-active touchend.imagifybeat-active",
 					function () {
@@ -920,17 +920,17 @@ window.imagify = window.imagify || {};
 
 		// Expose public methods.
 		return {
-			hasFocus: hasFocus,
-			connectNow: connectNow,
-			disableSuspend: disableSuspend,
-			enableSuspend: enableSuspend,
-			interval: interval,
-			resetInterval: resetInterval,
+			hasFocus:           hasFocus,
+			connectNow:         connectNow,
+			disableSuspend:     disableSuspend,
+			enableSuspend:      enableSuspend,
+			interval:           interval,
+			resetInterval:      resetInterval,
 			hasConnectionError: hasConnectionError,
-			enqueue: enqueue,
-			dequeue: dequeue,
-			isQueued: isQueued,
-			getQueuedItem: getQueuedItem,
+			enqueue:            enqueue,
+			dequeue:            dequeue,
+			isQueued:           isQueued,
+			getQueuedItem:      getQueuedItem,
 		};
 	};
 

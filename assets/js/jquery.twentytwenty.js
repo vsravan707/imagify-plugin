@@ -5,9 +5,9 @@
 		options = $.extend(
 			{
 				handlePosition: 0.5,
-				orientation: "horizontal",
-				labelBefore: "Before",
-				labelAfter: "After",
+				orientation:    "horizontal",
+				labelBefore:    "Before",
+				labelAfter:     "After",
 			},
 			options
 		);
@@ -32,14 +32,14 @@
 					var width = parseInt($beforeImg.width(), 10),
 						height = parseInt($beforeImg.height(), 10);
 
-					if (!width || !height) {
+					if (! width || ! height) {
 						width = parseInt($beforeImg.attr("width"), 10);
 						height = parseInt($beforeImg.attr("height"), 10);
 					}
 
 					return {
-						w: width + "px",
-						h: height + "px",
+						w:  width + "px",
+						h:  height + "px",
 						cw: dimensionPct * width + "px",
 						ch: dimensionPct * height + "px",
 					};
@@ -206,10 +206,10 @@
 					data: {
 						datasets: [
 							{
-								data: [value, 100 - value],
+								data:            [value, 100 - value],
 								backgroundColor: ["#00B3D3", "#D8D8D8"],
-								borderColor: "#2A2E3C",
-								borderWidth: 1,
+								borderColor:     "#2A2E3C",
+								borderWidth:     1,
 							},
 						],
 					},
@@ -217,14 +217,14 @@
 						legend: {
 							display: false,
 						},
-						events: [],
+						events:    [],
 						animation: {
 							easing: "easeOutBounce",
 						},
 						tooltips: {
 							enabled: false,
 						},
-						responsive: false,
+						responsive:       false,
 						cutoutPercentage: 60,
 					},
 				});
@@ -237,17 +237,17 @@
 		 */
 		imagifyTwentyModal = function (options) {
 			var defaults = {
-					width: 0, //px
-					height: 0, //px
-					originalUrl: "", //url
-					optimizedUrl: "", //url
-					originalSize: 0, //mb
+					width:         0, //px
+					height:        0, //px
+					originalUrl:   "", //url
+					optimizedUrl:  "", //url
+					originalSize:  0, //mb
 					optimizedSize: 0, // mb
-					saving: 0, //percent
+					saving:        0, //percent
 					modalAppendTo: $("body"), // jQuery element
-					trigger: $('[data-target="imagify-visual-comparison"]'), // jQuery element (button, link) with data-target="modalId"
-					modalId: "imagify-visual-comparison", // should be dynamic if multiple modals
-					openModal: false,
+					trigger:       $('[data-target="imagify-visual-comparison"]'), // jQuery element (button, link) with data-target="modalId"
+					modalId:       "imagify-visual-comparison", // should be dynamic if multiple modals
+					openModal:     false,
 				},
 				settings = $.extend({}, defaults, options),
 				modalHtml;
@@ -340,7 +340,7 @@
 				}
 
 				$modal.find(".imagify-modal-content").css({
-					width: $(w).outerWidth() * 0.85 + "px",
+					width:       $(w).outerWidth() * 0.85 + "px",
 					"max-width": settings.width,
 				});
 
@@ -377,9 +377,9 @@
 					$tt.twentytwenty(
 						{
 							handlePosition: 0.3,
-							orientation: "horizontal",
-							labelBefore: imagifyTTT.labels.originalL,
-							labelAfter: imagifyTTT.labels.optimizedL,
+							orientation:    "horizontal",
+							labelBefore:    imagifyTTT.labels.originalL,
+							labelAfter:     imagifyTTT.labels.optimizedL,
 						},
 						function () {
 							var windowH = $(w).height(),
@@ -397,7 +397,7 @@
 								labelsPos;
 
 							if (
-								!$tt
+								! $tt
 									.closest(".imagify-modal-content")
 									.hasClass("loaded")
 							) {
@@ -414,7 +414,7 @@
 							// Check if image height is to big.
 							if (
 								windowH < ttH &&
-								!$modal.hasClass("modal-is-too-high")
+								! $modal.hasClass("modal-is-too-high")
 							) {
 								$modal.addClass("modal-is-too-high");
 
@@ -434,7 +434,7 @@
 									top: handlePos,
 								});
 								$labels.css({
-									top: labelsPos,
+									top:    labelsPos,
 									bottom: "auto",
 								});
 								$modal.find(".twentytwenty-wrapper").css({
@@ -669,14 +669,14 @@
 			$tt.twentytwenty(
 				{
 					handlePosition: 0.6,
-					orientation: "horizontal",
-					labelBefore: originalLabel,
-					labelAfter: ultraLabel,
+					orientation:    "horizontal",
+					labelBefore:    originalLabel,
+					labelAfter:     ultraLabel,
 				},
 				function () {
 					// Fires on initialisation & each time the handle is moving.
 					if (
-						!$tt
+						! $tt
 							.closest(".imagify-modal-content")
 							.hasClass("loaded")
 					) {
@@ -712,11 +712,11 @@
 					$otherSide =
 						"left" === side
 							? $this
-									.closest(".imagify-comparison-title")
-									.find(".twentytwenty-duo-right")
+								.closest(".imagify-comparison-title")
+								.find(".twentytwenty-duo-right")
 							: $this
-									.closest(".imagify-comparison-title")
-									.find(".twentytwenty-duo-left"),
+								.closest(".imagify-comparison-title")
+								.find(".twentytwenty-duo-left"),
 					$duo = $this
 						.closest(".twentytwenty-duo-buttons")
 						.find("button"),
@@ -793,7 +793,7 @@
 	) {
 		var $oriParent = $(".post-php .wp_attachment_image"),
 			oriSource = {
-				src: $("#imagify-full-original").val(),
+				src:  $("#imagify-full-original").val(),
 				size: $("#imagify-full-original-size").val(),
 			},
 			$optimizeBtn = $("#misc-publishing-actions").find(
@@ -818,16 +818,16 @@
 
 			// Modal and trigger event creation.
 			imagifyTwentyModal({
-				width: parseInt(imagifyTTT.imageWidth, 10),
-				height: parseInt(imagifyTTT.imageHeight, 10),
-				originalUrl: oriSource.src,
-				optimizedUrl: imagifyTTT.imageSrc,
-				originalSize: oriSource.size,
+				width:         parseInt(imagifyTTT.imageWidth, 10),
+				height:        parseInt(imagifyTTT.imageHeight, 10),
+				originalUrl:   oriSource.src,
+				optimizedUrl:  imagifyTTT.imageSrc,
+				originalSize:  oriSource.size,
 				optimizedSize: filesize,
-				saving: saving,
+				saving:        saving,
 				modalAppendTo: $oriParent,
-				trigger: $("#imagify-start-comparison"),
-				modalId: "imagify-visual-comparison",
+				trigger:       $("#imagify-start-comparison"),
+				modalId:       "imagify-visual-comparison",
 			});
 		}
 		// Else put images next to next.
@@ -883,16 +883,16 @@
 
 			// Modal and trigger event creation.
 			imagifyTwentyModal({
-				width: parseInt($this.data("full-width"), 10),
-				height: parseInt($this.data("full-height"), 10),
-				originalUrl: $this.data("backup-src"),
-				optimizedUrl: $this.data("full-src"),
-				originalSize: $datas.find(".original").text(),
+				width:         parseInt($this.data("full-width"), 10),
+				height:        parseInt($this.data("full-height"), 10),
+				originalUrl:   $this.data("backup-src"),
+				optimizedUrl:  $this.data("full-src"),
+				originalSize:  $datas.find(".original").text(),
 				optimizedSize: $datas.find("#imagify_data_sum .big").text(),
-				saving: $datas.find(".imagify-chart-value").text(),
+				saving:        $datas.find(".imagify-chart-value").text(),
 				modalAppendTo: $this.closest(".column-primary"),
-				trigger: $this,
-				modalId: "imagify-comparison-" + id,
+				trigger:       $this,
+				modalId:       "imagify-comparison-" + id,
 			});
 		});
 	}
@@ -920,7 +920,7 @@
 				var tempTimer = setInterval(function () {
 					var $datas, originalSrc, $actions;
 
-					if (!$(".media-modal .imagify-datas-details").length) {
+					if (! $(".media-modal .imagify-datas-details").length) {
 						return;
 					}
 
@@ -948,23 +948,23 @@
 
 						// Modal and trigger event creation.
 						imagifyTwentyModal({
-							width: parseInt($("#imagify-full-width").val(), 10),
+							width:  parseInt($("#imagify-full-width").val(), 10),
 							height: parseInt(
 								$("#imagify-full-height").val(),
 								10
 							),
-							originalUrl: originalSrc,
-							optimizedUrl: $("#imagify-full-src").val(),
-							originalSize: $("#imagify-original-size").val(),
+							originalUrl:   originalSrc,
+							optimizedUrl:  $("#imagify-full-src").val(),
+							originalSize:  $("#imagify-original-size").val(),
 							optimizedSize: $datas
 								.find("#imagify_data_sum .big")
 								.text(),
-							saving: $datas.find(".imagify-chart-value").text(),
+							saving:        $datas.find(".imagify-chart-value").text(),
 							modalAppendTo: $(
 								".media-frame-content .thumbnail-image"
 							),
-							trigger: $("#imagify-media-frame-comparison-btn"),
-							modalId: "imagify-comparison-modal",
+							trigger:   $("#imagify-media-frame-comparison-btn"),
+							modalId:   "imagify-comparison-modal",
 							openModal: true,
 						});
 					}
@@ -1005,16 +1005,16 @@
 
 				// Modal and trigger event creation.
 				imagifyTwentyModal({
-					width: parseInt($this.data("full-width"), 10),
-					height: parseInt($this.data("full-height"), 10),
-					originalUrl: $this.data("backup-src"),
-					optimizedUrl: $this.data("full-src"),
-					originalSize: $datas.find(".original").text(),
+					width:         parseInt($this.data("full-width"), 10),
+					height:        parseInt($this.data("full-height"), 10),
+					originalUrl:   $this.data("backup-src"),
+					optimizedUrl:  $this.data("full-src"),
+					originalSize:  $datas.find(".original").text(),
 					optimizedSize: $datas.find(".optimized").text(),
-					saving: $datas.find(".imagify-chart-value").text(),
+					saving:        $datas.find(".imagify-chart-value").text(),
 					modalAppendTo: $this.closest(".column-primary"),
-					trigger: $this,
-					modalId: "imagify-comparison-" + id,
+					trigger:       $this,
+					modalId:       "imagify-comparison-" + id,
 				});
 			});
 		};

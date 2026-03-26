@@ -19,10 +19,10 @@ window.imagify.drawMeAChart = function (canvas) {
 			data: {
 				datasets: [
 					{
-						data: [value, 100 - value],
+						data:            [value, 100 - value],
 						backgroundColor: ["#00B3D3", "#D8D8D8"],
-						borderColor: "#fff",
-						borderWidth: 1,
+						borderColor:     "#fff",
+						borderWidth:     1,
 					},
 				],
 			},
@@ -30,7 +30,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				legend: {
 					display: false,
 				},
-				events: [],
+				events:    [],
 				animation: {
 					easing: "easeOutBounce",
 				},
@@ -192,7 +192,7 @@ window.imagify.drawMeAChart = function (canvas) {
 		addToImagifybeat: function (e, data) {
 			var $containers = $(".imagify-data-actions-container");
 
-			if (!$containers.length) {
+			if (! $containers.length) {
 				return;
 			}
 
@@ -230,7 +230,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 					context = $.trim(contextId).match(/^(.+)_(\d+)$/);
 
-					if (!context) {
+					if (! context) {
 						return;
 					}
 
@@ -261,7 +261,7 @@ window.imagify.drawMeAChart = function (canvas) {
 			$containers.html(htmlContent);
 			w.imagify.modal.unlockItem(context, id);
 
-			if (!w.imagify.modal.working.length) {
+			if (! w.imagify.modal.working.length) {
 				// Work is done.
 				// Open the last container being processed.
 				w.imagify.modal.openSlide($containers);
@@ -368,7 +368,7 @@ window.imagify.drawMeAChart = function (canvas) {
 		 * @param {int}    id      The media ID.
 		 */
 		lockItem: function (context, id) {
-			if (!this.isItemLocked(context, id)) {
+			if (! this.isItemLocked(context, id)) {
 				this.working.push(context + "_" + id);
 			}
 		},

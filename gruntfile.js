@@ -14,6 +14,9 @@ module.exports = function (grunt) {
 				"!assets/js/jquery.event.move.js",
 				"!assets/js/sweetalert2.js",
 			],
+			options: {
+				fix: true,
+			},
 		},
 		// JS minify.
 		uglify: {
@@ -53,7 +56,7 @@ module.exports = function (grunt) {
 			options: {
 				processors: [
 					require("autoprefixer")({
-						browsers: "last 3 versions",
+						overrideBrowserslist: "last 3 versions",
 					}),
 				],
 			},
@@ -106,13 +109,13 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-cssmin");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-eslint");
-	grunt.loadNpmTasks("grunt-postcss");
+	grunt.loadNpmTasks("@lodder/grunt-postcss");
 
 	// Our custom tasks.
 	grunt.registerTask("css", ["postcss", "cssmin"]);
 	grunt.registerTask("js", ["eslint", "uglify"]);
 	grunt.registerTask("jsh", ["eslint"]);
 	grunt.registerTask("esl", ["eslint"]);
-	grunt.registerTask("minify", ["eslint", "uglify", "postcss", "cssmin"]);
-	grunt.registerTask("default", ["css", "minify"]);
+	grunt.registerTask("minify", ["uglify", "postcss", "cssmin"]);
+	grunt.registerTask("default", ["css", "uglify"]);
 };

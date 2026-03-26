@@ -16,7 +16,7 @@
 		$adminBarProfile = $("#wp-admin-bar-imagify-profile-content");
 		$adminBarPricing = $("#wp-admin-bar-imagify-pricing-content");
 
-		if (!$adminBarProfile.is(":empty")) {
+		if (! $adminBarProfile.is(":empty")) {
 			return;
 		}
 

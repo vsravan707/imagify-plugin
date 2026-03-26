@@ -19,10 +19,10 @@ window.imagify.drawMeAChart = function (canvas) {
 			data: {
 				datasets: [
 					{
-						data: [value, 100 - value],
+						data:            [value, 100 - value],
 						backgroundColor: ["#00B3D3", "#D8D8D8"],
-						borderColor: "#fff",
-						borderWidth: 1,
+						borderColor:     "#fff",
+						borderWidth:     1,
 					},
 				],
 			},
@@ -30,7 +30,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				legend: {
 					display: false,
 				},
-				events: [],
+				events:    [],
 				animation: {
 					easing: "easeOutBounce",
 				},
@@ -220,7 +220,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			$.get(href.replace("admin-post.php", "admin-ajax.php")).done(
 				function (r) {
-					if (!r.success) {
+					if (! r.success) {
 						if (r.data && r.data.row) {
 							$row.html(
 								'<td class="colspanchange" colspan="' +
@@ -271,7 +271,7 @@ window.imagify.drawMeAChart = function (canvas) {
 				'.wp-list-table.imagify-files .check-column [name="bulk_select[]"]'
 			);
 
-			if (!$boxes.length) {
+			if (! $boxes.length) {
 				return;
 			}
 
@@ -308,7 +308,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 					context = $.trim(contextId).match(/^(.+)_(\d+)$/);
 
-					if (!context) {
+					if (! context) {
 						return;
 					}
 
@@ -348,7 +348,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			w.imagify.filesList.unlockItem(context, id);
 
-			if (!w.imagify.filesList.working.length) {
+			if (! w.imagify.filesList.working.length) {
 				// Work is done.
 				// Reset Imagifybeat interval.
 				w.imagify.beat.resetInterval();
@@ -401,7 +401,7 @@ window.imagify.drawMeAChart = function (canvas) {
 		 * @param {int}    id      The media ID.
 		 */
 		lockItem: function (context, id) {
-			if (!this.isItemLocked(context, id)) {
+			if (! this.isItemLocked(context, id)) {
 				this.working.push(context + "_" + id);
 			}
 		},
@@ -447,14 +447,14 @@ window.imagify.drawMeAChart = function (canvas) {
 	var lastTime = 0,
 		vendors = ["ms", "moz", "webkit", "o"];
 
-	for (var x = 0; x < vendors.length && !w.requestAnimationFrame; ++x) {
+	for (var x = 0; x < vendors.length && ! w.requestAnimationFrame; ++x) {
 		w.requestAnimationFrame = w[vendors[x] + "RequestAnimationFrame"];
 		w.cancelAnimationFrame =
 			w[vendors[x] + "CancelAnimationFrame"] ||
 			w[vendors[x] + "CancelRequestAnimationFrame"];
 	}
 
-	if (!w.requestAnimationFrame) {
+	if (! w.requestAnimationFrame) {
 		w.requestAnimationFrame = function (callback) {
 			var currTime = new Date().getTime(),
 				timeToCall = Math.max(0, 16 - (currTime - lastTime)),
@@ -467,7 +467,7 @@ window.imagify.drawMeAChart = function (canvas) {
 		};
 	}
 
-	if (!w.cancelAnimationFrame) {
+	if (! w.cancelAnimationFrame) {
 		w.cancelAnimationFrame = function (id) {
 			clearTimeout(id);
 		};
@@ -503,7 +503,7 @@ window.imagify.drawMeAChart = function (canvas) {
 
 			lazyImages = lazyImages.not($image);
 
-			if (!lazyImages.length) {
+			if (! lazyImages.length) {
 				$w.off("scroll resize orientationchange", lazyLoadThumbnails);
 			}
 

@@ -45,7 +45,7 @@ window.imagify = window.imagify || {};
 				"&imagifycheckapikeynonce=" +
 				$("#imagifycheckapikeynonce").val()
 		).done(function (response) {
-			if (!response.success) {
+			if (! response.success) {
 				$("#imagify-check-api-container").html(
 					'<span class="dashicons dashicons-no"></span> ' +
 						response.data
@@ -54,10 +54,10 @@ window.imagify = window.imagify || {};
 				// Success, the API key is valid.
 				$("#imagify-check-api-container").remove();
 				swal({
-					title: imagifyOptions.labels.ApiKeyCheckSuccessTitle,
-					html: imagifyOptions.labels.ApiKeyCheckSuccessText,
-					type: "success",
-					padding: 0,
+					title:       imagifyOptions.labels.ApiKeyCheckSuccessTitle,
+					html:        imagifyOptions.labels.ApiKeyCheckSuccessText,
+					type:        "success",
+					padding:     0,
 					customClass: "imagify-sweet-alert",
 				}).then(function () {
 					location.reload();
@@ -98,7 +98,7 @@ window.imagify = window.imagify || {};
 		.on("change.imagify focus.imagify", function () {
 			var $checkbox;
 
-			if ("checkbox" === this.type && !this.checked) {
+			if ("checkbox" === this.type && ! this.checked) {
 				return;
 			}
 
@@ -107,7 +107,7 @@ window.imagify = window.imagify || {};
 				.prev("label")
 				.prev(":checkbox");
 
-			if ($checkbox.length && !$checkbox[0].checked) {
+			if ($checkbox.length && ! $checkbox[0].checked) {
 				$checkbox.prop("checked", true);
 			}
 		});
@@ -119,7 +119,7 @@ window.imagify = window.imagify || {};
 		var $_this = $(this),
 			$backupMessage = $_this.siblings("#backup-dir-is-writable"),
 			params = {
-				action: "imagify_check_backup_dir_is_writable",
+				action:   "imagify_check_backup_dir_is_writable",
 				_wpnonce: $backupMessage.data("nonce"),
 			};
 
@@ -140,14 +140,14 @@ window.imagify = window.imagify || {};
 
 		// Are you sure? No backup?
 		swal({
-			title: imagifyOptions.labels.noBackupTitle,
-			html: imagifyOptions.labels.noBackupText,
-			type: "warning",
-			customClass: "imagify-sweet-alert",
-			padding: 0,
+			title:            imagifyOptions.labels.noBackupTitle,
+			html:             imagifyOptions.labels.noBackupText,
+			type:             "warning",
+			customClass:      "imagify-sweet-alert",
+			padding:          0,
 			showCancelButton: true,
 			cancelButtonText: imagifySwal.labels.cancelButtonText,
-			reverseButtons: true,
+			reverseButtons:   true,
 		}).then(
 			function () {
 				// Leave it unchecked, hide the error message.
@@ -185,7 +185,7 @@ window.imagify = window.imagify || {};
 (function (w, d, $, undefined) {
 	// eslint-disable-line no-unused-vars, no-shadow, no-shadow-restricted-names
 
-	if (!w.imagifyUser) {
+	if (! w.imagifyUser) {
 		return;
 	}
 
@@ -218,7 +218,7 @@ window.imagify = window.imagify || {};
 (function (w, d, $, undefined) {
 	// eslint-disable-line no-unused-vars, no-shadow, no-shadow-restricted-names
 
-	if (!imagifyOptions.getFilesTree) {
+	if (! imagifyOptions.getFilesTree) {
 		return;
 	}
 
@@ -231,7 +231,7 @@ window.imagify = window.imagify || {};
 			$rows,
 			$field;
 
-		if (!value) {
+		if (! value) {
 			return;
 		}
 
@@ -276,7 +276,7 @@ window.imagify = window.imagify || {};
 			}
 		});
 
-		if (!added) {
+		if (! added) {
 			$wrap.append(
 				template({
 					value: value[0],
@@ -327,19 +327,19 @@ window.imagify = window.imagify || {};
 		$.post(
 			imagifyOptions.getFilesTree,
 			{
-				folder: "/",
+				folder:   "/",
 				selected: selected,
 			},
 			null,
 			"json"
 		)
 			.done(function (response) {
-				if (!response.success) {
+				if (! response.success) {
 					swal({
-						title: imagifyOptions.labels.error,
-						html: response.data || "",
-						type: "error",
-						padding: 0,
+						title:       imagifyOptions.labels.error,
+						html:        response.data || "",
+						type:        "error",
+						padding:     0,
 						customClass: "imagify-sweet-alert",
 					});
 					return;
@@ -359,18 +359,18 @@ window.imagify = window.imagify || {};
 					customClass:
 						"imagify-sweet-alert imagify-swal-has-subtitle  imagify-folders-selection",
 					showCancelButton: true,
-					padding: 0,
+					padding:          0,
 					confirmButtonText:
 						imagifyOptions.labels.confirmFilesTreeBtn,
 					cancelButtonText: imagifySwal.labels.cancelButtonText,
-					reverseButtons: true,
+					reverseButtons:   true,
 				})
 					.then(function () {
 						var values = $(
 							"#imagify-folders-tree input"
 						).serializeArray(); // Don't do `$( '#imagify-folders-tree' ).find( 'input' )`, it won't work.
 
-						if (!values.length) {
+						if (! values.length) {
 							return;
 						}
 
@@ -382,10 +382,10 @@ window.imagify = window.imagify || {};
 			})
 			.fail(function () {
 				swal({
-					title: imagifyOptions.labels.error,
-					type: "error",
+					title:       imagifyOptions.labels.error,
+					type:        "error",
 					customClass: "imagify-sweet-alert",
-					padding: 0,
+					padding:     0,
 				});
 			})
 			.always(function () {
@@ -435,19 +435,19 @@ window.imagify = window.imagify || {};
 			$.post(
 				imagifyOptions.getFilesTree,
 				{
-					folder: $button.data("folder"),
+					folder:   $button.data("folder"),
 					selected: selected,
 				},
 				null,
 				"json"
 			)
 				.done(function (response) {
-					if (!response.success) {
+					if (! response.success) {
 						swal({
-							title: imagifyOptions.labels.error,
-							html: response.data || "",
-							type: "error",
-							padding: 0,
+							title:       imagifyOptions.labels.error,
+							html:        response.data || "",
+							type:        "error",
+							padding:     0,
 							customClass: "imagify-sweet-alert",
 						});
 						return;
@@ -464,9 +464,9 @@ window.imagify = window.imagify || {};
 				})
 				.fail(function () {
 					swal({
-						title: imagifyOptions.labels.error,
-						type: "error",
-						padding: 0,
+						title:       imagifyOptions.labels.error,
+						type:        "error",
+						padding:     0,
 						customClass: "imagify-sweet-alert",
 					});
 				})
@@ -514,7 +514,7 @@ window.imagify = window.imagify || {};
 (function (w, d, $, undefined) {
 	// eslint-disable-line no-unused-vars, no-shadow, no-shadow-restricted-names
 
-	if (!imagifyOptions.bulk) {
+	if (! imagifyOptions.bulk) {
 		return;
 	}
 
@@ -525,13 +525,13 @@ window.imagify = window.imagify || {};
 		 *
 		 * @var {string|bool} error False if no error.
 		 */
-		error: false,
+		error:            false,
 		/**
 		 * Set to true at the beginning of the process.
 		 *
 		 * @var {bool} working
 		 */
-		working: false,
+		working:          false,
 		/**
 		 * Set to true to stop the whole thing.
 		 *
@@ -543,25 +543,25 @@ window.imagify = window.imagify || {};
 		 *
 		 * @var {jQuery}
 		 */
-		$button: null,
+		$button:          null,
 		/**
 		 * The progress bar wrapper.
 		 *
 		 * @var {jQuery}
 		 */
-		$progressWrap: null,
+		$progressWrap:    null,
 		/**
 		 * The progress bar.
 		 *
 		 * @var {jQuery}
 		 */
-		$progressBar: null,
+		$progressBar:     null,
 		/**
 		 * The progress bar text (the %).
 		 *
 		 * @var {jQuery}
 		 */
-		$progressText: null,
+		$progressText:    null,
 
 		// Methods =================================================================================
 
@@ -664,7 +664,7 @@ window.imagify = window.imagify || {};
 		 * @param {object} e Event object.
 		 */
 		toggleButton: function (e) {
-			if (!this.checked) {
+			if (! this.checked) {
 				e.data.imagifyOptionsBulk.$button.prop("disabled", true);
 			} else {
 				e.data.imagifyOptionsBulk.$button.prop("disabled", false);
@@ -678,7 +678,7 @@ window.imagify = window.imagify || {};
 		 */
 		maybeLaunchMissingWebpProcess: function (e) {
 			if (
-				!e.data.imagifyOptionsBulk ||
+				! e.data.imagifyOptionsBulk ||
 				e.data.imagifyOptionsBulk.working
 			) {
 				return;
@@ -824,9 +824,9 @@ window.imagify = window.imagify || {};
 						errorMessage = imagifyOptions.bulk.ajaxErrorText;
 					}
 
-					if (!response.success) {
+					if (! response.success) {
 						// Error.
-						if (!_this.error) {
+						if (! _this.error) {
 							_this.stopProcess(errorMessage);
 						}
 						return;
@@ -857,7 +857,7 @@ window.imagify = window.imagify || {};
 				})
 				.fail(function () {
 					// Error.
-					if (!_this.error) {
+					if (! _this.error) {
 						_this.stopProcess("get-unoptimized-images");
 					}
 				});
@@ -874,13 +874,13 @@ window.imagify = window.imagify || {};
 				if ("invalid-api-key" === this.error) {
 					errorArgs = {
 						title: imagifyOptions.bulk.labels.invalidAPIKeyTitle,
-						type: "info",
+						type:  "info",
 					};
 				} else if ("over-quota" === this.error) {
 					errorArgs = {
 						title: imagifyOptions.bulk.labels.overQuotaTitle,
-						html: $("#tmpl-imagify-overquota-alert").html(),
-						type: "info",
+						html:  $("#tmpl-imagify-overquota-alert").html(),
+						type:  "info",
 						customClass:
 							"imagify-swal-has-subtitle imagify-swal-error-header",
 						showConfirmButton: false,
@@ -896,21 +896,21 @@ window.imagify = window.imagify || {};
 				} else if ("no-images" === this.error) {
 					errorArgs = {
 						title: imagifyOptions.bulk.labels.nothingToDoTitle,
-						html: imagifyOptions.bulk.labels.nothingToDoText,
-						type: "info",
+						html:  imagifyOptions.bulk.labels.nothingToDoText,
+						type:  "info",
 					};
 				} else if ("no-backup" === this.error) {
 					errorArgs = {
 						title: imagifyOptions.bulk.labels.nothingToDoTitle,
-						html: imagifyOptions.bulk.labels
+						html:  imagifyOptions.bulk.labels
 							.nothingToDoNoBackupText,
 						type: "info",
 					};
 				} else {
 					errorArgs = {
 						title: imagifyOptions.bulk.labels.error,
-						html: this.error,
-						type: "info",
+						html:  this.error,
+						type:  "info",
 					};
 				}
 
@@ -986,11 +986,11 @@ window.imagify = window.imagify || {};
 				return true;
 			}
 
-			if (!imagifyOptions.bulk.keyIsValid) {
+			if (! imagifyOptions.bulk.keyIsValid) {
 				if (displayErrorMessage) {
 					this.displayError({
 						title: imagifyOptions.bulk.labels.invalidAPIKeyTitle,
-						type: "info",
+						type:  "info",
 					});
 				}
 				return true;
@@ -1000,8 +1000,8 @@ window.imagify = window.imagify || {};
 				if (displayErrorMessage) {
 					this.displayError({
 						title: imagifyOptions.bulk.labels.overQuotaTitle,
-						html: $("#tmpl-imagify-overquota-alert").html(),
-						type: "info",
+						html:  $("#tmpl-imagify-overquota-alert").html(),
+						type:  "info",
 						customClass:
 							"imagify-swal-has-subtitle imagify-swal-error-header",
 						showConfirmButton: false,
@@ -1022,13 +1022,13 @@ window.imagify = window.imagify || {};
 		 */
 		displayError: function (title, text, args) {
 			var def = {
-				title: "",
-				html: "",
-				type: "error",
-				customClass: "",
-				width: 620,
-				padding: 0,
-				showCloseButton: true,
+				title:             "",
+				html:              "",
+				type:              "error",
+				customClass:       "",
+				width:             620,
+				padding:           0,
+				showCloseButton:   true,
 				showConfirmButton: true,
 			};
 
@@ -1041,7 +1041,7 @@ window.imagify = window.imagify || {};
 					def,
 					{
 						title: title || "",
-						html: text || "",
+						html:  text || "",
 					},
 					args
 				);

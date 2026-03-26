@@ -16,8 +16,8 @@
 		$(".imagify-badge").toggleClass("imagify-badge-checked", isChecked);
 		$("#imagify_all_plan_view")
 			.toggleClass("imagify-year-selected", isChecked)
-			.toggleClass("imagify-month-selected", !isChecked);
-		$(".imagify-arrow-container img").eq(0).toggle(!isChecked);
+			.toggleClass("imagify-month-selected", ! isChecked);
+		$(".imagify-arrow-container img").eq(0).toggle(! isChecked);
 		$(".imagify-arrow-container img").eq(1).toggle(isChecked);
 	});
 })(jQuery, document, window);
@@ -28,22 +28,22 @@
 
 	var imagifyModal = {};
 
-	if (!$("#imagify-pricing-modal").length) {
+	if (! $("#imagify-pricing-modal").length) {
 		return;
 	}
 
 	imagifyModal = {
-		$modal: $("#imagify-pricing-modal"),
+		$modal:       $("#imagify-pricing-modal"),
 		// Plans selection view & payment process view hidden by default.
-		$plansView: $("#imagify-plans-selection-view"),
+		$plansView:   $("#imagify-plans-selection-view"),
 		$paymentView: $("#imagify-payment-process-view").hide(),
 		$successView: $("#imagify-success-view").hide(),
-		speedFadeIn: 300,
+		speedFadeIn:  300,
 
 		getHtmlPrice: function (content, period) {
 			var monthly, yearly, m, y, output;
 
-			if (!period) {
+			if (! period) {
 				period = null;
 			}
 
@@ -104,7 +104,7 @@
 				yearly,
 				output = "";
 
-			if (!period) {
+			if (! period) {
 				period = null;
 			}
 
@@ -178,9 +178,9 @@
 				pcs =
 					"monthly" === type
 						? {
-								monthly: mon,
-								yearly: Math.round((ann / 12) * 100) / 100,
-							}
+							monthly: mon,
+							yearly:  Math.round((ann / 12) * 100) / 100,
+						}
 						: cos,
 				pcsd = pcs, // Used if discount is active.
 				percent,
@@ -204,11 +204,11 @@
 				pcs =
 					"monthly" === type
 						? {
-								monthly: mon * percent,
-								yearly:
+							monthly: mon * percent,
+							yearly:
 									Math.round(((ann * percent) / 12) * 100) /
 									100,
-							}
+						}
 						: cos * percent;
 			}
 
@@ -323,11 +323,11 @@
 		getPricing: function ($button) {
 			var nonce = $button.data("nonce"),
 				prices_rq_datas = {
-					action: "imagify_get_prices",
+					action:       "imagify_get_prices",
 					imagifynonce: nonce,
 				},
 				prices_rq_discount = {
-					action: "imagify_get_discount",
+					action:       "imagify_get_discount",
 					imagifynonce: nonce,
 				};
 
@@ -341,7 +341,7 @@
 
 			// Get the true prices.
 			$.post(ajaxurl, prices_rq_datas, function (prices_response) {
-				if (!prices_response.success) {
+				if (! prices_response.success) {
 					// TODO: replace modal content by any information.
 					// An error occurred.
 
@@ -367,7 +367,7 @@
 							promo,
 							discount;
 
-						if (!discount_response.success) {
+						if (! discount_response.success) {
 							// TODO: replace modal content by any information.
 							// An error occurred.
 							return;
@@ -453,7 +453,7 @@
 								}
 
 								plan_list.forEach(function (item) {
-									if (!plan_names.includes(item)) {
+									if (! plan_names.includes(item)) {
 										plan_names.push(item);
 									}
 								});
@@ -635,7 +635,7 @@
 				return;
 			}
 
-			if (!params.period) {
+			if (! params.period) {
 				w.imagify.info("No period defined");
 				return;
 			}
@@ -715,7 +715,7 @@
 				}
 
 				plan_list.forEach(function (item) {
-					if (!applies_to.includes(item)) {
+					if (! applies_to.includes(item)) {
 						applies_to.push(item);
 					}
 				});
@@ -792,7 +792,7 @@
 			// Clear user account cache.
 			if (imagifyPricingModal.userDataCache) {
 				$.post(ajaxurl, {
-					action: imagifyPricingModal.userDataCache.deleteAction,
+					action:   imagifyPricingModal.userDataCache.deleteAction,
 					_wpnonce: imagifyPricingModal.userDataCache.deleteNonce,
 				});
 			}

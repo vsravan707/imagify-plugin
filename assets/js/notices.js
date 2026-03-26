@@ -38,16 +38,16 @@
 
 		// Display the sign up form.
 		swal({
-			title: imagifyNotices.labels.signupTitle,
-			html: imagifyNotices.labels.signupText,
-			confirmButtonText: imagifyNotices.labels.signupConfirmButtonText,
-			input: "email",
-			padding: 0,
+			title:               imagifyNotices.labels.signupTitle,
+			html:                imagifyNotices.labels.signupText,
+			confirmButtonText:   imagifyNotices.labels.signupConfirmButtonText,
+			input:               "email",
+			padding:             0,
 			showLoaderOnConfirm: true,
-			customClass: "imagify-sweet-alert imagify-sweet-alert-signup",
-			inputValidator: function (inputValue) {
+			customClass:         "imagify-sweet-alert imagify-sweet-alert-signup",
+			inputValidator:      function (inputValue) {
 				return new Promise(function (resolve, reject) {
-					if ($.trim(inputValue) === "" || !inputValue) {
+					if ($.trim(inputValue) === "" || ! inputValue) {
 						reject(imagifyNotices.labels.signupErrorEmptyEmail);
 					} else {
 						resolve();
@@ -65,7 +65,7 @@
 								"&imagifysignupnonce=" +
 								$("#imagifysignupnonce").val()
 						).done(function (response) {
-							if (!response.success) {
+							if (! response.success) {
 								reject(response.data);
 							} else {
 								resolve();
@@ -76,10 +76,10 @@
 			},
 		}).then(function () {
 			swal({
-				title: imagifyNotices.labels.signupSuccessTitle,
-				html: imagifyNotices.labels.signupSuccessText,
-				type: "success",
-				padding: 0,
+				title:       imagifyNotices.labels.signupSuccessTitle,
+				html:        imagifyNotices.labels.signupSuccessText,
+				type:        "success",
+				padding:     0,
 				customClass: "imagify-sweet-alert",
 			});
 		});
@@ -94,16 +94,16 @@
 		// Display the API key form.
 		swal({
 			title: imagifyNotices.labels.saveApiKeyTitle,
-			html: imagifyNotices.labels.saveApiKeyText,
+			html:  imagifyNotices.labels.saveApiKeyText,
 			confirmButtonText:
 				imagifyNotices.labels.saveApiKeyConfirmButtonText,
-			input: "text",
-			padding: 0,
+			input:               "text",
+			padding:             0,
 			showLoaderOnConfirm: true,
-			customClass: "imagify-sweet-alert imagify-sweet-alert-signup",
-			inputValidator: function (inputValue) {
+			customClass:         "imagify-sweet-alert imagify-sweet-alert-signup",
+			inputValidator:      function (inputValue) {
 				return new Promise(function (resolve, reject) {
-					if ($.trim(inputValue) === "" || !inputValue) {
+					if ($.trim(inputValue) === "" || ! inputValue) {
 						reject(imagifyNotices.labels.ApiKeyErrorEmpty);
 					} else {
 						resolve();
@@ -120,7 +120,7 @@
 							"&imagifycheckapikeynonce=" +
 							$("#imagifycheckapikeynonce").val()
 					).done(function (response) {
-						if (!response.success) {
+						if (! response.success) {
 							reject(response.data);
 						} else {
 							resolve();
@@ -130,10 +130,10 @@
 			},
 		}).then(function () {
 			swal({
-				title: imagifyNotices.labels.ApiKeyCheckSuccessTitle,
-				html: imagifyNotices.labels.ApiKeyCheckSuccessText,
-				type: "success",
-				padding: 0,
+				title:       imagifyNotices.labels.ApiKeyCheckSuccessTitle,
+				html:        imagifyNotices.labels.ApiKeyCheckSuccessText,
+				type:        "success",
+				padding:     0,
 				customClass: "imagify-sweet-alert",
 			});
 		});
