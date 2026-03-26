@@ -36,6 +36,7 @@ if (! defined('IMAGIFY_APP_DOMAIN')) {
 }
 define('IMAGIFY_APP_API_URL', IMAGIFY_APP_DOMAIN . '/api/');
 
+require_once IMAGIFY_PATH . 'inc/fork-disable-updates.php';
 
 // Check for WordPress and PHP version.
 if (imagify_pass_requirements()) {
